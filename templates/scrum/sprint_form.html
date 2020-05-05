@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+{% extends 'base/base.html'%}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+			$(document).ready(function() {
+				$('.js-example-basic-multiple').select2();
+			});
+
+			function editar(id, pbacklog){
+			    console.log(id);
+			    console.log(pbacklog);
+			    document.getElementById('nombre').value = pbacklog;
+			    document.getElementById('id_pbacklog').value = id;
+			}
+	</script>
+    <title>Title</title>
+</head>
+<body>
+<div id="alerta"></div>
+<div class="form-group">
+    <div align="center">
+        <h2><strong>Información del proyecto</strong></h2>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul>
+                <font size="3"><strong> Integrantes</strong></font>
+                <li>Cantidad: {{numero_integrantes}}</li>
+                <li>Total horas por semana: <span id="horas_integrantes">{{numero_horas}}</span></li>
+                <li>Total horas en el Sprin: <span id="horas_integrantes_sprint"></span></li>
+            </ul>
+        </div>
+        <div class="col">
+            <ul>
+                <font size="3"><strong> Sprint</strong></font>
+                <li>Horas del Sprint: <span id="horas_sprint"></span></li>
+                <li>Semanas: <span id="numero_semanas"></span></li>
+            </ul>  
+        </div>  
+    </div>
+    <div align="center">
+        <span style="color:red; text-align:center" id="notificacion"></span>
+    </div>
+
+</div>
+<h2><strong>Creación del Sprint</strong></h2>
+     <hr class="sidebar-divider">
+    <div class="continer">
+        <form method="post" action="{% url 'scrum:sprint' index %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        {{ form.f_inicio.label }}:
+                        <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{fecha_inicio}}" max="{{fecha_fin}}" style="width:40%;" required>
+                        {{ form.f_inicio.errors }}
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        {{ form.f_fin.label }}:
+                        <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{fecha_fin}}" style="width:40%;" required>
+                        {{ form.f_fin.errors}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" name="estado" value="True">
+                <input type="hidden" name="confirmar" value="False">
+                <input type="hidden" name="id_scrum" value={{idScrum}}>
+                <input type="hidden" name="idIndex" value={{index}}>
+            </div>
+
+            <!--
+                <div class="form-group">
+                    {{ form.id_pbacklog.label }}:
+                    <br>
+                    <select class="js-example-basic-multiple" name="id_pbacklog" multiple="multiple" style="width:40%;" required>
+                        {% for r in requisitos %}
+                        <option value={{r.id}}>{{r.nombre}}</option>
+                        {% endfor%}
+                    </select>
+                    {{ form.id_pbacklog.errors }}
+                </div>
+            -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <strong class="card-title">Listado de épicas</strong>
+                        </div>
+                        <div class="col" align="right">
+                            <button href="" type="submit" class="btn btn-outline-primary" >Guardar</button>
+                            <a class="btn btn-outline-success" title="Página de inicio" href="{% url 'proyecto:index' index %}">Volver</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="tabla_sprint">
+                    {% if requisitos %}                    
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Requisito</th>
+                                    <th title="Historias de usuarios">Historias Usuarios</th>
+                                    <th >HU Realizadas</th>
+                                    <th >Tareas</th>
+                                    <th >T Realizadas</th>
+                                    <th >Duración</th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in requisitos %}
+                                    <tr>
+                                        <td> {{a.nombre}} </td>
+                                        <td>{{  a.historias }}</td>
+                                        <td>{{  a.historias_r }}</td>
+                                        <td>{{  a.tareas }}</td>
+                                        <td>{{  a.tareas_r }}</td>
+                                        <td id="n_duracion">
+                                            {{  a.duracion }}
+                                        </td>
+                                        <td style="width:auto; text-aling:right">
+                                            <label class="switch ">
+                                                <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog" name="id_pbacklog" value={{a.id}} class="primary">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#myModal" >Editar</a>
+                                            <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog" onclick="eliminarPbacklog({{a.id}},'{{a.nombre}}')" >Eliminar</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>                    
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+        </form>
+    </div>
+
+    
+
+
+</body>
+</html>
+
+      <!-- The Modal Editar requisitos -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Editar épica</h4>
+            <button type="button" id="btnClose" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="container">
+                <!-- <form method="POST" id="Editar_requisito_sprint" action="/scrum/update_pbacklog"> -->
+                    <!--  {% csrf_token %} -->
+                    <form id="Editar_requisito_sprint">
+                       {% csrf_token %}
+                        <div class="form-group">
+                            <label>
+                                Descripción de la tarea
+                            </label>
+                            <input type="text" class="form-control" id="nombre" name="nombre">
+                        </div>
+
+                        <div>
+                            <input type="hidden" name="id_pbacklog" id="id_pbacklog">
+                            <input type="hidden" id="id_proyecto" value={{idScrum}}>
+                        </div>
+
+                        <center>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary" value="SUBMIT">Guardar</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </center>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmar eliminar pbacklog -->
+    <div class="modal fade" id="confirmDeletePbacklog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><strong>Eliminar requisito</strong></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="texto">
+                        Si, elimina este requisito, tenga en cuenta que
+                        se eliminaran las historias de usuarios y tareas
+                        que hacen parte de el.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <div class="container" align="center" id="confirmar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- end modal delete pbacklog -->
+
+<script>
+    $(document).ready(function() {
+          $('.js-example-basic-multiple').select2();
+     });
+
+    
+    $(document).on('input','#f_inicio', function(e){
+        var f_inicio = $(this).val();
+        document.getElementById('f_fin').min = f_inicio;
+    });
+
+    $(document).on('input','#f_fin', function(e){
+        var f_fin = $(this).val();
+        var f_inicio = document.getElementById('f_inicio').value;
+
+        alerta1 = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                        'Primero Ingrese la fecha de inicio'+
+                    '</div>'
+
+        if(f_inicio == ""){
+            document.getElementById('alerta').innerHTML=alerta1;
+            document.getElementById('f_fin').value = "dd/mm/aaaa";
+            setTimeout(function() { // funcion de Jquery
+                    $('#alerta').fadeOut(1500);
+            },3000);
+
+        }else{
+            
+            alerta = ' <div class="alert alert-danger alert-dismissible fade show">'+
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                        'El Sprint no debe durar mas de 4 semanas'+
+                    '</div>'
+            dias = NumeroDias();
+            if(dias > 28){   
+                //alert('El Sprint no debe durar mas de 4 semanas');
+                document.getElementById('f_fin').value = "";
+                document.getElementById('alerta').innerHTML=alerta;
+
+                setTimeout(function() { // funcion de Jquery
+                    $('#alerta').fadeOut(1500);
+                },3000);
+            }
+        }
+            
+    });
+
+    function NumeroDias(){
+        let fecha1 = new Date(document.getElementById('f_inicio').value);
+        let fecha2 = new Date(document.getElementById('f_fin').value);
+
+        let mls = 24 * 60 * 60 * 1000;
+        let mlst = Math.abs(fecha1.getTime() - fecha2.getTime());
+        let dias = Math.round(mlst/mls);
+        return dias;
+    }
+
+    function SprintIntegrantes(){
+        var horas_sprint = parseInt(document.getElementById('horas_sprint').innerText,10);
+        var horas_integrantes = parseInt(document.getElementById('horas_integrantes').innerText,10)
+        var dias = NumeroDias();
+        var semanas = Math.round(dias/7)
+        if(semanas < 7){
+            semanas = 1;
+        }
+        console.log('horas semanas: '+semanas);
+        var horas_integrantes_sprint = semanas * horas_integrantes ;
+        document.getElementById('horas_integrantes_sprint').innerText = horas_integrantes_sprint;
+        document.getElementById('numero_semanas').innerText = semanas;
+
+        if(horas_sprint > horas_integrantes_sprint){
+            document.getElementById('notificacion').innerHTML = 'El número de horas del sprint supera al número de horas dispuesto por los integrantes,'+
+            ' el Sprint igual se guardará';
+        }else{
+            document.getElementById('notificacion').innerText="";
+        }
+    }
+    var count = 0;
+    var cantidad = 0;
+    
+    $("table tbody tr").click(function() {
+        var total = $(this).find("td:eq(5)").text()
+        cantidad = parseInt(total,10);
+    });
+
+    //obtener los datos de una tabla
+    $(document).on('click','#id_pbacklog', function(e){
+        var duracion = $(this).val();
+        var f_inicio = document.getElementById('f_inicio').value;
+        var f_fin = document.getElementById('f_fin').value;
+        if($(this).is(':checked')){
+            if(f_inicio == "" || f_fin == ""){
+                document.getElementById('alerta').innerHTML=' <div class="alert alert-danger alert-dismissible fade show">'+
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                        'Primero defina la duracino del Sprint'+
+                    '</div>';
+                $(this).prop("checked", false);  
+            }else{
+                count += cantidad;
+                document.getElementById('horas_sprint').innerText=count;
+                SprintIntegrantes();
+            }
+
+            
+        }else{
+            count -= cantidad;
+            document.getElementById('horas_sprint').innerText=count;
+            SprintIntegrantes();
+        }
+        
+    });
+</script>
+
+<script type="text/javascript">
+        $(document).on('submit','#Editar_requisito_sprint',function(e){
+            e.preventDefault();
+            var  nom = $(this).find('#nombre').val();
+            var idpb = $(this).find('#id_pbacklog').val();
+            var idp = $(this).find('#id_proyecto').val();
+            
+               
+                $.ajax({
+                    type: "POST",
+                    url: "/scrum/update_pbacklog",
+                    context: document.body,
+                    dataType: 'json',
+                    data:{
+                        'nombre':nom,
+                        'id_pbacklog': idpb,
+                        'sprint':idp,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        $('#btnClose').click();
+                        $('#tabla_sprint').html(data['tabla_sprint']);
+                    }
+               });
+            
+        });
+    
+    function eliminarPbacklog(id, pbacklog){
+        document.getElementById('confirmar').innerHTML = '<a href="/scrum/eliminarPbacklog/'+ id +'"  title="Eliminar requisito" style="width:50%" class="btn btn-danger" data-target="modal" data-target="#confirmDeleteHistory"> Eliminar </a>';
+        document.getElementById('texto').innerHTML = "Seguro que desea eliminar el requisito <strong>"+ pbacklog +"</strong>, todas las hisotias de usuarios y tareas perteneciente a él se eliminarán "
+    }
+</script>
+
+{% endblock %}

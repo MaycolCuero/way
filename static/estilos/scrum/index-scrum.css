@@ -1,0 +1,26 @@
+#body-daily{
+    height: 240;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+#header-daily{
+    padding: 5px;
+}
+#header-miembros{
+    padding: 5px;
+}
+#body-miembros{
+    height: 240;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+div[daily]{
+    padding: 5px;
+    margin: 5px;
+}
+
+#col1{
+    text-align: left;
+}

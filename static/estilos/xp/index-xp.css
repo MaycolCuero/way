@@ -1,0 +1,9 @@
+div[definir_margenes] {
+    padding: 5px;
+    height: 400px;
+    overflow-y: auto;
+}
+
+div[margenes_internos]{
+    padding: 5px;
+}

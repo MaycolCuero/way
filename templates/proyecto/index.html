@@ -1,0 +1,959 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+<html>
+    <head>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+       
+    </head>
+    {% block extra_links%}
+        <link href="{% static 'estilos/scrum/index-scrum.css' %}" rel="stylesheet">
+        <script src="{% static 'scripts-consultas/scrum/index-scrum.js' %}"></script>
+    {% endblock %}
+    {% block content %}
+    <body>
+        <script>
+            function seleccionar(id) {
+                document.getElementById('sprint').value = id;
+            }
+        </script>
+
+         <div class="container-fluid">
+             <!--- this is the begin of the integrant information -->
+             <div class="card shadow mb-4">
+                    <a href="#collapseCard2" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+
+                        {% for s in proyecto %}
+                            <h6 class="m-0 font-weight-bold text-info" style="text-align: center; font-size: 30px;" id="titulo"><b>{{ s.nombre }}</b></h6>
+                        {% endfor %}
+
+                    </a>
+                        <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="collapseCard2">
+                        <div class="card-body">
+                            <center>
+                                <span><strong>SPRINT ACTIVO</strong></span>
+                            </center>
+                            {% if info %}
+                                    <div class="row">
+                                        <div class="col">
+                                            <span>
+                                                fecha de inico
+                                                <br>
+                                                {{ info.f_inicio}}
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span>
+                                                fecha de fin
+                                                <br>
+                                                {{ info.f_fin}}
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <span>
+                                                <!--
+                                                Faltan {{ var }} para terminar el proyecto -->
+                                            </span>
+                                        </div>
+                                    </div>
+                            
+                             {% else %}
+                                <p>Descripcion general del proyecto</p>
+                            {% endif %}      
+                        </div>
+                        <hr class="sidebar-divider">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-header" id="header-miembros">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group" align="left">
+                                                        <h4><strong>MIEMBROS</strong></h4>       
+                                                    </div>
+                                                </div>
+                                                <div class="col" align="right">
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#ModalIntegrante">
+                                                        <span><strong>AGREGAR</strong></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body scroll" id="body-miembros">                                            
+                                                {% for integran in integrantes %}                                                   
+                                                    <div class="card card-header border-left-success">
+                                                            {{integran.usuario__first_name}} {{integran.usuario__last_name}}<br>
+                                                            <font size="1">
+                                                                {{integran.rol__nombre}}
+                                                                <a title="Número de horas">H({{integran.horas}})</a> 
+                                                            </font>
+                                                    </div>
+                                                    <br>                                                   
+                                                {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-header" id="header-daily">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group" align="left">
+                                                        <h4><strong>DAILYMEETING</strong></h4>       
+                                                    </div>
+                                                </div>
+                                                <div class="col" align="right">
+                                                    {% if pbacklog %}
+                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="seleccionar({{info.id}})">
+                                                            <span><strong>Daily Meeting</strong></span>
+                                                        </button>
+                                                    {% else %}
+                                                        
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body scroll" id="body-daily">       
+                                            {% if meetingsday %}
+                                                {% for day in meetingsday %}
+                                                            <div class="card card-header" daily>
+                                                                <font size="2">
+                                                                    <strong>
+                                                                        Usuaro: 
+                                                                    </strong>
+                                                                    {{ day.usuario__first_name}} {{day.usuario__last_name}}
+                                                                    <br>
+                                                                    <strong>
+                                                                        Ayer: 
+                                                                    </strong>
+                                                                    {{ day.ayer }}
+                                                                    <br>
+                                                                    <strong>
+                                                                        Hoy:  
+                                                                    </strong>
+                                                                    {{ day.hoy }}
+                                                                    <br>
+                                                                    <strong>
+                                                                        Prolemas: 
+                                                                    </strong>
+                                                                    {{ day.problemas }}
+                                                                </font>
+                                                            </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                    <div align="center">
+                                                        <h4>No hay dailymeeting</h4>
+                                                    </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- Crear Sprint -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col" align="center">
+                                        {% if pbacklog %}
+                                        {% else %}                                        
+                                            {% for rl in rol %}
+                                                {% if rl.rol__nombre == "Scrum Master" or rl.rol__nombre == "Product Owner" %}   
+                                                    <a href="{% url 'scrum:sprint' idIndex %}" class="btn btn-primary">Crear un Sprint</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col" align="center">
+                                         {% for rl in rol %}
+                                            {% if rl.rol__nombre == "Product Owner" or rl.rol__nombre == "Scrum Master" %}
+                                                {% if alcanzados %}
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#myReviewModal" >
+                                                        <strong>Sprint Review</strong>
+                                                    </button>
+                                                {% endif %}
+                                                                
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col">
+                                         {% for rl in rol %}
+                                            {% if rl.rol__nombre == "Scrum Master"  or rl.rol__nombre == "Product Owner" or rl.rol__nombre == "Asesor" %}  
+                                                <a href="" class="btn btn-success" data-toggle="modal" data-target="#ModalResumen">Resumen del proyecto</a>                                                
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+             </div>
+
+             <!-- this is the begin of the carrucel -->
+              <div class="card shadow mb-4">
+                    <a href="#collapseCard3" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                      <h6 class="m-0 font-weight-bold text-primary">Estado del proyecto</h6>
+                    </a>
+                        <!-- Card Content - Collapse -->
+                            <div class="collapse show" id="collapseCard3">
+
+                                      <div class="card-body">
+
+                                          <div id="demo" class="carousel slide" data-ride="carousel" data-interval="false">
+
+                                              <div class="carousel-inner">
+
+                                                    <div class="carousel-item active">
+                                                      <div class="row">
+                                                          <!-- Listar requisitos -->
+                                                        <div class="col">
+                                                          <span><strong>REQUISITOS</strong></span>
+                                                            {% if pbacklog %}
+                                                                 {% for p in pbacklog %}
+                                                                      <div class="col" style="height: 50px; cursor:pointer;" onclick="idPbacklog({{ p.id }})">
+                                                                          <div class="card border-left-success">
+                                                                               <div class="card-header">
+                                                                                    <div class="row">
+                                                                                        <div class="col">
+                                                                                            {{ p.nombre }}
+                                                                                        </div>
+                                                                                        <div class="col">
+                                                                                            HU({{p.historias}})
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                               </div>
+                                                                          </div>
+                                                                      </div>
+                                                                <br>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <br>
+                                                                <span>Debe crear un sprint</span>
+                                                            {% endif %}
+
+                                                        </div>
+
+                                                          <!-- Listar Historias de usuario -->
+                                                        <div class="col">
+                                                          <span><strong>HISTORIAS DE USUARIO</strong></span>
+                                                                 <div id="lista">
+
+                                                                 </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+
+                                                   <!--- this is the begin of the task-->
+                                                    <div class="carousel-item" id="tareasItem">
+
+                                                      <div class="row">
+                                                          <!-- Listar tareas pendientes  -->
+                                                        <div class="col-4">
+                                                          <div class="text-center">
+                                                            <span><strong>TAREAS</strong></span>
+                                                          </div>
+
+                                                                <div id="listTareas">
+
+                                                                </div>
+                                                        </div>
+                                                          <!-- Listar tareas en proceso -->
+                                                        <div class="col-4">
+                                                          <div class="text-center">
+                                                            <span class="text-center"><strong>HACIENDO</strong></span>
+                                                          </div>
+
+                                                            {% if haciendo%}
+
+                                                                {% for a in haciendo%}
+                                                                  <div class="col">
+                                                                    <div class="card border-left-info">
+                                                                      <div class="card-header">
+                                                                        {{ a.nombre }}
+                                                                        <font size="2">
+                                                                            <div>
+                                                                                {{ a.usuario__first_name}} {{ a.usuario__last_name}}
+                                                                            </div>                                                                            
+                                                                        </font>
+                                                                        <div class="text-center">
+                                                                            {% if a.usuario__id == user.pk %}
+                                                                                <form id="form_confirmar">
+                                                                                    {% csrf_token %}
+                                                                                    <input type="hidden" id="id_tarea" value={{a.id}}>
+                                                                                    <button type="submit" class="btn btn-success btn-sm" id="confirmar" value={{a.id}}>Confirmar</button>
+                                                                                </form>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                <br>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <br>
+                                                                <span>Existen tareas pendientes </span>
+                                                            {% endif %}
+                                                        </div>
+
+                                                          <!-- Listar tareas hechas -->
+                                                        <div class="col-4">
+                                                          <div class="text-center">
+                                                            <span ><strong>HECHAS</strong></span>
+                                                          </div>
+                                                            {% if hechas %}
+                                                                {% for r in hechas%}
+                                                                  <div class="col">
+                                                                    <div class="card border-left-success">
+                                                                      <div class="card-header">
+                                                                        <div>
+                                                                            {{ r.nombre }}
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                    <br>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <br>
+                                                                <span>Existen tareas pendientes</span>
+                                                            {% endif %}
+                                                        </div>
+
+                                                      </div>
+                                                    </div>
+                                            <!--- this is the end of the task-->
+
+                                          </div>
+
+                                                <!-- Esto permite que el carrucel se mueva  -->
+                                              <div class="row">
+                                                    <div class="col">
+                                                      <br>
+                                                      <br>
+                                                      <!-- Left and right controls -->
+                                                      <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                                                        <span class="carousel-control-prev-icon">Back</span>
+                                                      </a>
+                                                      <a id="btnNext" class="carousel-control-next" href="#demo" data-slide="next">
+                                                        <span class="carousel-control-next-icon">Next</span>
+                                                      </a>
+                                                    </div>
+                                                  </div>
+
+                                          </div>
+                                      </div>
+                            </div>
+                  </div>
+         </div>
+
+          <!-- The Modal  deylimiting -->
+          <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Daily Meeting</h4><span id="texto"></span>
+                  <button type="button" id="closeDaily" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                  <div class="modal-body">
+                    <div class="container">
+                        <form id="dailymeeting_post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>¿Que hiciste ayer?</label>
+                                <textarea class="form-control" id='ayer' name="ayer" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Que haras hoy?</label>
+                                <textarea class="form-control" id="hoy" name="hoy" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Que problemas has tenido?</label>
+                                <textarea class="form-control" id='problemas' name="problemas" rows="2" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="hidden" id="id_sprint" name="sprint" value={{sprint}}>
+                            </div>
+                            <div>
+                                <input type="hidden" name="idIndex" value={{idIndex}}>
+                            </div>
+                            <center>
+                                 <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            </center>
+                        </form>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- end modal -->
+
+
+ <!-- The Modal agregar Integrante -->
+          <div class="modal fade" id="ModalIntegrante">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar Integrante</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                  <div class="modal-body">
+                    <div class="container">
+                        <form method="post" action="{% url 'proyecto:integrante' %}" >
+                            {% csrf_token %}
+                            <input type="hidden" value={{idIndex}} name="idIndex">
+                             
+                            <div class="form-group">
+                                <input class="form-control" type="text"  name="email" placeholder="ingresar dirección de E-mail" required>
+                            </div>
+
+                            <div class="form-group">
+                                <select name="rol" class="form-control"  required>
+                                    <option value="" disabled selected>Seleccionar rol</option>
+                                    <option value="1" >Product Owner</option>
+                                    <option value="2" >Scrum Master</option>
+                                    <option value="3">Development Team</option>
+                                    <option value="8">Asesor</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="number" name="horas" placeholder="Horas por semana">
+                            </div>
+
+                            <div class="form-group" align="center">
+                                <button type="submit" style="width:70%" class="btn btn-primary">Agregar</button>
+                            </div>
+                                     
+                        </form>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- end modal Integrante-->
+
+
+        <!-- The Sprint Review Modal -->
+        <div class="modal fade" id="myReviewModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Sprint Review</h4><span id="Reviewtexto"></span>
+                    <button type="button" class="close" id="btnClose" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form id="envio_sreview" method="POST" action="/scrum/sreview">
+                            {% csrf_token %}
+                            <div class="container">                     
+                                    {% if alcanzados %}
+                                        <div class="card" id="alcanzados">
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Requisitos cumplidos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for a in alcanzados %}
+                                                    <tr>
+                                                        <td>
+                                                            <div class="row">
+                                                                <div class="col col-md-10">
+                                                                    {{ a.nombre }}
+                                                                </div>
+                                                                <div class="col col-md-2" >
+                                                                        <input type="checkbox" name="id_pbacklog" id="id_pbacklog" value={{a.id}} class="primary">
+                                                                    <label class="switch ">
+                                                                        <span class="slider round"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    {% else %}
+                                        <h3>No hay requisitos cumplidos </h3>
+                                    {% endif %}
+
+                                
+                                <div class="form-group">
+                                    <label>Logros alcanzados</label>
+                                    <textarea class="form-control" name="logros" id="logros" rows="2" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Observaciones</label>
+                                    <textarea class="form-control" name="observaciones" id="observaciones" rows="2" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="sprint" id="review" value={{sprint}}>
+                                </div>
+                                <div>
+                                    <input type="hidden" name="id_proyecto" id="id_proyecto" value={{idIndex}}>
+                                </div>
+                                <center>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </center>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end Sprint Review modal -->
+
+           <!-- The Modal tareas -->
+          <div class="modal fade" id="ModalTareas">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Creación de tareas</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <form method="POST" action="/proyecto/actualizarTarea" id="formularioTarea">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Descripción de la tarea</label>
+                                <input type="text" class="form-control" name="nombre" id="nombreTarea">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Numero de horas</label>
+                                <select name="n_horas" class="form-control" id="n_horas">
+                                    <option value=2>2</option>
+                                    <option value=4>4</option>
+                                    <option value=6>6</option>
+                                    <option value=8>8</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <input type="hidden" name="id" id="idTarea">
+                            </div>
+
+                            <center>
+                                 <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            </center>
+                        </form>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <!-- end tareas modal -->
+
+        
+        <!-- The Modal Resumen-->
+        <div class="modal fade" id="ModalResumen">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Resumen del Proyecto</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        {% if resumen_proyecto %}
+                            {% for proyecto in resumen_proyecto%}
+                            <div align="center">
+                                <h2><strong>{{proyecto.nombre}}</strong></h2>
+                                <font size="4">
+                                    Inicio del proyecto {{proyecto.f_inicio}} al {{proyecto.f_fin}}
+                                </font>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="form-group">
+                            <h4><strong>Integrantes</strong></h4>
+                            {% if resumen_integrantes %}
+                                <div class="row">
+                                    {% for integrantes in resumen_integrantes %}
+                                        <div class="col col-sm-3">
+                                            <div class="card">
+                                                <div class="card-header border-left-primary">
+                                                    {{ integrantes.usuario__first_name}} {{integrantes.usuario__last_name}}
+                                                    <br>
+                                                    <font size="2"> {{ integrantes.rol__nombre }}</font>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <div>
+                               <h4><strong>Listado de requisitos</strong></h4>
+                            <div>
+                            <div class="card">
+                                {% if resumen_requisitos%}
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre del requisito</th>
+                                                <th>Rol solicitante</th>
+                                                <th>Petición</th>
+                                                <th>Descripción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for requisitos in resumen_requisitos %}
+                                                <tr>
+                                                    <td>{{requisitos.id_pbacklog__nombre}}</td>
+                                                    <td>{{requisitos.como_usuario}}</td>
+                                                    <td>{{requisitos.quiero}}</td>
+                                                    <td>{{requisitos.para}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+
+                            </div>
+                        <div>
+                        <br>
+
+                        <!--Resumen del sprint -->
+                        <div class="form-group">
+                            <div>
+                               <h4><strong>Resumen de Sprints</strong></h4>
+                            <div>
+                            <ol>
+                                {% for d1 in resumen_sprints_datos1 %}
+                                    <li><h4><strong>Sprint</strong></h4></li>
+                                    <font>
+                                        Inicio {{d1.f_inicio}} al {{d1.f_fin}}
+                                    </font>
+                                    <div class="card">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Usuario</th>
+                                                    <th>Requisitos</th>
+                                                    <th>Descripción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    {% for d2 in resumen_sprints_datos2 %}
+                                                    {% if d1.f_inicio == d2.f_inicio and d1.f_fin == d2.f_fin %}
+                                                            <tr>
+                                                                <td>{{d2.id_pbacklog__historiausuario__como_usuario}}</td>
+                                                                <td>{{d2.id_pbacklog__historiausuario__quiero}}</td>
+                                                                <td>{{d2.id_pbacklog__historiausuario__para}}</td>
+                                                            </tr>
+                                                    {% endif %}
+                                                    {% endfor %}         
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                    <font size="3">
+                                        <strong>Tareas realizadas en el Sprint</strong>
+                                    </font>
+                                    <div class="card">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Desarrollador</th>
+                                                    <th>Tarea</th>
+                                                    <th>Duración</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for tareas in resumen_tareas %}
+                                                    <tr>
+                                                        {% if tareas.id_historia__id_pbacklog__sprint__f_inicio == d1.f_inicio and tareas.id_historia__id_pbacklog__sprint__f_fin == d1.f_fin %}
+                                                            <td>{{tareas.usuario__first_name}} {{tareas.usuario__last_name}}</td>
+                                                            <td>{{tareas.nombre}}</td>
+                                                            <td>{{tareas.n_horas}}</td>
+                                                        {% else %}
+                                                            <td><div align="center">No hay tareas</div></td>
+                                                        {% endif %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+       
+
+
+        <script>
+            function idPbacklog(id) {
+                var dato = {'id':id};
+                var url = "{% url 'proyecto:actualizarHistorias' %}";
+                 $.get(url, dato, function(json){
+                    if(json != ""){
+                         console.log(json)
+                          var html = "", html2 = ""
+                            for(var i = 0; i < json.length; i++){
+                              //  html += '<ul><li>' + json[i].fields.quiero + '</li></ul>'
+
+                                html += '<div class="col" style="height: 50px; cursor:pointer;" onclick="idHistoria(' + json[i].pk + ')">'+
+                                              '<div class="card border-left-primary">'+
+                                                    '<div class="card-header">'+
+                                                        '<div>'+
+                                                                json[i].fields.quiero +
+                                                        '</div>'+
+                                                    '</div>'+
+                                              '</div>'+
+                                         '</div>' + '<br>'
+
+                            }
+                            $('#lista').html(html);
+                    }else{
+                        $('#lista').html("Este requisito no tiene historias de usuario");
+                    }
+                });
+            }
+
+           // listar tareas con opciones
+            function idHistoria(id){
+
+                //alert(id);
+                var dato = {'id':id};
+                var url = "{% url 'proyecto:getTareas' %}";
+                $.get(url, dato, function(json){
+                    if(json != ""){
+                         console.log(json)
+                          var html = "", html2 = ""
+                            for(var i = 0; i < json.length; i++){
+
+                                html2 += '<div class="col">'+
+                                            '<div class="card border-left-warning">'+
+                                                '<div class="card shadow">'+
+                                                    '<!-- Card Header - Accordion -->'+
+                                                        '<a href="#collapseCardTarea{{t.id}}" class="d-block card-header" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseCardTarea" style="color: #858796;">'+
+                                                            '<h6>'+
+                                                                '<strong>'+
+                                                                    json[i].fields.nombre+
+                                                                '</strong>'+
+                                                            '</h6>'+
+                                                        '</a>'+
+                                                            '<!-- Card Content - Collapse -->'+
+                                                            '<div class="collapse show" id="collapseCardTarea{{t.id}}">'+
+                                                                '<div class="card-body">'+
+                                                                    '<div class="row">'+
+                                                                        '<div class="col text-center">'+
+                                                                            '<form id="get_tarea" >'+
+                                                                                '{% csrf_token %}'+
+                                                                                '<input id="id" type="hidden" value=' + json[i].pk +' name="id">'+                                                                               
+                                                                                '<input id="index" type="hidden" value={{ idIndex }} name="idIndex">'+
+                                                                                 '<input id="sprint" type="hidden" value={{ sprint }} name="sprint">'+
+                                                                                '<button class="btn btn-primary" type="submit">'+
+                                                                                    '<i class="fas fa-plus"></i>'+
+                                                                                '</button>'+
+                                                                            '</form>'+
+                                                                        '</div>'+
+                                                                        '<div class="col text-center">'+
+                                                                            '<a data-toggle="modal" data-target="#ModalTareas" href="#"  onclick="editarTarea('+ json[i].pk +')" >'+
+                                                                                '<i class="fas fa-edit"></i>'+
+                                                                            '</a>'+
+                                                                        '</div>'+
+                                                                        '<div class="col text-center">'+
+                                                                            '<a href="#" class="text-danger">'+
+                                                                                '<i class="fas fa-trash-alt"></i>'+
+                                                                            '</a>'+
+                                                                        '</div>'+
+                                                                    '</div>'+
+                                                                '</div>'+
+                                                            '</div>'+
+                                                '</div>'+
+                                             '</div>'+
+                                        '</div>'+'<br>'
+                            }
+                            $('#listTareas').html(html2);
+
+                    }else{
+                        $('#listTareas').html("No tine tareas disponibles");
+                    }
+                });
+                //el metodo trigger('click') no funciona con etiquetas que tengan una URL
+                //saber mas en http://notasjs.blogspot.com/2014/06/javascript-simular-click-en-un-enlace.html
+                document.getElementById('btnNext').click();
+             }
+        </script>
+
+        <script>
+            function editarTarea(id){
+                console.log(id);
+                var dato = {'id':id};
+                var url = "{% url 'proyecto:getTareasDetalle' %}";
+                $.get(url, dato, function(json){
+                    console.log(json);
+                    for(var i=0; i<json.length; i++){
+                        document.getElementById('nombreTarea').value = json[i].fields.nombre;
+                        document.getElementById('n_horas').value = json[i].fields.n_horas;
+                        document.getElementById('idTarea').value = json[i].pk;
+                    }
+                });
+            }
+
+            $(document).on('submit','#dailymeeting_post', function(e){
+                e.preventDefault();
+
+                var ayer = $(this).find('#ayer').val();
+                var hoy = $(this).find('#hoy').val();
+                var problemas = $(this).find('#problemas').val();
+                var id_sprint = $(this).find('#id_sprint').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/scrum/dailymeeting",
+                    context: document.body,
+                    dataType: 'json',
+                    data:{
+                        'ayer':ayer,
+                        'hoy':ayer,
+                        'problemas':problemas,
+                        'sprint':id_sprint,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        console.log('datos enviados');
+                        $('#closeDaily').click();
+                        window.location.reload();
+                        /*
+                        html = "";
+                        for(var i=0; i<data.length; i++){
+                            html += ' <div class="row"><strong> '+ data[i].usuario__first_name +'</strong></div>'+
+                                                                    '<div class="row">'+data[i].ayer+'</div>'+
+                                                                    '<div class="row">'+data[i].hoy+'</div>'+
+                                                                    '<div class="row">'+data[i].problemas+'</div>';
+                        }
+                        $('#meeting_info').html(html);
+                        */
+                    }
+                });
+            });
+
+            $(document).on('submit','#envio_sreview',function(e){
+               
+                e.preventDefault();
+               
+                var id_proyecto = $(this).find('#id_proyecto').val();
+                var  logros = $(this).find('#logros').val();
+                var observaciones = $(this).find('#observaciones').val();
+                var sprint = document.getElementById('review').value;
+
+                var selected ="";
+                var coma = 0;
+                $('#envio_sreview input[type=checkbox]').each(function(){
+                    if (this.checked) {
+                        coma++;
+                        if(coma > 1){
+                            selected += ','+$(this).val();
+                        }else{
+                            selected += $(this).val();
+                        }
+                        
+                    }
+                });     
+                var idpb = selected;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/scrum/sreview",
+                        context: document.body,
+                        dataType: 'json',
+                        data:{
+                            'id_proyecto':id_proyecto,
+                            'logros':logros,
+                            'id_pbacklog': idpb,
+                            'observaciones':observaciones,
+                            'sprint':sprint,
+                            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                        },
+                        success: function(data){
+                            $('#btnClose').click();
+                           console.log(data);
+                           window.location.reload();
+                        }
+                }); 
+                
+            });
+
+            //obtener tareas
+            $(document).on('submit','#get_tarea',function(e){
+                e.preventDefault();
+                id_tarea = $(this).find('#id').val();
+                index=$(this).find('#index').val();
+                sprint=$(this).find('#sprint').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/proyecto/estado",
+                    context: document.body,
+                    dataType: 'json',
+                    data:{
+                        'id':id_tarea,
+                        'idIndex':index,
+                        'sprint':sprint,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        $('#tareasItem').html(data['listTareas']);
+                    }
+                }); 
+            })
+        </script>
+
+        <script>
+            function acutalizarTarea(id){
+
+            }
+        </script>
+{% endblock %}
+
+        
+    </body>
+</html>
+

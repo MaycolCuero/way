@@ -1,0 +1,57 @@
+{% extends 'base/base.html'%}
+{% block content %}
+ <html lang="en">
+    <head>
+        <!DOCTYPE html>
+        <meta charset="UTF-8">
+        {% block title %}
+            <title>Listado de tareas</title>
+        {% endblock %}
+    </head>
+    <body>
+        <h2 style="text-align:center"><strong>Listado de Tareas</strong></h2>
+    <br>
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>Tarea</td>
+                        <td>Duracion en horas</td>
+                        <td>Historia a la qe pertenece</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if sbacklog %}
+                            {% for s in sbacklog %}
+                                <tr>
+                                    <td>{{ s.nombre }} </td>
+                                    <td>{{ s.n_horas }} </td>
+                                    <td>{{ s.id_historia }}</td>
+                                </tr>
+                            {% endfor %}
+                    {% else %}
+                        <h1>No hay registros de Tareas</h1>
+                    {% endif %}
+                </tbody>
+            </table>
+            <div>
+                <a class="btn btn-danger" href="{% url 'scrum:historia_list' %}">Volver</a>
+                <a class="btn btn-primary" href="{% url 'usuarios:index' %}">Inicio</a>
+            </div>
+        </div>
+    </body>
+</html>
+
+
+<script>
+ function terms_change(checkbox){
+     if(checkbox.checked){
+         alert('checkbox seleccionado');
+         //<a href=""></a>
+     }else{
+        alert('checkbox deseleccionado');
+     }    
+ }
+</script>
+{% endblock %}
+

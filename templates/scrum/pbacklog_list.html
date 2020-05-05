@@ -1,0 +1,36 @@
+{% extends 'base/base.html'%}
+{% block content %}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Nombre</td>
+            <td>Opcion</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% if pbacklog %}
+        
+            {% for p in pbacklog %}
+                <tr>
+                    <td>{{ p.nombre }} </td>
+                    <td> 
+                        <a class="btn btn-primary" href="{% url 'scrum:historia_crear' p.id %}">H.U</a>
+                    </td>
+                </tr>
+            {% endfor %}
+    
+        {% else %}
+            <h1>No hay registros de proyectos</h1>
+        
+        {% endif %}
+    </tbody>
+</table>
+<td> 
+    <a class="btn btn-primary" href="{% url 'usuarios:index' %}">Inicio</a>
+</td>
+<td> 
+    <a class="btn btn-primary" href="{% url 'scrum:historia_list' %}">Continuar</a>
+</td>
+{% endblock %}

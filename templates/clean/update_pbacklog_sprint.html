@@ -1,0 +1,27 @@
+{% if requisitos %}                    
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr>
+                <th>Requisito</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in requisitos %}
+                <tr>
+                    <td>
+                        {{a.nombre}}
+                    </td>
+                    <td style="width:auto; text-aling:right">
+                        <label class="switch ">
+                            <input type="checkbox" name="id_pbacklog" value={{a.id}} class="primary">
+                            <span class="slider round"></span>
+                        </label>
+                        <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#myModal" >Editar</a>
+                        <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog" onclick="eliminarPbacklog({{a.id}},'{{a.nombre}}')" >Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>                    
+{% endif %}

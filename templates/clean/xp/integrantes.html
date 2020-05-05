@@ -1,0 +1,10 @@
+{% for i in integrantes %}
+<div class="col col-sm-auto">
+    <div class="card-header  border-left-success">
+        {{ i.first_name }} {{ i.last_name}}
+        <font size="2">
+            {{i.rol__nombre}}
+        </font>
+    </div>
+</div>                                
+{% endfor %}

@@ -1,0 +1,76 @@
+{% extends 'base/base.html'%}
+{% block content %}
+<html lang="en">
+<head>
+    {% block title %}
+        <title>Perfil de Usuario</title>
+    {% endblock %}
+    <!DOCTYPE html>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+        {% if contexto %}
+            {% for user in contexto %}
+          <div class="card border-bottom-success shadow mb-4">
+            <div class="card-header py-3 text-center">
+             <div class="rounded-circle">
+               <i class='far fa-user' style='font-size:24px;color:blue'></i>
+             </div>
+            </div>
+            <div class="card-body">
+              <h4 class="m-0 font-weight-bold text-center">{{user.first_name}} {{user.last_name}}</h4>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 mb-4">
+              <div class="content-header" style="text-align: center; font-size: 30px">
+                <b>INFORMACIÓN DETALLADA</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card shadow mb-4">
+
+                <div class="card-body">
+                  <div class="pl-4">
+                    <div class="row mb-3">
+                      <div class="col-md-4 col-sm-6 col-12 text-sm-left text-center mb-3">
+                        <span class="fonts-weight-bold text-info"><b>NOMBRE DE USUARIO</b></span>
+                        <span class="d-sm-block overflow-hidden">{{user.username}}</span>
+                      </div>
+                      <div class="col-md-4 col-sm-6 col-12 text-sm-left text-center mb-3">
+                        <span class="fonts-weight-bold text-info"><b>CORREO ELECTRÓNICO</b></span>
+                        <span class="d-sm-block overflow-hidden">{{user.email}}</span>
+                      </div>
+                      <div class="col-md-4 col-sm-6 col-12 text-sm-left text-center mb-3">
+                        <span class="fonts-weight-bold text-info"><b>TELÉFONO</b></span>
+                        <span class="d-sm-block overflow-hidden">{{user.usuario__celular}}</span>
+                      </div>
+                        {% if proyecto %}
+                            {% for p in proyecto %}
+                              <div class="col-md-4 col-sm-6 col-12 text-sm-left text-center mb-3">
+                                <span class="fonts-weight-bold text-info"><b>PROYECTO</b></span>
+                                <span class="d-sm-block overflow-hidden">{{p.nombre}}</span>
+                              </div>
+                            {% endfor %}
+                        {% endif%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+            {% endfor %}
+        {% else%}
+            <h4>No existe un usuario </h4>
+        {% endif %}
+        </div>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% extends 'base/base.html'%}
+{% block content %}
+
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Como</label>
+            <input class="form-control" type="text" name="como_usuario">
+        </div>
+        <div class="form-group">
+            <label>Quiero</label>
+            <input class="form-control" type="text" name="quiero">
+        </div>
+        <div class="form-group">
+            <label>Para</label>
+            <input class="form-control" type="textarea" name="para">
+        </div>
+        <div class="form-group">
+            <input type="hidden" name="id_pbacklog" value={{pbacklog}}>
+        </div>
+
+        <h1>pbacklog {{pbacklog}}</h1>
+   
+       
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a class="btn btn-danger" href="{% url 'scrum:pbacklog_list' %}">Cancelar</a>
+        </div>
+        
+    </form>
+    
+</div>
+
+{% endblock %}

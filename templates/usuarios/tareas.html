@@ -1,0 +1,134 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+    <html lang="en">
+    <head>
+        <!DOCTYPE html>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                  <!-- Page Heading -->
+                  <h1 class="h3 mb-4 text-gray-800"><strong>TUS TAREAS</strong></h1>
+                  <hr class="sidebar-divider">
+
+                    {% if proyecto %}
+                      <div class="row">
+
+                            {% for p in proyecto %}
+                                <div class="col-xl-3 col-md-6 mb-4" onclick="getTareas({{ p.id }})" style="cursor: pointer">
+                                  <div class="card border-left-warning shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                          <div class="col mr-2">
+                                            <div class="h6 font-weight-bold text-primary text-uppercase mb-1">{{p.nombre}}</div>
+                                            <div class="h7 mb-0 font-weight-bold text-gray-800"> Sus tareas: {{p.requisitos}}</div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            {% endfor %}
+
+                      </div>
+
+                      <hr class="sidebar-divider">
+
+                      <div class="row">
+
+                          <div class="col-6">
+                              <div class="text-center">
+                                  <span><strong>HACIENDO</strong></span>
+                              </div>
+                              <div class="col">
+                                  <div class="row">
+                                      <div class="col"  id="listTareas">
+
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="col-6">
+                              <div class="text-center">
+                                  <span class="text-center"><strong>HECHAS</strong></span>
+                              </div>
+                              <div class="col">
+                                  <div class="row">
+                                      <div class="col" id="hechas">
+
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    {% else %}
+                          <span><strong>Aun no tienes tareas</strong></span>
+                    {% endif %}
+
+                </div>
+                <!-- /.container-fluid -->
+    </body>
+    </html>
+<script>
+    function getTareas(id){
+        //alert(id)
+        var dato = {'id':id};
+        var url = "{% url 'usuarios:getTareas' %}";
+         $.get(url, dato, function(json){
+            if(json != ""){
+                 console.log(json);
+                  var html = "";
+                    for(var i = 0; i < json.length; i++){
+                        html += '<div class="card border-left-info shadow h-100 py-2">'+
+                                      '<div class="card-body">'+
+                                        '<div class="row">'+
+                                          '<div class="col-10">'+
+                                            '<div class="h7 mb-0 font-weight-bold text-gray-800">'+
+                                             json[i].fields.nombre+
+                                            '</div>'+
+                                          '</div>'+
+                                          '<div class="col-2 text-right">'+
+
+                                                '<form method="post" action="{% url 'usuarios:confirmar' %}" >'+
+                                                     '{% csrf_token %}'+
+                                                     '<input type="hidden" value='+ json[i].pk +' name="id">'+
+                                                     '<button type="submit" class="btn btn-primary">OK</button>'+
+                                                '</form>'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+'<br>'
+                    } 
+
+                    $('#listTareas').html(html);
+            }else{
+                $('#listTareas').html("Notiene tareas disponibles");
+            }
+        });
+
+        url2 = "{% url 'usuarios:getTareasHechas' %}";
+        $.get(url2, dato, function(hechas){
+            console.log(hechas);
+            if(hechas != ""){
+                console.log(hechas);
+                var html = "";
+                for(var i = 0; i < hechas.length; i++){
+                    html += '<div class="card border-left-success">'+
+                            '<div class="card-header">'+
+                                hechas[i].fields.nombre+
+                            '</div>'+
+                        '</div>'+
+                        '<br>'
+                }
+                $('#hechas').html(html);
+            } else{
+                $('#hechas').html("Aun no ha culminado ninguna tarea");
+            }
+        });
+    }
+</script>
+{% endblock %}

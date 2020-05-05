@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+{% extends 'base/base.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+        <title>Proyecto XP</title>
+    {% endblock %}
+    {% block extra_links%}
+        <link href="{% static 'estilos/xp/index-xp.css' %}" rel="stylesheet">
+     <!--   <script src="{% static 'scripts-consultas/xp/index-xp.js' %}"></script> -->
+    {% endblock %}
+</head>
+<body>
+
+{% block content %}
+
+    <header>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="text-center">
+                        <h2><strong>{{xp.proyecto__nombre}}</strong></h2>
+                        <font size="3">
+                            Inicio del proyeto {{xp.proyecto__f_inicio}} al {{xp.proyecto__f_fin}}
+                        </font>
+                        <br>
+                        <div class="alert alert-info" role="info">
+                            Información de la Iteración
+                            Inicio {{ciclo.f_inicio}} fin {{ciclo.f_fin}}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-gorup">                    
+                    {% if integrantes %}
+                        <hr>
+                        <div class="text-center">
+                            <h3>Integrantes</h3>
+                        </div>
+                        <div class="row" id="mostar_integrantes">
+                            {% for i in integrantes %}
+                                <div class="col col-sm-auto">
+                                    <div class="card-header  border-left-success">
+                                        {{ i.first_name }} {{ i.last_name}}
+                                        <font size="2">
+                                            {{i.rol__nombre}}
+                                        </font>
+                                    </div>
+                                </div>                                
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>         
+        </div>
+        
+    </header>
+    <div class="card">
+        <div class="card card-header">
+            <div class="row">
+                <div class="col">
+                    {% if requisitos %}
+                    {% else %}                    
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#ModalCiclo">Crear Iteración</a>
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-success" data-toggle="modal" data-target="#ModalIntegrante">Agreagr miembros</a>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Historias de usuarios -->
+            <div class="col-3">
+
+                <div class="card" style="margin:10px;">
+                    <div class="card-header">
+                        <span><strong>REQUISITOS</strong></span>
+                    </div>
+                    <div class="card-body scroll" definir_margenes >
+                        {% if requisitos %}
+                            {% for r in requisitos %}
+                                <div class="card-header border-left-primary" margenes_internos>
+                                    <font size="2">
+                                        <strong>
+                                            Como: {{r.como_usuario}}
+                                        </strong>
+                                        <br>
+                                        <strong>
+                                            Quiero: {{r.quiero}}
+                                        </strong>
+                                        <br>
+                                        <strong>
+                                            Para: {{r.para}}
+                                        </strong>
+                                    </font>                                   
+                                </div>
+                                <br>
+                            {% endfor %}
+                        {% else %}
+                            no hay tareas
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- tareas ependientes  -->
+            <div class="col-3">
+
+                <div class="card" style="margin:10px;">
+                    <div class="card-header">
+                        <span><strong>PENDIENTES</strong></span>
+                    </div>
+                    <div class="card-body scroll" definir_margenes >
+                        {% if pendientes %}
+                            {% for p in pendientes %}
+                                <div class="card-header border-left-primary" margenes_internos>
+                                    <font size="2">
+                                        <strong>
+                                            {{p.nombre}}                                                                                       
+                                        </strong>
+                                        <br>
+                                            <div class="text-center">
+                                                <form method="GET" id="obtener_tarea">
+                                                    <input type="hidden" name="obtener" id="obtener" value={{p.id}}>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Obtener</button>
+                                                </form>                                                
+                                            </div> 
+                                    </font>                                   
+                                </div>
+                                <br>
+                            {% endfor %}
+                        {% else %}
+                            no hay tareas
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- Listar tareas en proceso -->
+            <div class="col-3">
+               
+                <div class="card" style="margin:10px; ">
+                    <div class="card-header">
+                        <span><strong>EN PROCESO</strong></span>
+                    </div>
+                    <div class="card-body" definir_margenes >
+                        {% if procesos %}
+                            {% for p in procesos %}
+                                <div class="card-header border-left-warning" margenes_internos>
+                                    <font size="2">
+                                        <strong>
+                                           {{p.nombre}}
+                                        </strong>
+                                        <br>
+                                        Titular: {{request.user.first_name}} {{request.user.last_name}}
+                                        <br>
+                                        <div class="text-center">
+                                            <form method="GET" id="confirmar_tarea">
+                                                <input type="hidden" name="confirmar" id="confirmar" value={{p.id}}>
+                                                <button type="submit" class="btn btn-success btn-sm">Confirmar</button>
+                                            </form>                                                
+                                        </div> 
+                                    </font>
+                                </div>
+                                <br>
+                            {% endfor %}
+                        {% else %}
+                            no hay tareas
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Listar tareas hechas -->
+            <div class="col-3">
+              
+                <div class="card"  style="margin:10px; ">
+                    <div class="card-header">
+                        <span><strong>TERMINADAS</strong></span>
+                    </div>
+                    <div class="card-body" definir_margenes >
+                        {% if terminadas %}
+                            {% for t in terminadas %}
+                                <div class="card-header border-left-success" margenes_internos>
+                                    <font size="2">
+                                        <strong>
+                                            Como: {{t.como_usuario}}
+                                        </strong>
+                                        <br>
+                                        <strong>
+                                            Quiero: {{t.quiero}}
+                                        </strong>
+                                        <br>
+                                        <strong>
+                                            Para: {{t.para}}
+                                        </strong>
+                                    </font>
+                                </div>
+                                <br>
+                            {% endfor %}
+                        {% else %}
+                            no hay tareas
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Espacio para todos los modals  -->
+     <!-- The Modal Ciclo -->
+  <div class="modal fade" id="ModalCiclo">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Planificación</h4>
+          <button type="button" class="close" id="btn_close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div id="alerta"></div>
+
+            <!-- Formulario -->
+            <form id="form_ciclo">
+
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <label>Fecha de inicio</label>
+                            <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{fecha_inicio}}" max="{{fecha_fin}}" style="width:40%;" required>
+                        </div>
+                        <div class="col">
+                            <label>Fecha de fin</label>
+                            <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{fecha_fin}}" style="width:40%;" required>        
+                        </div>
+                    </div>
+                </div>
+                {% for x in xp %}
+                    <input type="hidden" id="id_xp" value={{xp.id}}>
+                {% endfor %}
+
+                <div class="form-group">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col" id="col1">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+
+                            </div>
+                                
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Como</th>
+                                    <th>Quiero</th>
+                                    <th>Para</th>
+                                    <th>Seleccionar</th>
+                                    <th>Tareas</th>
+                                    <th>Días</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if historias %}
+                                    {% for h in historias %}
+                                        <tr>
+                                            <td>{{ h.como_usuario }}</td>
+                                            <td>{{ h.quiero}}</td>
+                                            <td>{{ h.para}}</td>
+                                            <td>
+                                                <input type="checkbox" id="id_historia" value={{h.id}}>
+                                            </td>
+                                            <td>{{h.tareas}}</td>                                            
+                                            <td>
+                                                {{h.dias}}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+                
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end modal Ciclo -->
+
+  <!-- The Modal agregar Integrante -->
+  <div class="modal fade" id="ModalIntegrante">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Integrante</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- Modal body -->
+          <div class="modal-body">
+            <div class="container">
+                <form method="post" id="agregarIntegrante">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="email"  name="email" placeholder="ingresar dirección de E-mail" required>
+                        <input class="form-control" type="hidden" id="idpro" value={{xp.proyecto__id}}>
+                    </div>
+
+                    <div class="form-group">
+                        <select name="rol" id="rol" class="form-control"  required>
+                            <option id="select_default" disabled selected>Seleccionar rol</option>
+                            <option value="4" >Manager</option>
+                            <option value="5" >Coach</option>
+                            <option value="6">Testers</option>
+                            <option value="7">Programador</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <div id="error_integrante" style="color:red"></div>
+                        <br>
+                    </div>
+                    <div class="form-group" align="center">
+                        <button type="submit" style="width:70%" class="btn btn-primary">Agregar</button>
+                    </div>                             
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- end modal Integrante-->
+<!-- Fin de todos los modals  -->
+
+
+
+<script>
+$(document).on('submit','#obtener_tarea', function(e){
+    e.preventDefault();
+    var id_tarea = $(this).find('#obtener').val();
+    console.log('id de la tarea ' + id_tarea);
+    $.ajax({
+        type:"GET",
+        url: "/xp/obtener",
+        context: document.body,
+        dataType: 'json',
+        data: {
+            'id_tarea':id_tarea
+        },
+        success: function (data) {
+            document.location.reload();
+        }
+    });
+});
+</script>
+
+
+<script>
+// Inicio del Script para el modal de crear ciclo
+
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+    $('#sidebarToggle').click();
+});
+
+// obtener tarea 
+
+$(document).on('submit', '#form_ciclo', function (e) {
+    e.preventDefault();
+    var inicio = $(this).find('#f_inicio').val();
+    var fin = $(this).find('#f_fin').val();
+    var id_xp = $(this).find('#id_xp').val();
+    var selected ="";
+    var coma = 0;
+    $('#form_ciclo input[type=checkbox]').each(function(){
+        if (this.checked) {
+            coma++;
+            if(coma > 1){
+                selected += ','+$(this).val();
+            }else{
+                selected += $(this).val();
+            }     
+        }
+    });     
+    idh = selected;
+
+   
+    console.log('Informacion de form');
+    console.log(inicio);
+    console.log(fin);
+    console.log(idh);
+    console.log(id_xp);
+    console.log('se detuvo el envio de datos');
+
+    $.ajax({
+        type: "POST",
+        url: "/xp/crearCiclo",
+        context: document.body,
+        dataType: 'json',
+        data: {
+            'f_inicio': inicio,
+            'f_fin': fin,
+            'idh': idh,
+            'id_xp':id_xp,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (data) {
+                $('#btn_close').click();
+                document.location.reload();
+            }
+    });
+});
+
+
+
+$(document).on('input','#f_inicio', function(e){
+    var f_inicio = $(this).val();
+    document.getElementById('f_fin').min = f_inicio;
+});
+
+$(document).on('input','#f_fin', function(e){
+    var f_fin = $(this).val();
+    var f_inicio = document.getElementById('f_inicio').value;
+
+    alerta1 = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                    'Primero Ingrese la fecha de inicio'+
+                '</div>'
+
+    if(f_inicio == ""){
+        document.getElementById('alerta').innerHTML=alerta1;
+        document.getElementById('f_fin').value = "dd/mm/aaaa";
+        setTimeout(function() { // funcion de Jquery
+                $('#alerta').fadeOut(1500);
+        },3000);
+
+    }else{
+        
+        alerta = ' <div class="alert alert-danger alert-dismissible fade show">'+
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                    'El Sprint no debe durar mas de 4 semanas'+
+                '</div>'
+    }
+        
+});
+
+
+// fin del script del modal crear ciclo
+
+// Agregar integrantes
+$(document).on('submit','#agregarIntegrante',function(e){
+    e.preventDefault();
+    var email = $(this).find('#email').val();
+    var rol = $(this).find('#rol').val();
+    var idpro = $(this).find('#idpro').val();
+
+    console.log(`email: ${email}`);
+    console.log('rol: '+rol);
+    console.log('PROYECTO: '+idpro);
+
+    $.ajax({
+        type:"POST",
+        url:"/xp/agregar_integrantes",
+        context: document.body,
+        dataType: 'json',
+        data:{
+            'email':email,
+            'rol':rol,
+            'idpro':idpro,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success: function(data){
+            if(data['datos'] == "NO"){
+                $('#error_integrante').text('EL usuario no existe o ya está en el proyecto');
+            }else{
+                $('#mostrar_integrantes').html(data['datos_integrantes']);
+                $('#email').text('');
+                $('#rol').selected;
+            }
+        }
+    });
+});
+
+// fin de agregar integrantes
+</script>
+
+{% endblock %}
+
+</body>
+</html>
+
+

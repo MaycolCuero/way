@@ -1,0 +1,223 @@
+{% extends 'base/base.html'%}
+{% block content %}
+
+ <html lang="en">
+    <head>
+        <!DOCTYPE html>
+        <meta charset="UTF-8">
+        {% block title%}
+            <title>Listado de hitorias de usuarios</title>
+        {% endblock %}
+    </head>
+<body>
+
+<script>
+    function seleccionar(id, historia) {
+        document.getElementById('id_historia').value = id;
+        document.getElementById('textTarea').innerText = historia;
+    }
+</script>
+
+<div class="text-center">
+    <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyuda" margen>¿Tareas?</a>      
+</div>
+<br>
+<h2 style="text-align:center;">
+    <strong>Listado de Historias de Usuario</strong>
+</h2>
+<br>
+<div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <strong class="card-title">Listado de usuarios y tareas</strong>
+                    </div>
+                    <div class="col" align="right">
+                        <a class="btn btn-outline-primary" title="Lisato de requisitos" href="{% url 'scrum:pbacklog_crear' %}">Volver</a>
+                        
+                        <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#ListTareas">Ver Tareas</a>
+                        {% if tareas %}
+                            <a class="btn btn-success" title="Página de inicio" href="{% url 'proyecto:index' id_proyecto.id %}">Finalizar</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+    <div class="table-stats order-table ov-h">
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    <td><strong>Como usuario</strong></td>
+                    <td><strong>Quiero</strong></td>
+                    <td><strong>Para</strong></td>
+                    <td><strong>Tareas</strong></td>
+                    <td><strong>opciones</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% if historia %}
+                
+                    {% for h in historia %}
+                        <tr>
+                            <td>{{ h.como_usuario }}</td>
+                            <td>{{ h.quiero }}</td>
+                            <td>{{ h.para }}</td>
+                            <td>{{ h.tarea }}</td>
+                            <td>
+                                <button class="btn btn-primary" title="Ingrese las tareas" data-toggle="modal" data-target="#myModal" onclick="seleccionar({{h.id}}, '{{h.quiero}}')">
+                                    Tarea
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <h1>No hay registros de Historias de Usuarios</h1>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+      <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Creación de tareas</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+
+
+            <div class="container">
+              
+                <div class="alert alert-info" role="info">
+                    <h6 style="text-align:center;">
+                        <font >Historia de Usuario</font>
+                    </h6>
+                    <h5 style="text-align:center">
+                        <strong><span id="textTarea"></span></strong>
+                    </h5>
+                </div>
+                <br>
+                <form method="POST" action="/scrum/sbacklog_crear">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>
+                            Descripción de la tarea
+                        </label>
+                        <input type="text" class="form-control" name="nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Numero de horas
+                            <i class="fas fa-question-circle" title="El número máximo de horas por tareas es de 8" style="cursor:pointer"></i>
+                        </label>
+                        <select name="n_horas" class="form-control" >
+                            <option value=2>2</option>
+                            <option value=4>4</option>
+                            <option value=6>6</option>
+                            <option value=8>8</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input type="hidden" name="id_historia" id="id_historia">
+                        <input type="hidden" name="get" value="False">
+                        <input type="hidden" name="estado" value="False">
+                    </div>
+
+                    <div class="row">
+                        <div class="col" align="center">
+                            <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
+                        </div>
+                        <div class="col" align="center">
+                            <button type="button" style="width:80%;" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <!-- The Modal ver tareas -->
+<div class="modal fade" id="ListTareas">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title"><strong>Listado de Tareas</strong></h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+
+        <!-- Modal body -->
+        <div class="modal-body">
+
+          {% if tareas %}
+                <div class="card">
+                    <table class="table table-sm table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>HISTORIA DE USUARIO</th>
+                                <th>TAREA</th>
+                                <th>DURACION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for t in tareas%}
+                                <tr>
+                                    <td>{{ t.id_historia__quiero}}</td>
+                                    <td>{{ t.nombre}}</td>
+                                    <td>{{ t.n_horas}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+
+            {% endif %}
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<!-- The Modal Ayuda -->
+  <div class="modal fade" id="ModalAyuda">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Tareas</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="alert alert-info" role="info">
+              <font>
+                Divide y vencerás, es mucho más fácil
+                si dividimos nuestros requisitos en pequeñas
+                tareas que no tomen mucho tiempo en concretarse,
+                por ello Scrum te permite crear tareas con un
+                tiempo que va de 2 a 8 horas.  
+              </font>
+            </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+</body>
+</html>
+{% endblock %}

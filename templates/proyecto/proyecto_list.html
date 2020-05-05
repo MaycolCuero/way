@@ -1,0 +1,41 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>Fecha </td>
+            <td>Nombre</td>
+            <td>Fecha de inicio</td>
+            <td>Fecha de fin</td>
+            <td>Metodologia de desarrollo</td>
+            <td>Opcion</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% if proyecto %}
+        
+            {% for p in proyecto %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.fecha }}</td>
+                    <td>{{ p.nombre }} </td>
+                    
+                    <td>{{ p.f_inicio }}</td>
+                    <td>{{ p.f_fin }}</td>
+                    <td>{{ p.id_metodologia}}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{% url 'scrum:scrum_crear' %}">scrum</a>
+                    </td>
+            
+                </tr>
+            {% endfor %}
+    
+        {% else %}
+            <h1>No hay registros de proyectos</h1>
+        
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

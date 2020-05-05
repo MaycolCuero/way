@@ -1,0 +1,24 @@
+from django.conf.urls import url
+from django.urls import path
+from apps.scrum.views import scrum_list, scrum_crear, pbacklog_crear, pbacklog_list, historia_crear, update_pbacklog, eliminarPbacklog
+from apps.scrum.views import sbacklog_estado, historia_list, sbacklog_crear, sbacklog_list, sprint, dailymeeting, sreview
+
+app_name = 'scrum'
+
+urlpatterns = [
+
+    url(r'^scrum_crear$', scrum_crear, name='scrum_crear'),
+    url(r'^scrum_list$', scrum_list, name='scrum_list'),
+    url(r'^pbacklog_crear$', pbacklog_crear, name='pbacklog_crear'),
+    url(r'^pbacklog_list$', pbacklog_list, name='pbacklog_list'),
+    url(r'^historia_crear$', historia_crear, name='historia_crear'),
+    url(r'^historia_list$', historia_list, name='historia_list'),
+    url(r'^sbacklog_crear$', sbacklog_crear, name='sbacklog_crear'),
+    url(r'^sbacklog_list$', sbacklog_list, name='sbacklog_list'),
+    url(r'^sbacklog_estado$', sbacklog_estado, name='sbacklog_estado'),
+    url(r'^sprint/(?P<id>\d+)/$', sprint, name='sprint'),
+    path('dailymeeting', dailymeeting, name='dailymeeting'),
+    path('sreview', sreview, name='sreview'),
+    path('update_pbacklog', update_pbacklog, name='update_pbacklog'),
+    path('eliminarPbacklog/<int:id>', eliminarPbacklog, name='eliminarPbacklog')
+]

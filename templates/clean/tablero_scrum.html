@@ -1,0 +1,117 @@
+<div class="row">
+  <!-- Listar tareas pendientes  -->
+  <div class="col-4">
+      <div class="text-center">
+          <span><strong>TAREAS</strong></span>
+      </div>
+
+      {% if pendientes %}
+          {% for p in pendientes%}
+              <div class="col">
+                  <div class="card border-left-warning">
+                      <div class="card shadow">
+                      <!-- Card Header - Accordion -->
+                          <a href="#collapseCardTarea{{t.id}}" class="d-block card-header" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseCardTarea" style="color: #858796;">
+                              <h6>
+                                  <strong>
+                                     {{p.nombre}}
+                                  </strong>
+                              </h6>
+                          </a>
+                          <!-- Card Content - Collapse -->
+                          <div class="collapse show" id="collapseCardTarea{{t.id}}">
+                              <div class="card-body">
+                                  <div class="row">
+                                      <div class="col text-center">
+                                          <form id="get_tarea" >
+                                              {% csrf_token %}
+                                              <input id="id" type="hidden" value={{p.id}} name="id">
+                                              <input id="index" type="hidden" value={{ idIndex }} name="idIndex">
+                                              <input id="sprint" type="hidden" value={{ sprint }} name="sprint">
+                                              <button class="btn btn-primary" type="submit">
+                                                  <i class="fas fa-plus"></i>
+                                              </button>
+                                          </form>
+                                      </div>
+                                      <div class="col text-center">
+                                          <a data-toggle="modal" data-target="#ModalTareas" href="#"  onclick="editarTarea('+ {{p.id}} +')" >
+                                              <i class="fas fa-edit"></i>
+                                          </a>
+                                      </div>
+                                      <div class="col text-center">
+                                          <a href="#" class="text-danger">
+                                              <i class="fas fa-trash-alt"></i>
+                                          </a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div><br>
+          {% endfor %}
+      {% endif %}
+
+  </div>
+
+  <!-- Listar tareas en proceso -->
+  <div class="col-4">
+      <div class="text-center">
+          <span class="text-center"><strong>HACIENDO</strong></span>
+      </div>
+      {% if haciendo%}
+        {% for a in haciendo %}
+        <div class="col">
+          <div class="card border-left-info">
+            <div class="card-header">
+              {{ a.nombre }}
+              <font size="2">
+                  <div>
+                    {{ a.usuario__first_name}} {{ a.usuario__last_name}}
+                  </div>                                                                            
+              </font>
+              <div class="text-center">
+                  {% if a.usuario__id == user_pk %}
+                      <form id="form_confirmar">
+                          {% csrf_token %}
+                          <input type="hidden" id="id_tarea" value={{a.id}}>
+                          <button type="submit" class="btn btn-success btn-sm" id="confirmar" value={{a.id}}>Confirmar</button>
+                      </form>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      <br>
+      {% endfor %}
+      {% else %}
+          <br>
+          <span>Existen tareas pendientes </span>
+      {% endif %}
+  </div>
+  <!-- Listar tareas hechas -->
+  <div class="col-4">
+      <div class="text-center">
+          <span ><strong>HECHAS</strong></span>
+      </div>
+      {% if hechas %}
+          {% for r in hechas%}
+              <div class="col">
+                  <div class="card border-left-success">
+                      <div class="card-header">
+                          <div>
+                              {{ r.nombre }}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <br>
+          {% endfor %}
+      {% else %}
+          <br>
+          <span>Existen tareas pendientes</span>
+      {% endif %}
+  </div>
+</div>
+
+<!--- this is the end of the task-->

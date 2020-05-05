@@ -1,0 +1,83 @@
+{% extends 'base/base.html'%}
+{% load static %}
+{% block content %}
+{% block title %}
+        <title>Crear Proyecto</title>
+{% endblock %}
+{% block extra_links%}
+<link href="{% static 'estilos/proyecto/form.css' %}" rel="stylesheet">
+{% endblock %}
+
+<div class="container">
+        <div class="card">
+                <div class="text-center">
+                        <strong>
+                                <h2>Crear Proyecto</h2>
+                        </strong>
+                </div>
+                <br>
+                <div class="card-body">
+                        <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                        {{ form.nombre.label }}
+                                        {{ form.nombre.errors }}
+                                        {{ form.nombre }}
+                                </div>
+
+                                <div class="form-group">
+                                        <div class="row">
+                                                <div class="form-group col-sm-6">
+                                                        {{ form.f_inicio.label }}
+                                                        {{ forms.f_inicio.errors }}
+                                                        {{ form.f_inicio }}
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                        {{ form.f_fin.label }}
+                                                        {{ form.f_fin.errors }}
+                                                        {{ form.f_fin }}
+                                                </div>
+                                        </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                        <label>Metodología de desarrollo</label>
+                                        {{ form.id_metodologia.errors }}
+                                        <select name="id_metodologia" class="form-control">
+                                                <option value="1" selected>SCRUM</option>
+                                                <option value="2">XP</option>
+                                        </select>
+                                </div>
+
+                                <div class="row" aling="center">
+                                        <div class="col" aling="right">
+                                                <button class="btn btn-primary" style="width:60%" type="submit"> Guardar </button>
+                                        </div>
+                                        <div class="col" aling="center">
+                                                <a class="btn btn-danger" style="width:60%" href="/usuarios/index">Cancelar</a>
+                                        </div>
+                                </div>
+                        </form>
+                </div>
+        </div>
+</div>
+<hr>
+
+<script>
+        $(document).on('input','#id_f_inicio',function(e){
+                var fecha_inicio = $(this).val();
+                document.getElementById('id_f_fin').min = fecha_inicio;
+        });
+
+        $(document).on('input','#id_f_fin',function(e){
+                var fecha_inicio = document.getElementById('id_f_inicio').value;
+                if (fecha_inicio == ""){
+                        alert('Primero ingrese la fecha de inicio');
+                        fecha_fin = document.getElementById('id_f_fin').value = "";
+                }
+                
+        });
+</script>
+
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends 'base/base.html'%}
+{% load static %}
+{% block content %}
+<script>
+    function seleccionar(id, requisito) {
+        //alert(requisito);
+        document.getElementById('id_pbacklog').value = id;
+        document.getElementById('textRequisito').innerText = requisito;
+    }
+</script>
+
+{% block title %}
+        <title>Registro de requisitos</title>
+{% endblock %}
+{% block extra_links%}
+<link href="{% static 'estilos/scrum/crear_historias.css' %}" rel="stylesheet">
+{% endblock %}
+
+<div class="container">
+    <div class="form-group" informacion >
+        <div class="text-center">
+            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyuda" margen>¿Que es Scrum?</a>
+            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyudaEpica" margen>¿Que son las Epicas?</a>
+            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyudaHistoria" margen>¿Que son las Historias de Usuario?</a>
+        </div>
+    </div>
+    <br>
+    <h2 style="text-align:center"><strong>Definición de Requisitos</strong></h2>
+    <br>
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="hidden" name="id_scrum" value={{scrum}}>
+        <input type="hidden" name="estado" value="False">
+        <input type="hidden" name="confirmar" value="False">   
+            
+        <div class="card" id="panel" style="padding: 10px;">
+            <div calss="form-group">
+                <input class="form-control" style="width: 100%;" type="text" name="nombre" id="nombre" placeholder="Como Usuario">           
+            </div>
+            <br>
+            <div class="form-group">
+                <textarea class="form-control" name="quiero" placeholder="Quiero"></textarea>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="para" placeholder="Para"></textarea>
+            </div>
+            <div class="text-center">
+                <button  type="submit" class="btn btn-primary" id="guardar" > Guardar </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+     {% if pbacklog %}
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <strong class="card-title">Listado de Requisitos o Épicas</strong>
+                    </div>
+                    <div class="col" align="right">
+                       <a class="btn btn-success" title="Listado de Historias de usuario" href="{% url 'scrum:historia_list' %}">Continuar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="table-stats order-table ov-h">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Como</th>
+                            <th>Quero</th>
+                            <th>Para</th>
+                            <th>H.U</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pbacklog %}
+                            <tr>
+                                <td>{{ p.nombre }}</td>
+                                <td>{{ p.quiero }}</td>
+                                <td>{{ p.para }}</td>
+                                <td>{{ p.hu }}</td>
+                                <td>
+                                    <button class="btn btn-primary" title="Historias de usuario" data-toggle="modal" data-target="#myModal" onclick="seleccionar({{p.id}}, '{{p.quiero}}')">
+                                        H.U
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+     {% else %}
+            <h3>No hay requisitos o épicas creadas</h3>
+    {% endif %}
+</div>
+    <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Historias de Usuarios</h4>
+
+
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="alert alert-info" role="info">
+                <h6 style="text-align:center;">
+                    <font >Historia de Usuario</font>
+                </h6>
+                <h5 style="text-align:center">
+                    <strong><span id="textRequisito"></span></strong>
+                </h5>
+            </div>
+            <div class="container">
+                <form method="POST" action="/scrum/historia_crear">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label >
+                            Como usuario
+                            <i class="fas fa-question-circle" title="Escriba el tipo de usuario" style="cursor:pointer"></i>
+                        </label>
+                        <input class="form-control" type="text" name="como_usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label >
+                            Quiero
+                            <i class="fas fa-question-circle" title="Funcionalidad que solicita el usuario" style="cursor:pointer"></i>
+                        </label>
+                        <input class="form-control" type="text" name="quiero" required>
+                    </div>
+                    <div class="form-group">
+                        <label >Para
+                            <i class="fas fa-question-circle"title="Propósito del requisito" style="cursor:pointer"></i>
+                        </label>
+                        <textarea class="form-control" name="para" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="hidden" name="id_pbacklog" id="id_pbacklog" >
+                    </div>
+
+                    <div class="form-group">
+                        <input type="hidden" name="estado" value="False">
+                        <input type="hidden" name="confirmar" value="False">
+                    </div>
+                   <div class="row">
+                        <div class="col" align="center">
+                            <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
+                        </div>
+                        <div class="col" align="center">
+                            <button type="button" style="width:80%;" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- end modal -->
+
+
+  <!-- The Modal Ayuda scrum -->
+  <div class="modal fade" id="ModalAyuda">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">¿Que es Scrum?</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="alert alert-info" role="info">
+              <font>
+                Scrum es una metodología ágil
+                muy utilizada en el desarrollo de software,
+                la cual es un conjunto de buenas prácticas para 
+                trabajar colaborativamente, en equipo, 
+                y obtener el mejor resultado posible de un proyecto
+              </font>
+            </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+
+  <!-- The Modal Ayuda  Epicas -->
+  <div class="modal fade" id="ModalAyudaEpica">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">¿Que es una Épica?</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="alert alert-info" role="info">
+              <font>
+                Una épica es una historia de usuario sin refinar, 
+                es decir, es un requisito muy grande que se puede desglosar
+                en historias de usuario más pequeñas
+              </font>
+            </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+
+  <!-- The Modal Ayuda Historias de usuario -->
+  <div class="modal fade" id="ModalAyudaHistoria">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">¿Que son las Historias de Usuario?</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="alert alert-info" role="info">
+              <font>
+                Una historia de usuario es la descripción 
+                de una funcionalidad que se debe incorporar
+                a un sistema de software y cuya implementación
+                aporta valor al cliente
+              </font>
+            </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+div[informacion]{
+    display: inline;
+}
+
+a[margen]{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#nombre{
+    width: 500px;
+}
+
+#col1{
+    text-align: right;
+}
+#col2{
+    text-align: left;
+}
+
+#panel{
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 10px;
+}

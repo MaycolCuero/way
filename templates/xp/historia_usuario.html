@@ -1,0 +1,260 @@
+{% extends 'base/base.html'%}
+<html lang="en">
+<head>
+    <!DOCTYPE html>
+    <meta charset="UTF-8">
+    {% block title%}
+        <title>Crear H.U</title>
+    {% endblock%}
+</head>
+<body>
+
+{% block content %}
+
+ <script>
+        function seleccionar(id, historia) {
+            document.getElementById('id_historia').value = id;
+            document.getElementById('textTarea').innerText = historia;
+        }
+
+        function eliminarHistoria(id, historia){
+            document.getElementById('confirmar').innerHTML = '<a href="/xp/eliminar_historias/'+ id +'"  title="Eliminar historia" style="width:50%" class="btn btn-danger" data-target="modal" data-target="#confirmDeleteHistory"> Eliminar </a>';
+            document.getElementById('texto').innerHTML = "Seguro que desea eliminar la historia de usuario <strong>"+ historia +"</strong>, todas las tareas perteneciente a ella se eliminarán "
+        }
+  </script>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                 <strong class="card-title">Listado de historias de usuarios</strong>
+            </div>
+             <div class="col" align="right">
+                    {% if historias %}
+                        <a class="btn btn-outline-success" title="Finalizar e ir a detalles"  href="{% url 'xp:index-xp' id_pro %}">Finalizar</a>
+                    {% endif %}
+                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#ListTareas">Ver Tareas</button>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#myModal">Agregar Historia</button>
+             </div>
+        </div>
+
+    </div>
+    <div class="table-stats order-table ov-h">
+        <table class="table table-sm table-hover ">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Quiero</th>
+                    <th>Para</th>
+                    <th>Tareas</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if historias %}
+                    {% for h in historias %}
+                        <tr>
+                            <td>{{h.como_usuario }}</td>
+                            <td>{{h.quiero }}</td>
+                            <td>{{h.para}}</td>
+                            <td>{{h.tareas}}</td>
+                            <td>
+                                 <button class="btn btn-sm btn-outline-success" title="Ingrese las tareas" data-toggle="modal" data-target="#myTareas" onclick="seleccionar({{h.id}},'{{h.quiero}}')">
+                                     Tarea
+                                 </button>
+                                <a href="{% url 'xp:ActualizarHistorias' h.id %}" title="Editar historia" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <!--
+                                <a href="{% url 'xp:eliminar_historias' h.id %}" title="Eliminar historia" class="btn btn-sm btn-outline-danger" data-target="modal" data-target="#confirmDeleteHistory"> Eliminar </a>
+                                -->
+                                <button title="Eliminar historia" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDeleteHistory" onclick="eliminarHistoria({{h.id}},'{{h.quiero}}')"> Eliminar </button>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- The Modal tareas-->
+  <div class="modal fade" id="myTareas">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Creación de tareas</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+
+
+            <div class="container">
+                <div class="alert alert-info" role="info">
+                    <h6 style="text-align:center;">
+                        <font >Historia de Usuario</font>
+                    </h6>
+                    <h5 style="text-align:center">
+                        <strong><span id="textTarea"></span></strong>
+                    </h5>
+                </div>
+                <br>
+                <form method="POST" action="/xp/CrearTareas/">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>
+                            Descripción de la tarea
+                        </label>
+                        <input type="text" class="form-control" name="nombre" placeholder="Ingrese el nombre o descripción de la tarea">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Número de días
+                            <i class="fas fa-question-circle" title="El número máximo de horas por tareas es de 8" style="cursor:pointer"></i>
+                        </label>
+                        <input type="number" class="form-control" placeholder="Ingrese el número de días para la tarea" name="n_horas">
+                    </div>
+
+                    <div>
+                        <input type="hidden" name="id_historia" id="id_historia">
+                        <input type="hidden" name="get" value="False">
+                        <input type="hidden" name="estado" value="False">
+                    </div>
+
+                    <div class="row">
+                        <div class="col" align="center">
+                            <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
+                        </div>
+                        <div class="col" align="center">
+                            <button type="button" style="width:80%;" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- end modal tareas -->
+
+<!-- The Modal Historia -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Historias de Usuarios</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="container">
+                <form method="POST" action="/xp/CrearHistorias/">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{form.como_usuario.label }}
+                        {{form.como_usuario }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.quiero.label}}
+                        {{ form.quiero}}
+                    </div>
+                    <div class="form-group">
+                        {{ form.para.label}}
+                        {{ form.para}}
+                    </div>
+                    <div>
+                        <input type="hidden" name="id_xp" value={{ xp }}>
+                        <input type="hidden" name="estado" value="False">
+                        <input type="hidden" name="get" value="False">
+                    </div>
+                    <div class="row">
+                        <div class="col" align="center">
+                            <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
+                        </div>
+                        <div class="col" align="center">
+                            <button type="button" style="width:80%;" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- end modal -->
+
+ <!-- The Modal ver tareas -->
+<div class="modal fade" id="ListTareas">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title"><strong>Listado de Tareas</strong></h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+
+          {% if tareas %}
+                <div class="card">
+                    <table class="table table-sm table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>HISTORIA DE USUARIO</th>
+                                <th>TAREA</th>
+                                <th>DURACION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for t in tareas%}
+                                <tr>
+                                    <td>{{ t.id_historia__quiero}}</td>
+                                    <td>{{ t.nombre}}</td>
+                                    <td>{{ t.n_horas}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+
+            {% endif %}
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<!-- Modal confirmar eliminar historia -->
+    <div class="modal fade" id="confirmDeleteHistory">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><strong>Eliminar Historia de Usuario</strong></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="texto">
+                        Si, elimina esta historia de usuarios, tenga en cuenta que
+                        se eliminaran las tareas que hacen parte de ella.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <div class="container" align="center" id="confirmar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- end modal delete history -->
+{% endblock %}
+</body>
+</html>
