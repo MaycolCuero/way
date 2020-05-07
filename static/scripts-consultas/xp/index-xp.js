@@ -1,4 +1,24 @@
 
+//Obtener tarea
+
+$(document).on('submit','#obtener_tarea', function(e){
+    e.preventDefault();
+    var id_tarea = $(this).find('#obtener').val();
+    console.log('id de la tarea ' + id_tarea);
+    $.ajax({
+        type:"GET",
+        url: "/xp/obtener",
+        context: document.body,
+        dataType: 'json',
+        data: {
+            'id_tarea':id_tarea
+        },
+        success: function (data) {
+            document.location.reload();
+        }
+    });
+});
+
 // Inicio del Script para el modal de crear ciclo
 
 $(document).ready(function() {
@@ -123,3 +143,10 @@ $(document).on('submit','#agregarIntegrante',function(e){
 });
 
 // fin de agregar integrantes
+
+// Confirmar tareas
+
+$(document).on('submit','#confirmar_tarea',function(e){
+    e.preventDefault();
+    alert('Confirmar presionado');
+});

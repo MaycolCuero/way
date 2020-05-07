@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.urls import path
 from apps.xp.views import CrearHistorias, CrearTareas, ActualizarHistorias, eliminarHistoria, index, crearCiclo, agregar_integrantes, obtener
-
+from apps.xp import views
 app_name = 'xp'
 
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
     path('crearCiclo', crearCiclo, name='crearCiclo'),
     path('agregar_integrantes', agregar_integrantes, name="agregar_integrantes"),
     path('obtener', obtener, name='obtener'),
+    path('confirmar', views.confirmar, name='confirmar'),
 ]

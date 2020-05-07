@@ -9,7 +9,7 @@
     {% endblock %}
     {% block extra_links%}
         <link href="{% static 'estilos/xp/index-xp.css' %}" rel="stylesheet">
-     <!--   <script src="{% static 'scripts-consultas/xp/index-xp.js' %}"></script> -->
+       <!-- <script src="{% static 'scripts-consultas/xp/index-xp.js' %}"></script> -->
     {% endblock %}
 </head>
 <body>
@@ -158,7 +158,7 @@
                                         Titular: {{request.user.first_name}} {{request.user.last_name}}
                                         <br>
                                         <div class="text-center">
-                                            <form method="GET" id="confirmar_tarea">
+                                            <form id="confirmar_tarea">
                                                 <input type="hidden" name="confirmar" id="confirmar" value={{p.id}}>
                                                 <button type="submit" class="btn btn-success btn-sm">Confirmar</button>
                                             </form>                                                
@@ -186,15 +186,7 @@
                                 <div class="card-header border-left-success" margenes_internos>
                                     <font size="2">
                                         <strong>
-                                            Como: {{t.como_usuario}}
-                                        </strong>
-                                        <br>
-                                        <strong>
-                                            Quiero: {{t.quiero}}
-                                        </strong>
-                                        <br>
-                                        <strong>
-                                            Para: {{t.para}}
+                                            {{t.nombre}}
                                         </strong>
                                     </font>
                                 </div>
@@ -491,6 +483,25 @@ $(document).on('submit','#agregarIntegrante',function(e){
 });
 
 // fin de agregar integrantes
+
+// Confirmar tareas
+
+$(document).on('submit','#confirmar_tarea',function(e){
+    e.preventDefault();
+    var id_tarea = $(this).find('#confirmar').val();
+    $.ajax({
+        type:"GET",
+        url:"/xp/confirmar",
+        context: document.body,
+        dataType: 'json',
+        data:{
+            'id_tarea':id_tarea
+        },
+        success: function(data){
+            window.location.reload();
+        }
+    });
+});
 </script>
 
 {% endblock %}

@@ -61,7 +61,8 @@ def index(request, id):
         id_xp__proyecto__id=id,
         get=True,
         id_ciclo__estado=True,
-        id_ciclo__id_xp__proyecto=id
+        id_ciclo__id_xp__proyecto=id,
+        estado=False
     )
 
     proceso = Sbacklog.objects.filter(
@@ -77,7 +78,7 @@ def index(request, id):
         tareas=Count('sbacklog__id')
     )
 
-    terminadas = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id, estado=True)
+    terminadas = Sbacklog.objects.filter(id_historia__id_xp__proyecto__id=id, estado=True)
 
     integrantes = User.objects.values('id','first_name','last_name').filter(prouser__proyecto=id)
 
@@ -185,3 +186,22 @@ def obtener(request):
         Sbacklog.objects.filter(id=id).update(usuario=u, get=True, estado=False)
 
     return JsonResponse({'datos':'guardados'})
+
+def confirmar(request):
+    id = request.GET['id_tarea']
+
+    Sbacklog.objects.filter(id=id).update(estado=True)
+
+    # Consulto la historia de usuario
+    h = HistoriaUsuario.objects.filter(sbacklog__id=id)
+
+    # calculo si las tareas perteneciente a la misma historia de usuarios q ya estan completadas
+    a = Sbacklog.objects.filter(id_historia=h[0].id).count()
+    b = Sbacklog.objects.filter(id_historia=h[0].id, estado=True).count()
+
+    # obtengo el procentaje de tareas cumplidas y dependiendo del resultado actualizo el modelo HistoriaUsuario
+    x = (b * 100) / a
+    if x == 100:
+        HistoriaUsuario.objects.filter(id=h[0].id).update(estado=True)
+
+    return JsonResponse({'datos': 'guardados'})
