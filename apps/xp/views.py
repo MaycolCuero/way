@@ -101,6 +101,7 @@ def index(request, id):
 
     return render(request, 'xp/index-xp.html', contexto)
 
+
 class CrearTareas(CreateView):
     model = Sbacklog
     form_class = SbacklogForm
@@ -120,6 +121,7 @@ def eliminarHistoria(request, id):
         h = HistoriaUsuario.objects.get(id=id)
         h.delete()
     return redirect('xp:CrearHistorias')
+
 
 def crearCiclo(request):
     #Todos los derechos reservados por Maycol Cuero Ruiz
@@ -142,12 +144,14 @@ def crearCiclo(request):
 
     return JsonResponse({'datos':'resividos'})
 
+
 def integrante_historia(request):
     if request.method == "POST":
         id_historia = request.POST['id_historia']
         id_usuario = request.POST['id_usuario']
 
     return JsonResponse('datos enviados')
+
 
 def agregar_integrantes(request):
     if request.method == "POST":
@@ -179,6 +183,7 @@ def agregar_integrantes(request):
             dato = "NO"
             return JsonResponse({'datos':dato})
 
+
 def obtener(request):
     if request.method == "GET":
         id = request.GET['id_tarea']
@@ -186,6 +191,7 @@ def obtener(request):
         Sbacklog.objects.filter(id=id).update(usuario=u, get=True, estado=False)
 
     return JsonResponse({'datos':'guardados'})
+
 
 def confirmar(request):
     id = request.GET['id_tarea']
