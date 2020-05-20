@@ -1,0 +1,126 @@
+ <!-- Historias de usuarios -->
+ <div class="col-3">
+
+    <div class="card" style="margin:10px;">
+        <div class="card-header">
+            <span><strong>REQUISITOS</strong></span>
+        </div>
+        <div class="card-body scroll" definir_margenes >
+            {% if requisitos %}
+                {% for r in requisitos %}
+                    <div class="card-header border-left-primary" margenes_internos>
+                        <font size="2">
+                            <strong>
+                                Como: {{r.como_usuario}}
+                            </strong>
+                            <br>
+                            <strong>
+                                Quiero: {{r.quiero}}
+                            </strong>
+                            <br>
+                            <strong>
+                                Para: {{r.para}}
+                            </strong>
+                        </font>                                   
+                    </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                no hay tareas
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- tareas ependientes  -->
+<div class="col-3">
+
+    <div class="card" style="margin:10px;">
+        <div class="card-header">
+            <span><strong>PENDIENTES</strong></span>
+        </div>
+        <div class="card-body scroll" definir_margenes >
+            {% if pendientes %}
+                {% for p in pendientes %}
+                    <div class="card-header border-left-primary" margenes_internos>
+                        <font size="2">
+                            <strong>
+                                {{p.nombre}}                                                                                       
+                            </strong>
+                            <br>
+                                <div class="text-center">
+                                    <form method="GET" id="obtener_tarea">
+                                        <input type="hidden" name="obtener" id="obtener" value={{p.id}}>
+                                        <button type="submit" class="btn btn-primary btn-sm">Obtener</button>
+                                    </form>                                                
+                                </div> 
+                        </font>                                   
+                    </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                no hay tareas
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Listar tareas en proceso -->
+<div class="col-3">
+   
+    <div class="card" style="margin:10px; ">
+        <div class="card-header">
+            <span><strong>EN PROCESO</strong></span>
+        </div>
+        <div class="card-body" definir_margenes >
+            {% if procesos %}
+                {% for p in procesos %}
+                    <div class="card-header border-left-warning" margenes_internos>
+                        <font size="2">
+                            <strong>
+                               {{p.nombre}}
+                            </strong>
+                            <br>
+                            Titular: {{request.user.first_name}} {{request.user.last_name}}
+                            <br>
+                            <div class="text-center">
+                                <form id="confirmar_tarea">
+                                    <input type="hidden" name="confirmar" id="confirmar" value={{p.id}}>
+                                    <button type="submit" class="btn btn-success btn-sm">Confirmar</button>
+                                </form>                                                
+                            </div> 
+                        </font>
+                    </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                no hay tareas
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Listar tareas hechas -->
+<div class="col-3">
+  
+    <div class="card"  style="margin:10px; ">
+        <div class="card-header">
+            <span><strong>TERMINADAS</strong></span>
+        </div>
+        <div class="card-body" definir_margenes >
+            {% if terminadas %}
+                {% for t in terminadas %}
+                    <div class="card-header border-left-success" margenes_internos>
+                        <font size="2">
+                            <strong>
+                                {{t.nombre}}
+                            </strong>
+                        </font>
+                    </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                no hay tareas
+            {% endif %}
+        </div>
+    </div>
+</div>

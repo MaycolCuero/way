@@ -193,8 +193,51 @@ def obtener(request):
         id = request.GET['id_tarea']
         u = request.user.pk
         Sbacklog.objects.filter(id=id).update(usuario=u, get=True, estado=False)
+        historia = HistoriaUsuario.objects.get(sbacklog__id=id)
 
-    return JsonResponse({'datos':'guardados'})
+        #Obtimizar este codigo con un solo método
+        task = Sbacklog.objects.filter(
+            id_historia__get=True,
+            id_historia__id=historia.id,
+            estado=False,
+            get=False
+        )
+
+        requisitos = HistoriaUsuario.objects.filter(
+            id=historia.id,
+            get=True,
+            id_ciclo__estado=True,
+            estado=False
+        )
+
+        proceso = Sbacklog.objects.filter(
+            id_historia__get=True,
+            id_historia__id=historia.id,
+            estado=False,
+            get=True
+        )
+
+        historias = HistoriaUsuario.objects.filter(id=historia.id, get=False).annotate(
+            dias=Sum('sbacklog__n_horas'),
+            tareas=Count('sbacklog__id')
+        )
+
+        terminadas = Sbacklog.objects.filter(
+            estado=True,
+            id_historia__id=historia.id,
+            id_historia__id_ciclo__estado=True
+        )
+
+        contexto = {
+            'requisitos': requisitos,
+            'pendientes': task,
+            'historias': historias,
+            'procesos': proceso,
+            'terminadas': terminadas
+        }
+
+    datos = {'tabla_xp': render_to_string('clean/xp/tabla.html', contexto)}
+    return JsonResponse(datos)
 
 
 def confirmar(request):
