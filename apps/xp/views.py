@@ -78,7 +78,11 @@ def index(request, id):
         tareas=Count('sbacklog__id')
     )
 
-    terminadas = Sbacklog.objects.filter(id_historia__id_xp__proyecto__id=id, estado=True)
+    terminadas = Sbacklog.objects.filter(
+        estado=True,
+        id_historia__id_ciclo__id_xp__proyecto=id,
+        id_historia__id_ciclo__estado=True
+    )
 
     integrantes = User.objects.values('id','first_name','last_name').filter(prouser__proyecto=id)
 
@@ -209,5 +213,17 @@ def confirmar(request):
     x = (b * 100) / a
     if x == 100:
         HistoriaUsuario.objects.filter(id=h[0].id).update(estado=True)
+
+
+
+    try:
+        ciclo = Ciclo.objects.get(
+            historiausuario__id=h[0].id,
+            historiausuario__estado=False
+        )
+
+        print('datos del ciclo',ciclo)
+    except:
+        Ciclo.objects.filter(historiausuario__id=h[0].id).update(estado=False)
 
     return JsonResponse({'datos': 'guardados'})

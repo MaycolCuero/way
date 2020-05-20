@@ -17,5 +17,6 @@ urlpatterns = [
     path('getTareas', getTareas, name='getTareas'),
     path('getTareasHechas', getTareasHechas, name='getTareasHechas'),
     path('login', Login.as_view(), name='login'),
+    path('', Login.as_view(), name='login'),
 
 ]

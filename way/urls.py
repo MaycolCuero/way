@@ -20,6 +20,7 @@ from django.urls import path
 from django.contrib import admin
 
 urlpatterns = [
+    path('',include('apps.usuarios.urls')),
     url(r'^admin/', admin.site.urls),
      #url(r'^base/', include ('templates.base.urls')),
     url(r'^usuarios/', include ('apps.usuarios.urls')),
