@@ -188,6 +188,7 @@ def agregar_integrantes(request):
             return JsonResponse({'datos':dato})
 
 
+
 def obtener(request):
     if request.method == "GET":
         id = request.GET['id_tarea']
