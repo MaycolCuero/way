@@ -25,8 +25,10 @@
                     </div>
                     <br>
                 {% endfor %}
+                <span id="no_requisitos" valor=0></span> 
             {% else %}
-                no hay tareas
+                no hay requisitos
+                <span id="no_requisitos" valor=1></span> 
             {% endif %}
         </div>
     </div>
@@ -58,8 +60,10 @@
                     </div>
                     <br>
                 {% endfor %}
+                <span id="no_pendientes" valor=0></span> 
             {% else %}
                 no hay tareas
+                <span id="no_pendientes" valor=1></span>   
             {% endif %}
         </div>
     </div>
@@ -93,8 +97,10 @@
                     </div>
                     <br>
                 {% endfor %}
+                <span id="no_proceso" valor=0></span> 
             {% else %}
                 no hay tareas
+                <span id="no_proceso" valor=1></span>  
             {% endif %}
         </div>
     </div>

@@ -61,8 +61,10 @@
             <div class="row">
                 <div class="col">
                     {% if requisitos %}
+                        <span id="crear_ciclo" valor=0></span>
                     {% else %}                    
                         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#ModalCiclo">Crear Iteración</a>
+                        <span id="crear_ciclo" valor=1></span>
                     {% endif %}
                 </div>
                 <div class="col">
@@ -99,8 +101,10 @@
                                 </div>
                                 <br>
                             {% endfor %}
+                            <span id="no_requisitos" valor=0></span> 
                         {% else %}
-                            no hay tareas
+                            no hay requisitos
+                            <span id="no_requisitos" valor=1></span> 
                         {% endif %}
                     </div>
                 </div>
@@ -113,7 +117,7 @@
                     <div class="card-header">
                         <span><strong>PENDIENTES</strong></span>
                     </div>
-                    <div class="card-body scroll" definir_margenes >
+                    <div class="card-body scroll" id="id_t_pendientes" definir_margenes tareas_pendientes={{pendientes}}>
                         {% if pendientes %}
                             {% for p in pendientes %}
                                 <div class="card-header border-left-primary" margenes_internos>
@@ -132,8 +136,10 @@
                                 </div>
                                 <br>
                             {% endfor %}
+                            <span id="no_pendientes" valor=0></span> 
                         {% else %}
                             no hay tareas
+                            <span id="no_pendientes" valor=1></span>   
                         {% endif %}
                     </div>
                 </div>
@@ -167,8 +173,10 @@
                                 </div>
                                 <br>
                             {% endfor %}
+                            <span id="no_proceso" valor=0></span> 
                         {% else %}
                             no hay tareas
+                            <span id="no_proceso" valor=1></span>                   
                         {% endif %}
                     </div>
                 </div>
@@ -350,6 +358,7 @@ $(document).on('submit','#obtener_tarea', function(e){
         },
         success: function (data) { 
             $('#tabla_xp').html(data['tabla_xp']);
+            recarcar();
         }
     });
 });
@@ -498,9 +507,39 @@ $(document).on('submit','#confirmar_tarea',function(e){
             'id_tarea':id_tarea
         },
         success: function(data){
-            window.location.reload();
+            $('#tabla_xp').html(data['tabla_xp']);
+            recarcar();
         }
     });
+});
+
+function recarcar(){
+    var r1 = document.getElementById('no_requisitos');
+    var r2 = r1.getAttribute('valor');
+    console.log('valor del requisito ' + r2);
+
+    var p1 = document.getElementById('no_pendientes');
+    var p2 = p1.getAttribute('valor');
+    console.log('valor de las tareas pendientes ' + p2 );
+
+    var pr1 = document.getElementById('no_proceso');
+    var pr2 = pr1.getAttribute('valor');
+    console.log('valor de las tareas en proceso' + pr2);
+
+    var cc1 = document.getElementById('crear_ciclo');
+    var cc2 = cc1.getAttribute('valor');
+    console.log('datos de crear ciclo ' + cc2);
+
+    if(p2 == 1 && r2 == 1 && pr2 == 1 && cc2 == 0){
+        console.log('listo para actualizarse');
+        document.location.reload();
+    }else{
+        console.log('no se puede actualizar');
+    }
+}
+
+$(document).ready(function(e){
+    recarcar();
 });
 </script>
 

@@ -65,6 +65,9 @@ def index(request, id):
         estado=False
     )
 
+
+    print('datos de los requisitos',requisitos)
+
     proceso = Sbacklog.objects.filter(
         id_historia__get = True,
         id_historia__id_ciclo__id_xp__proyecto=id,
@@ -188,6 +191,50 @@ def agregar_integrantes(request):
             return JsonResponse({'datos':dato})
 
 
+def datos_actualizacion_tabla(id):
+    task = Sbacklog.objects.filter(
+        id_historia__get=True,
+        id_historia__id=id,
+        estado=False,
+        get=False
+    )
+    proyecto = Proyecto.objects.get(xp__historiausuario__id=id)
+
+    requisitos = HistoriaUsuario.objects.filter(
+        id_xp__proyecto__id=proyecto.id,
+        get=True,
+        id_ciclo__estado=True,
+        id_ciclo__id_xp__proyecto=proyecto.id,
+        estado=False
+    )
+
+    proceso = Sbacklog.objects.filter(
+        id_historia__get=True,
+        id_historia__id=id,
+        estado=False,
+        get=True
+    )
+
+    historias = HistoriaUsuario.objects.filter(id=id, get=False).annotate(
+        dias=Sum('sbacklog__n_horas'),
+        tareas=Count('sbacklog__id')
+    )
+
+    terminadas = Sbacklog.objects.filter(
+        estado=True,
+        id_historia__id=id,
+        id_historia__id_ciclo__estado=True
+    )
+
+    contexto = {
+        'requisitos': requisitos,
+        'pendientes': task,
+        'historias': historias,
+        'procesos': proceso,
+        'terminadas': terminadas
+    }
+
+    return contexto
 
 def obtener(request):
     if request.method == "GET":
@@ -196,46 +243,8 @@ def obtener(request):
         Sbacklog.objects.filter(id=id).update(usuario=u, get=True, estado=False)
         historia = HistoriaUsuario.objects.get(sbacklog__id=id)
 
-        #Obtimizar este codigo con un solo método
-        task = Sbacklog.objects.filter(
-            id_historia__get=True,
-            id_historia__id=historia.id,
-            estado=False,
-            get=False
-        )
+        contexto = datos_actualizacion_tabla(historia.id)
 
-        requisitos = HistoriaUsuario.objects.filter(
-            id=historia.id,
-            get=True,
-            id_ciclo__estado=True,
-            estado=False
-        )
-
-        proceso = Sbacklog.objects.filter(
-            id_historia__get=True,
-            id_historia__id=historia.id,
-            estado=False,
-            get=True
-        )
-
-        historias = HistoriaUsuario.objects.filter(id=historia.id, get=False).annotate(
-            dias=Sum('sbacklog__n_horas'),
-            tareas=Count('sbacklog__id')
-        )
-
-        terminadas = Sbacklog.objects.filter(
-            estado=True,
-            id_historia__id=historia.id,
-            id_historia__id_ciclo__estado=True
-        )
-
-        contexto = {
-            'requisitos': requisitos,
-            'pendientes': task,
-            'historias': historias,
-            'procesos': proceso,
-            'terminadas': terminadas
-        }
 
     datos = {'tabla_xp': render_to_string('clean/xp/tabla.html', contexto)}
     return JsonResponse(datos)
@@ -270,4 +279,7 @@ def confirmar(request):
     except:
         Ciclo.objects.filter(historiausuario__id=h[0].id).update(estado=False)
 
-    return JsonResponse({'datos': 'guardados'})
+    datos = datos_actualizacion_tabla(h[0].id)
+
+    info = {'tabla_xp': render_to_string('clean/xp/tabla.html', datos)}
+    return JsonResponse(info)
