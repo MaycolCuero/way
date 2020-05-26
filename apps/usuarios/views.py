@@ -106,7 +106,7 @@ def registrarusario(self):
 
     usuario.save()
 
-
+''''
 def register(request):
     form = RegistroForm()
 
@@ -143,12 +143,14 @@ def register(request):
 
     return render(request, "usuarios/register.html", {'form': form})
 
-''''
+'''
+
+
 def register(request):
     if request.method == "POST":
         print(request.POST, request.FILES)
 
-        form = RegistroForm(request.POST)
+        form = RegistroForm(request.POST, request.FILES)
         
         if form.is_valid():
 
@@ -157,26 +159,33 @@ def register(request):
             usuario = form.cleaned_data['username']
             correo = form.cleaned_data['email']
             passwd = form.cleaned_data['password']
-            photo = request.FILES['photo']
 
-           
+            usercomplement = Usuario()
+            usercomplement.photo = request.FILES.get('photo')
+            usercomplement.celular = request.POST['celular']
+
             try:
                 datos = User.objects.create_user(first_name=nomrbe, last_name=apellido, username=usuario, email=correo,
                                                  password=passwd)
                 datos.save()
 
+                ''''
                 if request.POST['celular'] != "":
                     cell = Usuario.objects.create(celular=request.POST['celular'], id_user=datos, photo=photo)
                     cell.save()
+                '''
+                usercomplement.id_user = datos
+                usercomplement.save()
+
                 return redirect('usuarios:login')
             except Exception as error:
                 print("error", error)
            
-        else:
+    else:
+        form = RegistroForm
 
-            form = RegistroForm
-    return render(request, "usuarios/register.html", {'form': form})
-'''
+    return render(request, "usuarios/register.html", {'form':form})
+
 
 def update(request):
     pass
