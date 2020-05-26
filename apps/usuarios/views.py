@@ -70,9 +70,11 @@ def index(request):
 
 
 def fotoPerfil(request):
-    usuario = Usuario.objects.get(id_user=request.user.pk)
-    request.session['photo'] =  usuario.photo.url
-
+    try:
+        usuario = Usuario.objects.get(id_user=request.user.pk)
+        request.session['photo'] =  usuario.photo.url
+    except:
+        print('No tiene foto')
 class Login(FormView):
     '''
         guia para la creacion de login
