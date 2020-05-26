@@ -134,17 +134,21 @@
               aria-haspopup="true" aria-expanded="false">
               <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                 {% block NombreUsuario %}
-                  {{user.first_name}} {{user.last_name}} {{ user__usuario__celular}}
+                  {{user.first_name}} {{user.last_name}} 
                 {% endblock %}
               </span>
               <!--<img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">-->
               {% block ImagenPerfil %}
               <!--<img class="img-profile rounded-circle" src="{% static form.photo.url %}">-->
-              <div class="rounded-circle">
-                <i class='far fa-user' style='font-size:24px;color:blue'></i>
-                <img  style='font-size:24px;color:blue' src="{{user__usuario_celular}}">
-              </div>
-              {% endblock %}
+              {% if request.session.photo %}
+                <img class="circol" style='width:40px;height: 40px;color:blue; border-radius: 80%;' src="{{request.session.photo}}">
+              {% else %}
+                <div class="rounded-circle">
+                  <i class='far fa-user' style='font-size:24px;color:blue'></i>
+                  <img  style='font-size:24px;color:blue' src="{{user__usuario_celular}}">
+                </div>
+              {% endif %}
+             {% endblock %}
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

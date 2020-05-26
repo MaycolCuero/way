@@ -30,6 +30,9 @@ from apps.proyecto.models import Proyecto
 
 @login_required
 def index(request):
+
+    fotoPerfil(request)
+
     id = request.user.pk
     requisitos = Count('scrum__pbacklog__id', filter=Q(usuario=id))
     rcompletados = Count('scrum__pbacklog__id', filter=Q(scrum__pbacklog__confirmar=True))
@@ -57,15 +60,25 @@ def index(request):
         rcompletados=rcompletos_xp
     )
 
-    contexto = {'proyecto': p, 'xp_p':xp_p}
+
+    contexto = {
+        'proyecto': p,
+        'xp_p':xp_p
+    }
 
     return render(request, 'usuarios/index.html', contexto)
+
+
+def fotoPerfil(request):
+    usuario = Usuario.objects.get(id_user=request.user.pk)
+    request.session['photo'] =  usuario.photo.url
 
 class Login(FormView):
     '''
         guia para la creacion de login
          https://www.youtube.com/watch?v=Twv0Ok9MerI
     '''
+
     template_name = 'usuarios/login2.html'
     form_class = LoginForm
     success_url = reverse_lazy('usuarios:index')
@@ -79,7 +92,11 @@ class Login(FormView):
 
     #dispatch en vistas basadas en clases es el primero que se ejecuta, este metodo se encarga de redirigir las peticiones es decir si es POST la envia al metodo POST y si es GET la envia al GET
     def dispatch(self, request, *args, **kwargs):
+
+
+
         if request.user.is_authenticated:
+
             #return HttpResponseRedirect(self.get_success_url()) #el metodo get_success_url lo que hace es redireccionarnos a la direccion que especificamos arriba en este caso seria index
             return HttpResponseRedirect(self.get_success_url()) #el metodo get_success_url lo que hace es redireccionarnos a la direccion que especificamos arriba en este caso seria index
         else:
