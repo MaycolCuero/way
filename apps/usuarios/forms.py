@@ -42,6 +42,8 @@ class RegistroForm(forms.Form):
                                      }
                                  ))
 
+    photo = forms.ImageField(label='Imagen de perfil')
+
     def registrarusario(self, User):
         '''
         usuario = User(first_name=datos['first_name'],
@@ -92,6 +94,20 @@ class LoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['placeholder'] = 'Ingrese su contraseña'
 
-class UsuarioForm(forms.Form):
-   celuar = forms.CharField(max_length=300, label='Celular')
-   id_user = forms.IntegerField()
+
+class UsuarioForm(forms.ModelForm):
+
+   class Meta:
+
+       model = Usuario
+
+       fields = [
+           'celular',
+           'id_user',
+           'photo',
+       ]
+
+       labels = {
+           'celular': 'Número de celular',
+           'photo': 'Foto de perfil',
+       }

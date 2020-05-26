@@ -30,6 +30,9 @@ from apps.proyecto.models import Proyecto
 
 @login_required
 def index(request):
+
+    fotoPerfil(request)
+
     id = request.user.pk
     requisitos = Count('scrum__pbacklog__id', filter=Q(usuario=id))
     rcompletados = Count('scrum__pbacklog__id', filter=Q(scrum__pbacklog__confirmar=True))
@@ -57,18 +60,30 @@ def index(request):
         rcompletados=rcompletos_xp
     )
 
-    contexto = {'proyecto': p, 'xp_p':xp_p}
+
+    contexto = {
+        'proyecto': p,
+        'xp_p':xp_p
+    }
 
     return render(request, 'usuarios/index.html', contexto)
+
+
+def fotoPerfil(request):
+    usuario = Usuario.objects.get(id_user=request.user.pk)
+    request.session['photo'] =  usuario.photo.url
 
 class Login(FormView):
     '''
         guia para la creacion de login
          https://www.youtube.com/watch?v=Twv0Ok9MerI
     '''
+
     template_name = 'usuarios/login2.html'
     form_class = LoginForm
     success_url = reverse_lazy('usuarios:index')
+
+
     #vamos a importar un decorador para un metodo, el cual nos ayudara a aumentar la seguridad
     #son dos never chache la cual evitara a que se guarden las credenciales en cache y crops.. que brinda seguridad a bulnerabilidades mas conocidas
 
@@ -77,7 +92,11 @@ class Login(FormView):
 
     #dispatch en vistas basadas en clases es el primero que se ejecuta, este metodo se encarga de redirigir las peticiones es decir si es POST la envia al metodo POST y si es GET la envia al GET
     def dispatch(self, request, *args, **kwargs):
+
+
+
         if request.user.is_authenticated:
+
             #return HttpResponseRedirect(self.get_success_url()) #el metodo get_success_url lo que hace es redireccionarnos a la direccion que especificamos arriba en este caso seria index
             return HttpResponseRedirect(self.get_success_url()) #el metodo get_success_url lo que hace es redireccionarnos a la direccion que especificamos arriba en este caso seria index
         else:
@@ -104,11 +123,52 @@ def registrarusario(self):
 
     usuario.save()
 
+''''
+def register(request):
+    form = RegistroForm()
+
+    if request.POST:
+
+        usuario = User()
+        usuario.first_name = request.POST['first_name']
+        usuario.last_name = request.POST['last_name']
+        usuario.username = request.POST['username']
+        usuario.email = request.POST['email']
+        usuario.password = request.POST['password']
+
+        usercomplement = Usuario()
+        usercomplement.photo = request.FILES.get('photo')
+        usercomplement.celular = request.POST['celular']
+
+        print('datos del usuario', usuario.first_name)
+        print('datos del usuario', usuario.last_name)
+        print('datos del usuario', usuario.username)
+        print('datos del usuario', usuario.email)
+        print('datos del usuario', usuario.password)
+        print('datos de complemento', usercomplement.photo)
+        print('datos de complemento', usercomplement.celular)
+
+
+
+        usuario.save()
+
+        usercomplement.id_user = usuario
+
+        print('datos al guardar usuario',usuario)
+        usercomplement.save()
+
+
+    return render(request, "usuarios/register.html", {'form': form})
+
+'''
+
 
 def register(request):
     if request.method == "POST":
-        form = RegistroForm(request.POST)
-        form2 = UsuarioForm(request.POST)
+        print(request.POST, request.FILES)
+
+        form = RegistroForm(request.POST, request.FILES)
+        
         if form.is_valid():
 
             nomrbe = form.cleaned_data['first_name']
@@ -116,22 +176,32 @@ def register(request):
             usuario = form.cleaned_data['username']
             correo = form.cleaned_data['email']
             passwd = form.cleaned_data['password']
-            photo = request.POST['photo']
+
+            usercomplement = Usuario()
+            usercomplement.photo = request.FILES.get('photo')
+            usercomplement.celular = request.POST['celular']
+
             try:
                 datos = User.objects.create_user(first_name=nomrbe, last_name=apellido, username=usuario, email=correo,
                                                  password=passwd)
-                d = datos.save()
+                datos.save()
 
+                ''''
                 if request.POST['celular'] != "":
                     cell = Usuario.objects.create(celular=request.POST['celular'], id_user=datos, photo=photo)
                     cell.save()
+                '''
+                usercomplement.id_user = datos
+                usercomplement.save()
+
                 return redirect('usuarios:login')
             except Exception as error:
                 print("error", error)
+           
     else:
         form = RegistroForm
-        form2 = UsuarioForm
-    return render(request, "usuarios/register.html", {'form': form, 'form2': form2})
+
+    return render(request, "usuarios/register.html", {'form':form})
 
 
 def update(request):
