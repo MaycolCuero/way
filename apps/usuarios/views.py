@@ -69,6 +69,8 @@ class Login(FormView):
     template_name = 'usuarios/login2.html'
     form_class = LoginForm
     success_url = reverse_lazy('usuarios:index')
+
+
     #vamos a importar un decorador para un metodo, el cual nos ayudara a aumentar la seguridad
     #son dos never chache la cual evitara a que se guarden las credenciales en cache y crops.. que brinda seguridad a bulnerabilidades mas conocidas
 
@@ -106,9 +108,48 @@ def registrarusario(self):
 
 
 def register(request):
+    form = RegistroForm()
+
+    if request.POST:
+
+        usuario = User()
+        usuario.first_name = request.POST['first_name']
+        usuario.last_name = request.POST['last_name']
+        usuario.username = request.POST['username']
+        usuario.email = request.POST['email']
+        usuario.password = request.POST['password']
+
+        usercomplement = Usuario()
+        usercomplement.photo = request.FILES.get('photo')
+        usercomplement.celular = request.POST['celular']
+
+        print('datos del usuario', usuario.first_name)
+        print('datos del usuario', usuario.last_name)
+        print('datos del usuario', usuario.username)
+        print('datos del usuario', usuario.email)
+        print('datos del usuario', usuario.password)
+        print('datos de complemento', usercomplement.photo)
+        print('datos de complemento', usercomplement.celular)
+
+
+
+        usuario.save()
+
+        usercomplement.id_user = usuario
+
+        print('datos al guardar usuario',usuario)
+        usercomplement.save()
+
+
+    return render(request, "usuarios/register.html", {'form': form})
+
+''''
+def register(request):
     if request.method == "POST":
+        print(request.POST, request.FILES)
+
         form = RegistroForm(request.POST)
-        form2 = UsuarioForm(request.POST)
+        
         if form.is_valid():
 
             nomrbe = form.cleaned_data['first_name']
@@ -116,11 +157,13 @@ def register(request):
             usuario = form.cleaned_data['username']
             correo = form.cleaned_data['email']
             passwd = form.cleaned_data['password']
-            photo = request.POST['photo']
+            photo = request.FILES['photo']
+
+           
             try:
                 datos = User.objects.create_user(first_name=nomrbe, last_name=apellido, username=usuario, email=correo,
                                                  password=passwd)
-                d = datos.save()
+                datos.save()
 
                 if request.POST['celular'] != "":
                     cell = Usuario.objects.create(celular=request.POST['celular'], id_user=datos, photo=photo)
@@ -128,11 +171,12 @@ def register(request):
                 return redirect('usuarios:login')
             except Exception as error:
                 print("error", error)
-    else:
-        form = RegistroForm
-        form2 = UsuarioForm
-    return render(request, "usuarios/register.html", {'form': form, 'form2': form2})
+           
+        else:
 
+            form = RegistroForm
+    return render(request, "usuarios/register.html", {'form': form})
+'''
 
 def update(request):
     pass
