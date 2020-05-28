@@ -105,7 +105,7 @@ class Login(FormView):
             return super(Login,self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form): # validamos el formulario de que se utiliza en la vista
-         slogin(self.request, form.get_user())
+        login(self.request, form.get_user())
         return super(Login,self).form_valid(form)
 
 
