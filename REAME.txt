@@ -1,0 +1,39 @@
+instalar virtualizadro de python en ubuntu
+
+sudo apt install python3-venv
+
+Dependencias necesarias 
+
+Pip install django 
+
+
+instalar psycopg2 en ubuntu
+
+pip install psycopg2-binary o pip install psycopg2
+
+tambien se require pillow
+
+pip install pillow
+
+
+** Instalacion y configuracion de postgres
+
+Primero hacemos la respectiva instalacion
+
+instalamos los paquetes de postgresql
+
+sudo apt-get install postgresql
+
+luego instalamos su interfaz grafica la cual sera pgadmin3
+
+sudo apt.get install pgadming3
+
+despues de la instalacion por defecto se crea el usuaio postgres para cambiarlos debemos hacer lo siguiente, ingresamos a sistema de postgres con 
+
+sudo su postgres
+
+Ya estando adentros, con el comando psql podremos entrar a la consola de postgresql.
+
+despues de entrar a la consola cambiiamos la contraseña 
+
+alter user postgres with password 'contraseña';

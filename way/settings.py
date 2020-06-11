@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'way.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'prueba',
+        'NAME': 'way',
         'USER': 'postgres',
         'PASSWORD': 'maicolcr97',
         'HOST': 'localhost',
-        'PORT': 5433,
+        'PORT': 5432,
     }
 }
 
