@@ -26,7 +26,7 @@ SECRET_KEY = '6cpgykvixvrxy*u8k0-ugdyx&=czk=fgj!(!+rnk*)ewc^=sjc'
 # Configuracion para heroku
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
