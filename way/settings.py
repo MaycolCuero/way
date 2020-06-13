@@ -22,10 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '6cpgykvixvrxy*u8k0-ugdyx&=czk=fgj!(!+rnk*)ewc^=sjc'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+# Configuracion para heroku
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -51,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'way.urls'
@@ -77,6 +81,7 @@ WSGI_APPLICATION = 'way.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+'''
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
@@ -88,7 +93,15 @@ DATABASES = {
     }
 }
 
-
+'''
+# Configuracion para heroku
+import dj_database_url
+from decouple import config
+DATABASES = {
+    'default':dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -125,27 +138,19 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-#https://docs.djangoproject.com/en/2.2/ref/models/fields/
-
-STATIC_URL = '/static/'
+# https://docs.djangoproject.com/en/2.2/ref/models/fields/
 
 
-#url para acceder a las imagenes subidas
 
-#configuracion de la ruta donde quedaran almacenadas las imagenes
+
+# url para acceder a las imagenes subidas
+
+# configuracion de la ruta donde quedaran almacenadas las imagenes
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
-
-'''
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'media'),
-)
-
-'''
-
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 LOGIN_URL = '/usuarios/login'
 
@@ -156,3 +161,17 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'wayCorporacion@gmail.com'
 EMAIL_HOST_PASSWORD = 'metodologiasway'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# Configuracion para heroku
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Configuracion para heroku
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+
+#Configuracion para heroku
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
