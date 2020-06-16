@@ -14,8 +14,8 @@
        
     </head>
     {% block extra_links%}
-    
-        <link href="{% static 'estilos/scrum/index-scrum.css' %}" rel="stylesheet">
+        <!-- <link href="{% static 'estilos/scrum/index-scrum.css' %}" rel="stylesheet"> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     {% endblock %}
     {% block content %}
     <body>
@@ -198,18 +198,18 @@
              </div>
 
              <!-- this is the begin of the carrucel -->
-              <div class="card shadow mb-4">
+            <div class="card shadow mb-4">
                     <a href="#collapseCard3" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
                       <h6 class="m-0 font-weight-bold text-primary">Estado del proyecto</h6>
                     </a>
                         <!-- Card Content - Collapse -->
                             <div class="collapse show" id="collapseCard3">
 
-                                      <div class="card-body">
+                                    <div class="card-body">
 
-                                          <div id="demo" class="carousel slide" data-ride="carousel" data-interval="false">
+                                        <div id="demo" class="carousel slide" data-ride="carousel" data-interval="false">
 
-                                              <div class="carousel-inner">
+                                            <div class="carousel-inner">
 
                                                     <div class="carousel-item active">
                                                       <div class="row">
@@ -245,9 +245,7 @@
                                                           <!-- Listar Historias de usuario -->
                                                         <div class="col">
                                                           <span><strong>HISTORIAS DE USUARIO</strong></span>
-                                                                 <div id="lista">
-
-                                                                 </div>
+                                                            <div id="lista"></div>
                                                         </div>
                                                       </div>
                                                     </div>
@@ -258,13 +256,11 @@
                                                       <div class="row">
                                                           <!-- Listar tareas pendientes  -->
                                                         <div class="col-4">
-                                                          <div class="text-center">
-                                                            <span><strong>TAREAS</strong></span>
-                                                          </div>
+                                                            <div class="text-center">
+                                                                <span><strong>TAREAS</strong></span>
+                                                            </div>
 
-                                                                <div id="listTareas">
-
-                                                                </div>
+                                                            <div id="listTareas"></div>
                                                         </div>
                                                           <!-- Listar tareas en proceso -->
                                                         <div class="col-4">
@@ -332,10 +328,10 @@
                                                     </div>
                                             <!--- this is the end of the task-->
 
-                                          </div>
+                                            </div>
 
                                                 <!-- Esto permite que el carrucel se mueva  -->
-                                              <div class="row">
+                                                <div class="row">
                                                     <div class="col">
                                                       <br>
                                                       <br>
@@ -347,12 +343,12 @@
                                                         <span class="carousel-control-next-icon">Next</span>
                                                       </a>
                                                     </div>
-                                                  </div>
+                                                </div>
 
-                                          </div>
-                                      </div>
+                                        </div>
+                                    </div>
                             </div>
-                  </div>
+            </div>
          </div>
 
           <!-- The Modal  deylimiting -->
@@ -365,7 +361,7 @@
                   <button type="button" id="closeDaily" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- Modal body -->
-                  <div class="modal-body">
+                <div class="modal-body">
                     <div class="container">
                         <form id="dailymeeting_post">
                             {% csrf_token %}
@@ -621,7 +617,7 @@
                         <div class="form-group">
                             <div>
                                <h4><strong>Listado de requisitos</strong></h4>
-                            <div>
+                            </div>
                             <div class="card">
                                 {% if resumen_requisitos%}
                                     <table class="table table-sm">
@@ -647,14 +643,14 @@
                                 {% endif %}
 
                             </div>
-                        <div>
+                        </div>
                         <br>
 
                         <!--Resumen del sprint -->
                         <div class="form-group">
                             <div>
                                <h4><strong>Resumen de Sprints</strong></h4>
-                            <div>
+                            </div>
                             <ol>
                                 {% for d1 in resumen_sprints_datos1 %}
                                     <li><h4><strong>Sprint</strong></h4></li>
@@ -946,16 +942,33 @@
                     }
                 }); 
             })
-        </script>
-
-        <script>
-            function acutalizarTarea(id){
-
-            }
-        </script>
-{% endblock %}
-
         
+            $(document).on('submit','#form_confirmar',function(e){
+                e.preventDefault();
+                var tarea = $(this).find('#id_tarea').val();
+                console.log('id de la tarea'+tarea);
+                $.ajax({
+                    type:"POST",
+                    url:"/usuarios/confirmar",
+                    context: document.body,
+                    dataType: 'json',
+                    data:{
+                        'id':tarea,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(dato){
+                        if (dato['datos'] == "guardados"){
+                            window.location.reload();
+                        }else{
+                            console.log('hubo un problema al guardar los datos');
+                        }
+                    }
+                });
+            });
+        </script>
+
+{% endblock %}
+   
     </body>
 </html>
 
