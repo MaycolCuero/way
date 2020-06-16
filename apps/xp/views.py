@@ -181,7 +181,7 @@ def agregar_integrantes(request):
 
         if dato == "SI" and us == "NO":
             idpro = Proyecto.objects.get(id=proyecto)
-            rol = Rol.objects.get(id=rol)
+            rol = Rol.objects.get(nombre=rol)
             ProUser.objects.create(proyecto=idpro, usuario = usuario, rol = rol)
             integrantes = User.objects.values('id', 'first_name', 'last_name').filter(prouser__proyecto=idpro.id)
             datos = {'datos_integrantes': render_to_string('clean/xp/integrantes.html', {'integrantes': integrantes})}
@@ -235,6 +235,7 @@ def datos_actualizacion_tabla(id):
     }
 
     return contexto
+
 
 def obtener(request):
     if request.method == "GET":

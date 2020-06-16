@@ -227,23 +227,29 @@ def tareas(request):
 
 @login_required
 def integrante(request):
+    print('datos enviados del integrante', request.POST)
     if request.method == "POST":
+
         email = request.POST['email']
-        usuario = User.objects.get(email=email)
+        try:
+            usuario = User.objects.get(email=email)
+        except:
+            usuario = ""
         pro = request.POST['idIndex']
 
-        validar = ProUser.objects.filter(usuario=usuario.id, proyecto=pro)
-        if validar:
-            pass
-        else:
-            r = request.POST['rol']
-            rol = Rol.objects.get(id=r)
-            horas = request.POST['horas']
+        if usuario != "":
+            validar = ProUser.objects.filter(usuario=usuario.id, proyecto=pro)
+            if validar:
+                pass
+            else:
+                r = request.POST['rol']
+                rol = Rol.objects.get(nombre=r)
+                horas = request.POST['horas']
 
-            proyecto = Proyecto.objects.get(id=pro)
-            guardar = ProUser(usuario=usuario, proyecto=proyecto, disponible=True, rol=rol, horas=horas)
-            guardar.save()
-        return index(request, pro)
+                proyecto = Proyecto.objects.get(id=pro)
+                guardar = ProUser(usuario=usuario, proyecto=proyecto, disponible=True, rol=rol, horas=horas)
+                guardar.save()
+    return JsonResponse({'datos':'ready'})
 
 
 @login_required
