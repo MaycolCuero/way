@@ -406,30 +406,29 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Agregar Integrante</h4>
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <button type="button" id="closeIntegrantes" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- Modal body -->
                   <div class="modal-body">
                     <div class="container">
-                        <form method="post" action="{% url 'proyecto:integrante' %}" >
+                        <form id="form_integrantes">
                             {% csrf_token %}
-                            <input type="hidden" value={{idIndex}} name="idIndex">
+                            <input type="hidden" value={{idIndex}} id="idIndex" name="idIndex">
                              
                             <div class="form-group">
-                                <input class="form-control" type="text"  name="email" placeholder="ingresar dirección de E-mail" required>
+                                <input class="form-control" type="text" id="email" name="email" placeholder="ingresar dirección de E-mail" required>
                             </div>
 
                             <div class="form-group">
-                                <select name="rol" class="form-control"  required>
+                                <select name="rol" id="rol" class="form-control"  required>
                                     <option value="" disabled selected>Seleccionar rol</option>
-                                    <option value="1" >Product Owner</option>
-                                    <option value="2" >Scrum Master</option>
-                                    <option value="3">Development Team</option>
-                                    <option value="8">Asesor</option>
+                                    <option value="Scrum Master" >Scrum Master</option>
+                                    <option value="Development Team">Development Team</option>
+                                    <option value="Asesor">Asesor</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" type="number" name="horas" placeholder="Horas por semana">
+                                <input class="form-control" type="number" id="horas" name="horas" placeholder="Horas por semana">
                             </div>
 
                             <div class="form-group" align="center">
@@ -869,6 +868,34 @@
                         }
                         $('#meeting_info').html(html);
                         */
+                    }
+                });
+            });
+
+            $(document).on('submit','#form_integrantes', function(e){
+                e.preventDefault();
+
+                var email = $(this).find('#email').val();
+                var rol = $(this).find('#rol').val();
+                var horas = $(this).find('#horas').val();
+                var idIndex = $(this).find('#idIndex').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/proyecto/integrante",
+                    context: document.body,
+                    dataType: 'json',
+                    data:{
+                        'email':email,
+                        'rol':rol,
+                        'horas':horas,
+                        'idIndex':idIndex,
+                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        console.log('datos enviados');
+                        $('#closeIntegrantes').click();
+                        window.location.reload();
                     }
                 });
             });
