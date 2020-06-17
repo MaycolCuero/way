@@ -97,6 +97,7 @@ def index(request, id):
     datos1 = resumen_sprints['datos1']
     datos2 = resumen_sprints['datos2']
     resumen_tareas = resumen['tareas']
+    resumen_daily = resumen['daily']
 
     contexto = {'pbacklog': backlog,
                 'historia': historic,
@@ -119,7 +120,8 @@ def index(request, id):
                 'resumen_integrantes':resumen_integrantes,
                 'resumen_sprints_datos1':datos1,
                 'resumen_sprints_datos2':datos2,
-                'resumen_tareas':resumen_tareas
+                'resumen_tareas':resumen_tareas,
+                'resumen_daily':resumen_daily
     }
 
     return render(request, 'proyecto/index.html', contexto)
@@ -313,14 +315,16 @@ def resumenScrum(id_proyecto):
         'rol__nombre'
     ).filter(proyecto=id_proyecto)
 
-    sprint1 = Sprint.objects.values('f_inicio','f_fin').filter(id_scrum__proyecto=id_proyecto).distinct()
+    sprint1 = Sprint.objects.values('id','f_inicio','f_fin').filter(id_scrum__proyecto=id_proyecto).distinct()
     sprint = Sprint.objects.values(
+        'id',
         'f_inicio',
         'f_fin',
         'id_pbacklog__historiausuario__como_usuario',
         'id_pbacklog__historiausuario__quiero',
         'id_pbacklog__historiausuario__para'
     ).filter(id_scrum__proyecto=id_proyecto)
+
     #creo una matriz para poder comparar  las fechas y asi mostrar la misma informacion
     matriz = {'datos1':sprint1,
     'datos2':sprint}
@@ -330,16 +334,26 @@ def resumenScrum(id_proyecto):
         'n_horas',
         'usuario__first_name',
         'usuario__last_name',
-        'id_historia__id_pbacklog__sprint__f_inicio',
-        'id_historia__id_pbacklog__sprint__f_fin'
+        'id_historia__id_pbacklog__sprint__id'
     ).filter(estado=True,id_historia__id_pbacklog__id_scrum__proyecto=id_proyecto)
+
+    daily = DailyMeeting.objects.values(
+        'usuario__first_name',
+        'usuario__last_name',
+        'ayer',
+        'hoy',
+        'problemas',
+        'sprint',
+        'hora'
+    ).filter(sprint__id_scrum__proyecto=id_proyecto)
 
     contexto = {
         'proyecto':p,
         'requisitos':requisitos,
         'integrantes': integrantes,
         'sprint':matriz,
-        'tareas': tareas
+        'tareas': tareas,
+        'daily':daily
     }
 
     return contexto

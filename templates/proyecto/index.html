@@ -706,19 +706,51 @@
                                             </thead>
                                             <tbody>
                                                 {% for tareas in resumen_tareas %}
-                                                    <tr>
-                                                        {% if tareas.id_historia__id_pbacklog__sprint__f_inicio == d1.f_inicio and tareas.id_historia__id_pbacklog__sprint__f_fin == d1.f_fin %}
+                                                    {% if d1.id == tareas.id_historia__id_pbacklog__sprint__id%}
+                                                        <tr>
                                                             <td>{{tareas.usuario__first_name}} {{tareas.usuario__last_name}}</td>
                                                             <td>{{tareas.nombre}}</td>
                                                             <td>{{tareas.n_horas}}</td>
-                                                        {% else %}
-                                                            <td><div align="center">No hay tareas</div></td>
-                                                        {% endif %}
-                                                    </tr>
+                                                        </tr>
+                                                    {% endif %}
                                                 {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    <br>
+                                    <span>
+                                        <strong>Resumen del Daily Meeting en el sprint</strong>
+                                    </span>
+                                    <div class="card">
+                                        {% if resumen_daily %}
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Usuario</th>
+                                                        <th>Ayer</th>
+                                                        <th>Hoy</th>
+                                                        <th>Problemas</th>
+                                                        <th>Fecha</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for daily in resumen_daily %}
+                                                        {% if daily.sprint == d1.id %}
+                                                            <tr>
+                                                                <td>{{daily.usuario__first_name}} {{daily.usuario__last_name}}</td>
+                                                                <td>{{daily.ayer}}</td>
+                                                                <td>{{daily.hoy}}</td>
+                                                                <td>{{daily.problemas}}</td>
+                                                                <td>{{daily.hora}}</td>
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% endif%}
+                                    </div>
+                                    <br>
                                 {% endfor %}
                             </ol>
                         </div>

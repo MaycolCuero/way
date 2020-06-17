@@ -164,10 +164,22 @@ def sprint(request, id):
 
     idscrum = scrum[0].id
 
+    # Consultar si el pryecto ya tiene sprint creados
+    try:
+        dsprint = Sprint.objects.filter(id_scrum__proyecto=id).reverse()[0]
+    except:
+        dsprint = ""
+
+
+
     fecha = Proyecto.objects.values('f_inicio','f_fin').get(id=id)
 
     #sacar fechas y convertirlas a string
-    fecha_inicio = datetime.strftime(fecha['f_inicio'], '%Y-%m-%d')
+    if dsprint:
+        fecha_inicio = datetime.strftime(dsprint.f_fin, '%Y-%m-%d')
+    else:
+        fecha_inicio = datetime.strftime(fecha['f_inicio'], '%Y-%m-%d')
+
     fecha_fin = datetime.strftime(fecha['f_fin'], '%Y-%m-%d')
 
     requisitos = Pbacklog.objects.filter(id_scrum=idscrum, confirmar=False).annotate(
