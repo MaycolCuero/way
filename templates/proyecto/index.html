@@ -14,7 +14,7 @@
        
     </head>
     {% block extra_links%}
-        <!-- <link href="{% static 'estilos/scrum/index-scrum.css' %}" rel="stylesheet"> -->
+        <link href="{% static 'estilos/scrum/index-scrum.css' %}" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <!-- librerria para crear documentos en pdf -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
@@ -130,25 +130,13 @@
                                                 {% for day in meetingsday %}
                                                             <div class="card card-header" daily>
                                                                 <font size="2">
-                                                                    <strong>
-                                                                        Usuaro: 
-                                                                    </strong>
-                                                                    {{ day.usuario__first_name}} {{day.usuario__last_name}}
+                                                                    <strong>Usuaro:</strong>{{ day.usuario__first_name}} {{day.usuario__last_name}}
                                                                     <br>
-                                                                    <strong>
-                                                                        Ayer: 
-                                                                    </strong>
-                                                                    {{ day.ayer }}
+                                                                    <strong>Ayer:</strong>{{ day.ayer }}
                                                                     <br>
-                                                                    <strong>
-                                                                        Hoy:  
-                                                                    </strong>
-                                                                    {{ day.hoy }}
+                                                                    <strong>Hoy:</strong>{{ day.hoy }}
                                                                     <br>
-                                                                    <strong>
-                                                                        Prolemas: 
-                                                                    </strong>
-                                                                    {{ day.problemas }}
+                                                                    <strong>Prolemas: </strong>{{ day.problemas }}
                                                                 </font>
                                                             </div>
                                                 {% endfor %}
