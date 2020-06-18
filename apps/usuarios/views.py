@@ -75,6 +75,8 @@ def fotoPerfil(request):
         request.session['photo'] =  usuario.photo.url
     except:
         print('No tiene foto')
+
+
 class Login(FormView):
     '''
         guia para la creacion de login
@@ -85,7 +87,6 @@ class Login(FormView):
     form_class = LoginForm
     success_url = reverse_lazy('usuarios:index')
 
-
     #vamos a importar un decorador para un metodo, el cual nos ayudara a aumentar la seguridad
     #son dos never chache la cual evitara a que se guarden las credenciales en cache y crops.. que brinda seguridad a bulnerabilidades mas conocidas
 
@@ -94,8 +95,6 @@ class Login(FormView):
 
     #dispatch en vistas basadas en clases es el primero que se ejecuta, este metodo se encarga de redirigir las peticiones es decir si es POST la envia al metodo POST y si es GET la envia al GET
     def dispatch(self, request, *args, **kwargs):
-
-
 
         if request.user.is_authenticated:
 
@@ -124,45 +123,6 @@ def registrarusario(self):
                    password=self.data['password1'])
 
     usuario.save()
-
-''''
-def register(request):
-    form = RegistroForm()
-
-    if request.POST:
-
-        usuario = User()
-        usuario.first_name = request.POST['first_name']
-        usuario.last_name = request.POST['last_name']
-        usuario.username = request.POST['username']
-        usuario.email = request.POST['email']
-        usuario.password = request.POST['password']
-
-        usercomplement = Usuario()
-        usercomplement.photo = request.FILES.get('photo')
-        usercomplement.celular = request.POST['celular']
-
-        print('datos del usuario', usuario.first_name)
-        print('datos del usuario', usuario.last_name)
-        print('datos del usuario', usuario.username)
-        print('datos del usuario', usuario.email)
-        print('datos del usuario', usuario.password)
-        print('datos de complemento', usercomplement.photo)
-        print('datos de complemento', usercomplement.celular)
-
-
-
-        usuario.save()
-
-        usercomplement.id_user = usuario
-
-        print('datos al guardar usuario',usuario)
-        usercomplement.save()
-
-
-    return render(request, "usuarios/register.html", {'form': form})
-
-'''
 
 
 def register(request):
@@ -199,6 +159,8 @@ def register(request):
                 return redirect('usuarios:login')
             except Exception as error:
                 print("error", error)
+        else:
+            print('ocurrio un error al registrar el usuario',form.errors)
            
     else:
         form = RegistroForm

@@ -42,7 +42,7 @@ class RegistroForm(forms.Form):
                                      }
                                  ))
 
-    photo = forms.ImageField(label='Imagen de perfil')
+    #photo = forms.ImageField(label='Imagen de perfil')
 
     def registrarusario(self, User):
         '''
