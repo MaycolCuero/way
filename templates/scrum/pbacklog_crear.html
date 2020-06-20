@@ -13,7 +13,8 @@
         <title>Registro de requisitos</title>
 {% endblock %}
 {% block extra_links%}
-<link href="{% static 'estilos/scrum/crear_historias.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'estilos/scrum/crear_historias.css' %}" rel="stylesheet">-->
+    <link href="/static/estilos/scrum/crear_historias.css" rel="stylesheet">
 {% endblock %}
 
 <div class="container">
@@ -200,7 +201,7 @@
 
   <!-- The Modal Ayuda  Epicas -->
   <div class="modal fade" id="ModalAyudaEpica">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
       <div class="modal-content">
 
         <!-- Modal Header -->
@@ -210,14 +211,206 @@
         </div>
 
         <!-- Modal body -->
-        <div class="modal-body">
-            <div class="alert alert-info" role="info">
-              <font>
-                Una épica es una historia de usuario sin refinar, 
-                es decir, es un requisito muy grande que se puede desglosar
-                en historias de usuario más pequeñas
-              </font>
+        <div class="modal-body align-center">
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-info" role="info">
+                        <p>
+                          Una épica es una historia de usuario sin refinar, 
+                          es decir, es un requisito muy grande que se puede desglosar
+                          en historias de usuario más pequeñas
+                        </p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <p style="justify-content: safe;">
+                                <strong>Ejemplo</strong>
+                                <br>
+                                La Universidad Cesmag, quiere un aplicativo móvil para que los estudiantes, 
+                                directivos y visitantes puedan visualizar un mapa de la misma, detallando aulas,
+                                oficinas, laboratorios y auditorios. A continuación se define una épica con sus
+                                respectivas historias de usuarios. 
+                            </p>
+                        </div>
+                    </div>                    
+                </div>
             </div>
+            <br>
+            <div class="card" style="padding: 10px;">
+                <div>
+                    <div class="card">
+                        <table class="table table-sm center" >
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>EP. #1</th>    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Descripción</strong></td>
+                                    <td>
+                                        <div class="container">                                        
+                                            <div class="row"><strong>Como:</strong> Usuario</div>
+                                            <div class="row"><strong>Quiero:</strong> Encontrar un aula, oficina o auditorio</div>
+                                            <div class="row"><strong>Para:</strong> Conocer la ubicación del lugar</div>                                        
+                                        </div>                                       
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <div class="row"> 
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card" >
+                            <table class="table table-sm center" >
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Historia #1</th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Descripción</strong></td>
+                                        <td>         
+                                            <div class="container">                                  
+                                                <div class="row"><strong>Como:</strong>Usuario</div>
+                                                <div class="row"><strong>Quiero:</strong> Encontrar un aula de clases mediante mi teléfono</div>
+                                                <div class="row"><strong>Para:</strong> Conocer la ubicación del aula</div>   
+                                            </div>                                                                               
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card">
+                            <table class="table table-sm center" >
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Historia #2</th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Descripción</strong></td>
+                                        <td>  
+                                            <div class="container">                                         
+                                            <div class="row"><strong>Como:</strong> Usuario</div>
+                                            <div class="row"><strong>Quiero:</strong> Encontrar una oficina mediante mi teléfono</div>
+                                            <div class="row"><strong>Para:</strong> Conocer la ubicación de la oficna</div>                                                                                  
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>   
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card" >
+                            <table class="table table-sm center" >
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Historia #3</th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Descripción</strong></td>
+                                        <td>        
+                                            <div class="container">                                   
+                                                <div class="row"><strong>Como:</strong> Usuario</div>
+                                                <div class="row"><strong>Quiero:</strong> Encontrar un auditorio mediante mi teléfono</div>
+                                                <div class="row"><strong>Para:</strong> Conocer la ubicación del auditorio</div>                                                                                  
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card" >
+                            <table class="table table-sm center" >
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Historia #4</th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Descripción</strong></td>
+                                        <td>
+                                            <div class="container">                                      
+                                                <div class="row"><strong>Como:</strong>Usuario</div>
+                                                <div class="row"><strong>Quiero:</strong> Visualizar fácilmente el mapa de guía</div>
+                                                <div class="row"><strong>Para:</strong> Encontrar los lugares de manera fácil </div>                                                                                  
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card">
+                            <table class="table table-sm center" >
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Historia #5</th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Descripción</strong></td>
+                                        <td>    
+                                            <div class="container">                                       
+                                                <div class="row"><strong>Como:</strong> Usuario</div>
+                                                <div class="row"><strong>Quiero:</strong> Encontrar la señalización de forma fácil</div>
+                                                <div class="row"><strong>Para:</strong> Lograr visualizar el mapa</div> 
+                                            </div>                                                                                 
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card">
+                            <table class="table table-sm center" >
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Historia #6</th>    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Descripción</strong></td>
+                                        <td> 
+                                            <div class="container">
+                                                <div class="row"><strong>Como:</strong> Usuario</div>
+                                                <div class="row"><strong>Quiero:</strong> Realizar una búsqueda de un lugar especifico</div>
+                                                <div class="row"><strong>Para:</strong> Facilitar la localización</div> 
+                                            </div>                                
+                                                                                                                             
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>                   
+                </div>
+            </div>         
         </div>
       </div>
     </div> 
