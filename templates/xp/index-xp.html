@@ -319,10 +319,10 @@
                     <div class="form-group">
                         <select name="rol" id="rol" class="form-control"  required>
                             <option id="select_default" disabled selected>Seleccionar rol</option>
-                            <option value="4" >Manager</option>
-                            <option value="5" >Coach</option>
-                            <option value="6">Testers</option>
-                            <option value="7">Programador</option>
+                            <option value="Manager" >Manager</option>
+                            <option value="Coach" >Coach</option>
+                            <option value="Testers">Testers</option>
+                            <option value="Programador">Programador</option>
                         </select>
                     </div>
                     <div class="text-center">
@@ -344,6 +344,7 @@
 
 
 <script>
+
 $(document).on('submit','#obtener_tarea', function(e){
     e.preventDefault();
     var id_tarea = $(this).find('#obtener').val();
@@ -368,8 +369,7 @@ $(document).on('submit','#obtener_tarea', function(e){
 <script>
 // Inicio del Script para el modal de crear ciclo
 
-$(document).ready(function() {
-    $('.js-example-basic-multiple').select2();
+$(document).ready(function(e) {
     $('#sidebarToggle').click();
 });
 
@@ -394,7 +394,6 @@ $(document).on('submit', '#form_ciclo', function (e) {
     });     
     idh = selected;
 
-   
     console.log('Informacion de form');
     console.log(inicio);
     console.log(fin);
