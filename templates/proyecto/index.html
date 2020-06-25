@@ -158,8 +158,11 @@
                                         {% if pbacklog %}
                                         {% else %}                                        
                                             {% for rl in rol %}
-                                                {% if rl.rol__nombre == "Scrum Master" or rl.rol__nombre == "Product Owner" %}   
-                                                    <a href="{% url 'scrum:sprint' idIndex %}" class="btn btn-primary">Crear un Sprint</a>
+                                                {% if rl.rol__nombre == "Scrum Master" or rl.rol__nombre == "Product Owner" %}  
+                                                    {% if alcanzados%}
+                                                    {% else %} 
+                                                        <a href="{% url 'scrum:sprint' idIndex %}" class="btn btn-primary">Crear un Sprint</a>
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endfor %}
                                         {% endif %}
@@ -466,7 +469,7 @@
                                                                     {{ a.nombre }}
                                                                 </div>
                                                                 <div class="col col-md-2" >
-                                                                        <input type="checkbox" name="id_pbacklog" id="id_pbacklog" value={{a.id}} class="primary">
+                                                                        <input type="checkbox" name="id_pbacklog" id="id_pbacklog" checked value={{a.id}} class="primary">
                                                                     <label class="switch ">
                                                                         <span class="slider round"></span>
                                                                     </label>
