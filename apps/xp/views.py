@@ -65,9 +65,6 @@ def index(request, id):
         estado=False
     )
 
-
-    print('datos de los requisitos',requisitos)
-
     proceso = Sbacklog.objects.filter(
         id_historia__get = True,
         id_historia__id_ciclo__id_xp__proyecto=id,
@@ -91,10 +88,23 @@ def index(request, id):
 
 
     xp = XP.objects.values('id','proyecto__id','proyecto__nombre','proyecto__f_inicio','proyecto__f_fin').get(proyecto=id)
+
+    resumen_pro = resumen(id)
+
+    resumen_proyecto = resumen_pro['proyecto']
+    resumen_historias = resumen_pro['historias']
+    resumen_tareas = resumen_pro['tareas']
+    resumen_integrantes = resumen_pro['integrantes']
+    resumen_ciclo = resumen_pro['ciclo']
+    resumen_ciclo_historias = resumen_pro['ciclo_historias']
     try:
         ciclo = Ciclo.objects.get(id_xp__proyecto=id,estado=True)
     except:
         ciclo = ""
+
+
+    print('informacion del ciclo',ciclo)
+
     contexto = {
         'requisitos':requisitos,
         'xp':xp,
@@ -103,7 +113,13 @@ def index(request, id):
         'integrantes':integrantes,
         'procesos':proceso,
         'terminadas':terminadas,
-        'ciclo':ciclo
+        'ciclo':ciclo,
+        'resumen_proyecto':resumen_proyecto,
+        'resumen_historias':resumen_historias,
+        'resumen_tareas':resumen_tareas,
+        'resumen_integrantes':resumen_integrantes,
+        'resumen_ciclo':resumen_ciclo,
+        'resumen_ciclo_historias':resumen_ciclo_historias
     }
 
     return render(request, 'xp/index-xp.html', contexto)
@@ -254,6 +270,7 @@ def obtener(request):
 def confirmar(request):
     id = request.GET['id_tarea']
 
+
     Sbacklog.objects.filter(id=id).update(estado=True)
 
     # Consulto la historia de usuario
@@ -268,19 +285,76 @@ def confirmar(request):
     if x == 100:
         HistoriaUsuario.objects.filter(id=h[0].id).update(estado=True)
 
-
-
+    '''
     try:
-        ciclo = Ciclo.objects.get(
-            historiausuario__id=h[0].id,
-            historiausuario__estado=False
-        )
-
-        print('datos del ciclo',ciclo)
+        ciclo = Ciclo.objects.filter(
+                historiausuario__id=h[0].id,
+                historiausuario__estado=True
+            )
     except:
-        Ciclo.objects.filter(historiausuario__id=h[0].id).update(estado=False)
+        ciclo = Ciclo.objects.filter(
+            historiausuario__id=h[0].id,
+        )
+    
+    print('informacion del ciclo',ciclo)
+    print('id del ciclo ', ciclo[0].id)
+    '''
+    ciclo = Ciclo.objects.get(historiausuario__id=h[0].id)
+
+    historias_ciclo = HistoriaUsuario.objects.filter(id_ciclo=ciclo.id).count()
+    hcp = HistoriaUsuario.objects.filter(id_ciclo=ciclo.id,estado=True).count()
+
+    print('historias del ciclo',historias_ciclo)
+    print('historias del ciclo completadas', hcp)
+    hr = (hcp * 100) / historias_ciclo
+
+    if hr == 100:
+        print('se puede actualizar')
+        Ciclo.objects.filter(id=ciclo.id).update(estado=False)
 
     datos = datos_actualizacion_tabla(h[0].id)
 
     info = {'tabla_xp': render_to_string('clean/xp/tabla.html', datos)}
     return JsonResponse(info)
+
+
+def resumen(id_proyecto):
+    xp = XP.objects.values('id', 'proyecto__id', 'proyecto__nombre', 'proyecto__f_inicio', 'proyecto__f_fin').get(
+        proyecto=id_proyecto)
+
+    historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id_proyecto).annotate(
+        dias=Sum('sbacklog__n_horas'),
+        tareas=Count('sbacklog__id')
+    )
+
+    task = Sbacklog.objects.values(
+        'id',
+        'nombre',
+        'usuario__first_name',
+        'usuario__last_name',
+        'n_horas',
+        'id_historia__id_ciclo'
+    ).filter(
+        id_historia__get=True,
+        id_historia__id_ciclo__id_xp__proyecto=id_proyecto
+    )
+
+    ciclo = Ciclo.objects.filter(id_xp__proyecto=id_proyecto)
+    ciclo_historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id_proyecto)
+
+    integrantes = ProUser.objects.values(
+        'usuario__first_name',
+        'usuario__last_name',
+        'rol__nombre'
+    ).filter(proyecto=id_proyecto)
+
+    contexto = {
+        'proyecto':xp,
+        'historias':historias,
+        'tareas':task,
+        'integrantes':integrantes,
+        'ciclo':ciclo,
+        'ciclo_historias':ciclo_historias
+    }
+
+    return contexto
