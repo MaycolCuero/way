@@ -10,6 +10,8 @@
     {% block extra_links%}
         <link href="{% static 'estilos/xp/index-xp.css' %}" rel="stylesheet">
        <!-- <script src="{% static 'scripts-consultas/xp/index-xp.js' %}"></script> -->
+       <!-- librerria para crear documentos en pdf -->
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
     {% endblock %}
 </head>
 <body>
@@ -700,6 +702,40 @@ $(document).ready(function(e){
     recarcar();
 });
 </script>
+
+ <!-- Script para converitr archivos en pdf -->
+ <script>
+    function pruebaDivAPdf() {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        source = $('#imprimir')[0];
+
+        specialElementHandlers = {
+            '#bypassme': function (element, renderer) {
+                return true;
+            }
+        };
+        margins = {
+            top: 60,
+            bottom: 40,
+            left: 80,
+            width: 600
+        };
+
+        pdf.fromHTML(
+            source, 
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, 
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                pdf.save('Informe.pdf');
+            }, margins
+        );
+    }
+</script>
+
 
 {% endblock %}
 
