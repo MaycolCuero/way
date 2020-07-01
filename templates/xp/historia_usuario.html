@@ -59,14 +59,14 @@
                             <td>{{h.para}}</td>
                             <td>{{h.tareas}}</td>
                             <td>
-                                 <button class="btn btn-sm btn-outline-success" title="Ingrese las tareas" data-toggle="modal" data-target="#myTareas" onclick="seleccionar({{h.id}},'{{h.quiero}}')">
+                                 <button class="btn btn-sm btn-outline-success" title="Ingrese las tareas" data-toggle="modal" data-target="#myTareas" onclick="seleccionar('{{h.id}}','{{h.quiero}}')">
                                      Tarea
                                  </button>
                                 <a href="{% url 'xp:ActualizarHistorias' h.id %}" title="Editar historia" class="btn btn-sm btn-outline-primary">Editar</a>
                                 <!--
                                 <a href="{% url 'xp:eliminar_historias' h.id %}" title="Eliminar historia" class="btn btn-sm btn-outline-danger" data-target="modal" data-target="#confirmDeleteHistory"> Eliminar </a>
                                 -->
-                                <button title="Eliminar historia" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDeleteHistory" onclick="eliminarHistoria({{h.id}},'{{h.quiero}}')"> Eliminar </button>
+                                <button title="Eliminar historia" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#confirmDeleteHistory" onclick="eliminarHistoria('{{h.id}}','{{h.quiero}}')"> Eliminar </button>
 
                             </td>
                         </tr>

@@ -150,8 +150,6 @@ def crearCiclo(request):
     #Todos los derechos reservados por Maycol Cuero Ruiz
 
     if request.method == "POST":
-        print('datos del formulario del ciclo',request.POST)
-
         f_inicio = request.POST['f_inicio']
         f_fin = request.POST['f_fin']
         id_xp = request.POST['id_xp']
@@ -163,7 +161,6 @@ def crearCiclo(request):
         if id_historia and id_historia != ['']:
             for h in id_historia:
                 HistoriaUsuario.objects.filter(id=h).update(id_ciclo=ciclo.id, get=True)
-
 
     return JsonResponse({'datos':'resividos'})
 
@@ -270,7 +267,6 @@ def obtener(request):
 def confirmar(request):
     id = request.GET['id_tarea']
 
-
     Sbacklog.objects.filter(id=id).update(estado=True)
 
     # Consulto la historia de usuario
@@ -285,31 +281,14 @@ def confirmar(request):
     if x == 100:
         HistoriaUsuario.objects.filter(id=h[0].id).update(estado=True)
 
-    '''
-    try:
-        ciclo = Ciclo.objects.filter(
-                historiausuario__id=h[0].id,
-                historiausuario__estado=True
-            )
-    except:
-        ciclo = Ciclo.objects.filter(
-            historiausuario__id=h[0].id,
-        )
-    
-    print('informacion del ciclo',ciclo)
-    print('id del ciclo ', ciclo[0].id)
-    '''
     ciclo = Ciclo.objects.get(historiausuario__id=h[0].id)
 
     historias_ciclo = HistoriaUsuario.objects.filter(id_ciclo=ciclo.id).count()
     hcp = HistoriaUsuario.objects.filter(id_ciclo=ciclo.id,estado=True).count()
 
-    print('historias del ciclo',historias_ciclo)
-    print('historias del ciclo completadas', hcp)
     hr = (hcp * 100) / historias_ciclo
 
     if hr == 100:
-        print('se puede actualizar')
         Ciclo.objects.filter(id=ciclo.id).update(estado=False)
 
     datos = datos_actualizacion_tabla(h[0].id)
