@@ -58,9 +58,9 @@ def index(request):
         rcompletados=rcompletados
     )
 
-
     rpendientes_xp = Count('scrum__pbacklog__id', filter=Q(usuario=id))
     rcompletos_xp = Count('scrum__pbacklog__id', filter=Q(scrum__pbacklog__confirmar=True))
+
     #proyecto con xp
     xp_p = Proyecto.objects.values(
         'nombre',
