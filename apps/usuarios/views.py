@@ -38,7 +38,7 @@ def index(request):
     rcompletados = Count('scrum__pbacklog__id', filter=Q(scrum__pbacklog__confirmar=True))
 
     # proyecto con scrum
-
+    '''
     p = Proyecto.objects.values(
         'nombre',
         'id_metodologia__nombre',
@@ -48,8 +48,17 @@ def index(request):
         rcompletados=rcompletados,
         num=((rcompletados * 100)/requisitos)
     )
+    '''
+    p = Proyecto.objects.values(
+        'nombre',
+        'id_metodologia__nombre',
+        'id'
+    ).filter(usuario=id, id_metodologia__nombre='SCRUM').annotate(
+        requisitos=requisitos,
+        rcompletados=rcompletados
+    )
 
-    
+
     rpendientes_xp = Count('scrum__pbacklog__id', filter=Q(usuario=id))
     rcompletos_xp = Count('scrum__pbacklog__id', filter=Q(scrum__pbacklog__confirmar=True))
     #proyecto con xp
