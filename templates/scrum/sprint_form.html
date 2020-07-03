@@ -12,10 +12,7 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-			$(document).ready(function() {
-				$('.js-example-basic-multiple').select2();
-			});
-
+			
 			function editar(id, pbacklog){
 			    console.log(id);
 			    console.log(pbacklog);
@@ -24,6 +21,13 @@
 			}
 	</script>
     <title>Title</title>
+    {% block extra_links %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    {% endblock %}
 </head>
 <body>
 <div id="alerta"></div>
@@ -136,7 +140,7 @@
                                                 <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog" name="id_pbacklog" value={{a.id}} class="primary" >
                                                 <span class="slider round"></span>
                                             </label>
-                                            <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#myModal" >Editar</a>
+                                            <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#MyEdicion" >Editar</a>
                                             <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog" onclick="eliminarPbacklog({{a.id}},'{{a.nombre}}')" >Eliminar</a>
                                         </td>
                                     </tr>
@@ -150,15 +154,10 @@
         </form>
     </div>
 
-    
 
-
-</body>
-</html>
-
-      <!-- The Modal Editar requisitos -->
+    <!-- The Modal Editar requisitos -->
 <div class="modal fade" id="myModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
 
             <!-- Modal Header -->
@@ -197,7 +196,73 @@
             </div>
         </div>
     </div>
-</div>
+</div> 
+
+
+
+
+
+<!-- Edicion general -->
+
+  <!-- The Modal -->
+  <div class="modal fade" id="MyEdicion">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body" style="overflow-y: auto;">
+            <label>
+                <h2>Listado de Épicas</h2>
+            </label>
+
+            <div class="card">
+                <div id="tabla_sprint">
+                    {% if requisitos %}                    
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Requisito</th>
+                                    <th title="Historias de usuarios">Historias Usuarios</th>
+                                    <th >HU Realizadas</th>
+                                    <th >Tareas</th>
+                                    <th >T Realizadas</th>
+                                    <th >Duración</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in requisitos %}
+                                    <tr>
+                                        <td> {{a.nombre}} </td>
+                                        <td>{{  a.historias }}</td>
+                                        <td>{{  a.historias_r }}</td>
+                                        <td>{{  a.tareas }}</td>
+                                        <td>{{  a.tareas_r }}</td>
+                                        <td id="n_duracion">
+                                            {{  a.duracion }}
+                                        </td>
+                                      
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>                    
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+      
+      </div>
+    </div>
+  </div>
+<!-- end edicion general -->
+
+
 
 <!-- Modal confirmar eliminar pbacklog -->
     <div class="modal fade" id="confirmDeletePbacklog">
@@ -223,11 +288,7 @@
 <!-- end modal delete pbacklog -->
 
 <script>
-    $(document).ready(function() {
-          $('.js-example-basic-multiple').select2();
-     });
-
-    
+   
     $(document).on('input','#f_inicio', function(e){
         var f_inicio = $(this).val();
         document.getElementById('f_fin').min = f_inicio;
@@ -369,3 +430,5 @@
 </script>
 
 {% endblock %}
+</body>
+</html>

@@ -26,7 +26,7 @@
         </div>
     </div>
     <br>
-    <h2 style="text-align:center"><strong>Definición de Requisitos</strong></h2>
+    <h2 style="text-align:center"><strong>Definición de Épicas</strong></h2>
     <br>
     <form method="POST">
         {% csrf_token %}
@@ -47,7 +47,7 @@
                 <textarea class="form-control" name="para" placeholder="Para"></textarea>
             </div>
             <div class="text-center">
-                <button  type="submit" class="btn btn-primary" id="guardar" > Guardar </button>
+                <button  type="submit" class="btn btn-primary" id="guardar" style="width:50%;" > Guardar </button>
             </div>
         </div>
     </form>
@@ -60,7 +60,7 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col">
-                        <strong class="card-title">Listado de Requisitos o Épicas</strong>
+                        <strong class="card-title">Listado de Épicas</strong>
                     </div>
                     <div class="col" align="right">
                        <a class="btn btn-success" title="Listado de Historias de usuario" href="{% url 'scrum:historia_list' %}">Continuar</a>
@@ -86,7 +86,7 @@
                                 <td>{{ p.para }}</td>
                                 <td>{{ p.hu }}</td>
                                 <td>
-                                    <button class="btn btn-primary" title="Historias de usuario" data-toggle="modal" data-target="#myModal" onclick="seleccionar({{p.id}}, '{{p.quiero}}')">
+                                    <button class="btn btn-primary" title="Historias de usuario" data-toggle="modal" data-target="#myModal" onclick="seleccionar('{{p.id}}','{{p.quiero}}')">
                                         H.U
                                     </button>
                                 </td>
@@ -97,7 +97,7 @@
             </div>
         </div>
      {% else %}
-            <h3>No hay requisitos o épicas creadas</h3>
+            <h3>No hay épicas creadas</h3>
     {% endif %}
 </div>
     <!-- The Modal -->
@@ -131,20 +131,20 @@
                             Como usuario
                             <i class="fas fa-question-circle" title="Escriba el tipo de usuario" style="cursor:pointer"></i>
                         </label>
-                        <input class="form-control" type="text" name="como_usuario" required>
+                        <input class="form-control" type="text" name="como_usuario" placeholder="Rol solicitante" required>
                     </div>
                     <div class="form-group">
                         <label >
                             Quiero
                             <i class="fas fa-question-circle" title="Funcionalidad que solicita el usuario" style="cursor:pointer"></i>
                         </label>
-                        <input class="form-control" type="text" name="quiero" required>
+                        <input class="form-control" type="text" name="quiero" placeholder="Definición del requisito" required>
                     </div>
                     <div class="form-group">
                         <label >Para
                             <i class="fas fa-question-circle"title="Propósito del requisito" style="cursor:pointer"></i>
                         </label>
-                        <textarea class="form-control" name="para" rows="3" required></textarea>
+                        <textarea class="form-control" name="para" rows="3" placeholder="Objetivo del requisito" required></textarea>
                     </div>
 
                     <div class="form-group">
