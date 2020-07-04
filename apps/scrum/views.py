@@ -285,6 +285,18 @@ def update_pbacklog(request):
     return JsonResponse(datos)
 
 
+def update_epica(request):
+    if request.method == 'POST':
+        id_pbacklog = request.POST['id_pbacklog']
+        como_usuario = request.POST['nombre']
+        quiero = request.POST['quiero']
+        para = request.POST['para']
+
+        Pbacklog.objects.filter(id=id_pbacklog).update(nombre=como_usuario, quiero=quiero, para=para)
+
+    return JsonResponse({'datos':'datos'})
+
+
 @login_required
 def eliminarPbacklog(request, id):
     if request.method == 'GET':

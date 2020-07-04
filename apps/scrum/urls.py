@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import path
 from apps.scrum.views import scrum_list, scrum_crear, pbacklog_crear, pbacklog_list, historia_crear, update_pbacklog, eliminarPbacklog
 from apps.scrum.views import sbacklog_estado, historia_list, sbacklog_crear, sbacklog_list, sprint, dailymeeting, sreview
-
+from apps.scrum import views
 app_name = 'scrum'
 
 urlpatterns = [
@@ -20,5 +20,6 @@ urlpatterns = [
     path('dailymeeting', dailymeeting, name='dailymeeting'),
     path('sreview', sreview, name='sreview'),
     path('update_pbacklog', update_pbacklog, name='update_pbacklog'),
-    path('eliminarPbacklog/<int:id>', eliminarPbacklog, name='eliminarPbacklog')
+    path('eliminarPbacklog/<int:id>', eliminarPbacklog, name='eliminarPbacklog'),
+    path('update_epica', views.update_epica, name='update_epica')
 ]
