@@ -594,6 +594,22 @@
         });
       });
 
+      // Eliminar una epica 
+      $(document).on('click','#editar_epica',function(e){
+        var nombre = $(this).parents("tr").find("td")[0].innerText;
+        var quiero = $(this).parents("tr").find("td")[1].innerText;
+        var para = $(this).parents("tr").find("td")[2].innerText;
+
+        var id_epicass = $(this).attr('epica');
+        document.getElementById('id_epica').value = id_epicass;
+
+        console.log(id_epicass);
+        document.getElementById('como_usuario').value = nombre;
+        document.getElementById('quiero').value = quiero;
+        document.getElementById('para').value = para;            
+      });
+
+
   </script>
 
 {% endblock %}
