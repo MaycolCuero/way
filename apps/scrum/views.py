@@ -272,6 +272,7 @@ def sreview(request):
     datos = {'datos': 'enviados'}
     return JsonResponse(datos)
 
+
 @login_required
 def update_pbacklog(request):
     if request.method == 'POST':
@@ -296,6 +297,14 @@ def update_epica(request):
 
     return JsonResponse({'datos':'datos'})
 
+
+def delete_epica(request):
+    if request.method == "POST":
+        id = request.POST['id']
+        Pbacklog.objects.filter(id=id).delete()
+        print(request.POST)
+
+    return JsonResponse({'datos':'datos'})
 
 @login_required
 def eliminarPbacklog(request, id):

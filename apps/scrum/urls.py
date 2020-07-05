@@ -21,5 +21,6 @@ urlpatterns = [
     path('sreview', sreview, name='sreview'),
     path('update_pbacklog', update_pbacklog, name='update_pbacklog'),
     path('eliminarPbacklog/<int:id>', eliminarPbacklog, name='eliminarPbacklog'),
-    path('update_epica', views.update_epica, name='update_epica')
+    path('update_epica', views.update_epica, name='update_epica'),
+    path('delete_epica', views.delete_epica, name='delete_epica')
 ]
