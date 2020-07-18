@@ -107,48 +107,51 @@
                         <div class="col" align="right">
                             <button href="" type="submit" class="btn btn-outline-primary" >Guardar</button>
                             <a class="btn btn-outline-success" title="Página de inicio" href="{% url 'proyecto:index' index %}">Volver</a>
+                            <a href="" class="btn btn-success" data-toggle="modal" data-target="#MyEdicion" >Mas detalles</a>
                         </div>
                     </div>
                 </div>
+
                 <div id="tabla_sprint">
-                    {% if requisitos %}                    
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Requisito</th>
-                                    <th title="Historias de usuarios">Historias Usuarios</th>
-                                    <th >HU Realizadas</th>
-                                    <th >Tareas</th>
-                                    <th >T Realizadas</th>
-                                    <th >Duración</th>
-                                    <th>Opciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for a in requisitos %}
-                                    <tr>
-                                        <td> {{a.nombre}} </td>
-                                        <td>{{  a.historias }}</td>
-                                        <td>{{  a.historias_r }}</td>
-                                        <td>{{  a.tareas }}</td>
-                                        <td>{{  a.tareas_r }}</td>
-                                        <td id="n_duracion">
-                                            {{  a.duracion }}
-                                        </td>
-                                        <td style="width:auto; text-align: right">
-                                            <label class="switch ">
-                                                <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog" name="id_pbacklog" value={{a.id}} class="primary" >
-                                                <span class="slider round"></span>
-                                            </label>
-                                            <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#MyEdicion" >Editar</a>
-                                            <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog" onclick="eliminarPbacklog({{a.id}},'{{a.nombre}}')" >Eliminar</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>                    
-                    {% endif %}
+                                {% if requisitos %}                    
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Requisito</th>
+                                                <th title="Historias de usuarios">Historias Usuarios</th>
+                                                <th >HU Realizadas</th>
+                                                <th >Tareas</th>
+                                                <th >T Realizadas</th>
+                                                <th >Duración</th>
+                                                <th>Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for a in requisitos %}
+                                                <tr>
+                                                    <td> {{a.nombre}} </td>
+                                                    <td>{{  a.historias }}</td>
+                                                    <td>{{  a.historias_r }}</td>
+                                                    <td>{{  a.tareas }}</td>
+                                                    <td>{{  a.tareas_r }}</td>
+                                                    <td id="n_duracion">
+                                                        {{  a.duracion }}
+                                                    </td>
+                                                    <td style="width:auto; text-align: right">
+                                                        <label class="switch ">
+                                                            <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog" name="id_pbacklog" value={{a.id}} class="primary" >
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                        <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#MyEdicion" >Editar</a>
+                                                        <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog" onclick="eliminarPbacklog({{a.id}},'{{a.nombre}}')" >Eliminar</a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>                    
+                                {% endif %}
                 </div>
+                       
             </div>
             <br>
         </form>
@@ -211,49 +214,56 @@
       
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Modal Heading</h4>
+          <h4 class="modal-title">Listado de Épicas</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         
         <!-- Modal body -->
         <div class="modal-body" style="overflow-y: auto;">
-            <label>
-                <h2>Listado de Épicas</h2>
-            </label>
-
-            <div class="card">
-                <div id="tabla_sprint">
-                    {% if requisitos %}                    
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Requisito</th>
-                                    <th title="Historias de usuarios">Historias Usuarios</th>
-                                    <th >HU Realizadas</th>
-                                    <th >Tareas</th>
-                                    <th >T Realizadas</th>
-                                    <th >Duración</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for a in requisitos %}
-                                    <tr>
-                                        <td> {{a.nombre}} </td>
-                                        <td>{{  a.historias }}</td>
-                                        <td>{{  a.historias_r }}</td>
-                                        <td>{{  a.tareas }}</td>
-                                        <td>{{  a.tareas_r }}</td>
-                                        <td id="n_duracion">
-                                            {{  a.duracion }}
-                                        </td>
-                                      
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>                    
-                    {% endif %}
+          
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div id="tabla_sprint">
+                                {% if requisitos %}                    
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Rol</th>
+                                                <th >Quiero</th>
+                                                <th >Para</th>
+                                                <th >Tareas</th>
+                                                
+                                                <th >Duración</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for a in requisitos %}
+                                                <tr>
+                                                    <td> {{a.nombre}} </td>
+                                                    <td>{{  a.quiero }}</td>
+                                                    <td>{{  a.para }}</td>
+                                                    <td>{{  a.tareas }}</td>
+                                                    <td id="n_duracion">
+                                                        {{  a.duracion }}
+                                                    </td>
+                                                  
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>                    
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        
+                    </div>
                 </div>
-            </div>
+                
+            </div> 
+           
         </div>
         
       

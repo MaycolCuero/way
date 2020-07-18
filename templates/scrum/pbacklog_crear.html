@@ -4,7 +4,7 @@
 <script>
     function seleccionar(id, requisito) {
         //alert(requisito);
-        document.getElementById('id_pbacklog').value = id;
+        document.getElementById('h_id_pbacklog').value = id;
         document.getElementById('textRequisito').innerText = requisito;
     }
 
@@ -13,521 +13,696 @@
 
       function get_id(id){
         id_epi = id;
-       
+
       }
 
       console.log('id de la epica' + id_epi); */
 </script>
 
 {% block title %}
-        <title>Registro de requisitos</title>
+<title>Registro de requisitos</title>
 {% endblock %}
 {% block extra_links%}
-    <!-- <link href="{% static 'estilos/scrum/crear_historias.css' %}" rel="stylesheet">-->
-    <link href="/static/estilos/scrum/crear_historias.css" rel="stylesheet">
-    <!--<script type="text/javascript" src="/estilos/scrum/scripts/crear_epicas.js"></script>-->
-    {% endblock %}
+<!-- <link href="{% static 'estilos/scrum/crear_historias.css' %}" rel="stylesheet">-->
+<link href="/static/estilos/scrum/crear_historias.css" rel="stylesheet">
+<!--<script type="text/javascript" src="/estilos/scrum/scripts/crear_epicas.js"></script>-->
+{% endblock %}
 
 <div class="container">
-    <div class="form-group" informacion >
+    <div class="form-group" informacion>
         <div class="text-center">
-            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyuda" margen>¿Que es Scrum?</a>
-            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyudaEpica" margen>¿Que son las Epicas?</a>
-            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyudaHistoria" margen>¿Que son las Historias de Usuario?</a>
+            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyuda" margen>¿Que es
+                Scrum?</a>
+            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyudaEpica" margen>¿Que
+                son las Epicas?</a>
+            <a href="#" class="btn btn-user btn-success" data-toggle="modal" data-target="#ModalAyudaHistoria"
+                margen>¿Que son las Historias de Usuario?</a>
         </div>
     </div>
     <br>
     <h2 style="text-align:center"><strong>Definición de Épicas</strong></h2>
     <br>
-    <form method="POST">
+    <form id="form_epica">
         {% csrf_token %}
 
-        <input type="hidden" name="id_scrum" value={{scrum}}>
-        <input type="hidden" name="estado" value="False">
-        <input type="hidden" name="confirmar" value="False">   
-            
+        <input type="hidden" id="id_scrum" name="id_scrum" value={{scrum}}>
+        <input type="hidden" id="estado" name="estado" value="False">
+        <input type="hidden" id="confirmar" name="confirmar" value="False">
+
         <div class="card" id="panel" style="padding: 10px;">
             <div calss="form-group">
-                <input class="form-control" style="width: 100%;" type="text" name="nombre" id="nombre" placeholder="Como Usuario">           
+                <input class="form-control" id="nombre" style="width: 100%;" type="text" name="nombre" id="nombre"
+                    placeholder="Como Usuario">
             </div>
             <br>
             <div class="form-group">
-                <textarea class="form-control" name="quiero" placeholder="Quiero"></textarea>
+                <textarea class="form-control" id="quiero" name="quiero" placeholder="Quiero"></textarea>
             </div>
             <div class="form-group">
-                <textarea class="form-control" name="para" placeholder="Para"></textarea>
+                <textarea class="form-control" id="para" name="para" placeholder="Para"></textarea>
             </div>
             <div class="text-center">
-                <button  type="submit" class="btn btn-primary" id="guardar" style="width:50%;" > Guardar </button>
+                <button type="submit" class="btn btn-primary" id="guardar" style="width:50%;"> Guardar </button>
             </div>
         </div>
     </form>
 </div>
 <br>
 
-<div class="container">
-     {% if pbacklog %}
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col">
-                        <strong class="card-title">Listado de Épicas</strong>
-                    </div>
-                    <div class="col" align="right">
-                       <a class="btn btn-success" title="Listado de Historias de usuario" href="{% url 'scrum:historia_list' %}">Continuar</a>
-                    </div>
+<div class="container" id="tabla_epica">
+    <div>
+        <input type="hidden" id="scrum" value="{{scrum}}">
+    </div>
+    {% if pbacklog %}
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <strong class="card-title">Listado de Épicas</strong>
+                </div>
+                <div class="col" align="right">
+                    <a class="btn btn-success" title="Listado de Historias de usuario"
+                        href="{% url 'scrum:historia_list' %}">Continuar</a>
                 </div>
             </div>
-            <div class="table-stats order-table ov-h">
-                <table class="table table-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th>Como</th>
-                            <th>Quiero</th>
-                            <th>Para</th>
-                            <th>H.U</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in pbacklog %}
-                            <tr>
-                                <td>{{ p.nombre }}</td>
-                                <td>{{ p.quiero }}</td>
-                                <td>{{ p.para }}</td>
-                                <td>{{ p.hu }}</td>
-                                <td>
-                                    <!--datos para editar -->
-                                    <input type="hidden" id="nombre_e" value="{{p.nombre}}" >
-                                    <input type="hidden" id="quiero_e" value="{{p.nombre}}" >
-                                    <input type="hidden" id="para_e" value="{{p.nombre}}">
-                                    <input type="hidden" id="id_epica" value="{{p.id}}">
-                                    <button class="btn btn-primary" title="Historias de usuario" data-toggle="modal" data-target="#myModal" onclick="seleccionar('{{p.id}}','{{p.quiero}}')">
-                                        H.U
-                                    </button>
-                                    <button class="btn btn-success" id="editar_epica" title="Editar" data-toggle="modal" data-target="#EditarEpica" epica="{{p.id}}" >
-                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                      </svg>
-                                    </button>
-                                    <button class="btn btn-danger" title="Eliminar" data-toggle="modal" id="e_eliminar" d_epi="{{p.id}}" data-target="#confirmDeleteEpica">
-                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                          </svg>
-                                    </button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
         </div>
-     {% else %}
-            <h3>No hay épicas creadas</h3>
+        <div class="table-stats order-table ov-h">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Como</th>
+                        <th>Quiero</th>
+                        <th>Para</th>
+                        <th>H.U</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pbacklog %}
+                    <tr>
+                        <td>{{ p.nombre }}</td>
+                        <td>{{ p.quiero }}</td>
+                        <td>{{ p.para }}</td>
+                        <td>{{ p.hu }}</td>
+                        <td>
+                            <!--datos para editar -->
+                            <input type="hidden" id="nombre_e" value="{{p.nombre}}">
+                            <input type="hidden" id="quiero_e" value="{{p.nombre}}">
+                            <input type="hidden" id="para_e" value="{{p.nombre}}">
+                            <input type="hidden" id="id_epica" value="{{p.id}}">
+                            <button class="btn btn-primary" title="Historias de usuario" data-toggle="modal"
+                                data-target="#myModal" onclick="seleccionar('{{p.id}}','{{p.quiero}}')">
+                                H.U
+                            </button>
+                            <button class="btn btn-success" id="editar_epica" title="Editar" data-toggle="modal"
+                                data-target="#EditarEpica" epica="{{p.id}}">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd"
+                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </button>
+                            <button class="btn btn-danger" title="Eliminar" data-toggle="modal" id="e_eliminar"
+                                d_epi="{{p.id}}" data-target="#confirmDeleteEpica">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                    <path fill-rule="evenodd"
+                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    <h3>No hay épicas creadas</h3>
     {% endif %}
 </div>
-    <!-- The Modal -->
-  <div class="modal fade" id="myModal">
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
     <div class="modal-dialog">
-      <div class="modal-content">
+        <div class="modal-content">
 
-        <!-- Modal Header -->
-        <div class="modal-header">
-            <h4 class="modal-title">Historias de Usuarios</h4>
-
-
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-
-        <!-- Modal body -->
-        <div class="modal-body">
-            <div class="alert alert-info" role="info">
-                <h6 style="text-align:center;">
-                    <font >Historia de Usuario</font>
-                </h6>
-                <h5 style="text-align:center">
-                    <strong><span id="textRequisito"></span></strong>
-                </h5>
-            </div>
-            <div class="container">
-                <form method="POST" action="/scrum/historia_crear">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label >
-                            Como usuario
-                            <i class="fas fa-question-circle" title="Escriba el tipo de usuario" style="cursor:pointer"></i>
-                        </label>
-                        <input class="form-control" type="text" name="como_usuario" placeholder="Rol solicitante" required>
-                    </div>
-                    <div class="form-group">
-                        <label >
-                            Quiero
-                            <i class="fas fa-question-circle" title="Funcionalidad que solicita el usuario" style="cursor:pointer"></i>
-                        </label>
-                        <input class="form-control" type="text" name="quiero" placeholder="Definición del requisito" required>
-                    </div>
-                    <div class="form-group">
-                        <label >Para
-                            <i class="fas fa-question-circle"title="Propósito del requisito" style="cursor:pointer"></i>
-                        </label>
-                        <textarea class="form-control" name="para" rows="3" placeholder="Objetivo del requisito" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="hidden" name="id_pbacklog" id="id_pbacklog" >
-                    </div>
-
-                    <div class="form-group">
-                        <input type="hidden" name="estado" value="False">
-                        <input type="hidden" name="confirmar" value="False">
-                    </div>
-                   <div class="row">
-                        <div class="col" align="center">
-                            <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
-                        </div>
-                        <div class="col" align="center">
-                            <button type="button" style="width:80%;" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- end modal -->
-
-<!-- The Modal Editar Epica -->
-    <div class="modal fade" id="EditarEpica">
-        <div class="modal-dialog">
-          <div class="modal-content">
-    
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Editar épica</h4>
-    
-    
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Historias de Usuarios</h4>
+
+
+                <button type="button" id="close_historia" class="close" data-dismiss="modal">&times;</button>
             </div>
-    
+
             <!-- Modal body -->
             <div class="modal-body">
-               
+                <div class="alert alert-info" role="info">
+                    <h6 style="text-align:center;">
+                        <font>Historia de Usuario</font>
+                    </h6>
+                    <h5 style="text-align:center">
+                        <strong><span id="textRequisito"></span></strong>
+                    </h5>
+                </div>
                 <div class="container">
-                    <form id="editarEpica">
+
+                    <form id="form_historia">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label >
+                            <label>
                                 Como usuario
-                                <i class="fas fa-question-circle" title="Escriba el tipo de usuario" style="cursor:pointer"></i>
+                                <i class="fas fa-question-circle" title="Escriba el tipo de usuario"
+                                    style="cursor:pointer"></i>
                             </label>
-                            <input class="form-control" type="text" id="como_usuario" placeholder="Rol solicitante" required>
+                            <input class="form-control" type="text" id="h_como_usuario" name="como_usuario" placeholder="Rol solicitante"
+                                required>
                         </div>
                         <div class="form-group">
-                            <label >
+                            <label>
                                 Quiero
-                                <i class="fas fa-question-circle" title="Funcionalidad que solicita el usuario" style="cursor:pointer"></i>
+                                <i class="fas fa-question-circle" title="Funcionalidad que solicita el usuario"
+                                    style="cursor:pointer"></i>
                             </label>
-                            <input class="form-control" type="text" id="quiero" placeholder="Definición del requisito" required>
+                            <input class="form-control" type="text" id="h_quiero" name="quiero" placeholder="Definición del requisito"
+                                required>
                         </div>
                         <div class="form-group">
-                            <label >Para
-                                <i class="fas fa-question-circle"title="Propósito del requisito" style="cursor:pointer"></i>
+                            <label>Para
+                                <i class="fas fa-question-circle" title="Propósito del requisito"
+                                    style="cursor:pointer"></i>
                             </label>
-                            <textarea class="form-control" id="para" rows="3" placeholder="Objetivo del requisito" required></textarea>
+                            <textarea class="form-control" id="h_para" name="para" rows="3" placeholder="Objetivo del requisito"
+                                required></textarea>
                         </div>
-    
+
                         <div class="form-group">
-                            <input type="hidden" name="id_pbacklog" id="id_epica" >
+                            <input type="hidden" id="h_id_pbacklog" name="id_pbacklog" id="id_pbacklog">
                         </div>
-    
-                       <div class="row">
+
+                        <div class="form-group">
+                            <input type="hidden" id="h_estado" name="estado" value="False">
+                            <input type="hidden" id="h_confirmar" name="confirmar" value="False">
+                        </div>
+                        <div class="row">
                             <div class="col" align="center">
                                 <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
                             </div>
                             <div class="col" align="center">
-                                <button type="button" style="width:80%;" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                <button type="button" style="width:80%;" class="btn btn-danger"
+                                    data-dismiss="modal">Cancelar</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-          </div>
         </div>
-      </div>
-    <!-- end modal -->
+    </div>
+</div>
+<!-- end modal -->
 
-  <!-- The Modal Ayuda scrum -->
-  <div class="modal fade" id="ModalAyuda">
+<!-- The Modal Editar Epica -->
+<div class="modal fade" id="EditarEpica">
     <div class="modal-dialog">
-      <div class="modal-content">
+        <div class="modal-content">
 
-        <!-- Modal Header -->
-        <div class="modal-header">
-            <h4 class="modal-title">¿Que es Scrum?</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Editar épica</h4>
 
-        <!-- Modal body -->
-        <div class="modal-body">
-            <div class="alert alert-info" role="info">
-              <font>
-                Scrum es una metodología ágil
-                muy utilizada en el desarrollo de software,
-                la cual es un conjunto de buenas prácticas para 
-                trabajar colaborativamente, en equipo, 
-                y obtener el mejor resultado posible de un proyecto
-              </font>
+
+                <button type="button" id="close_edit_epica" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="container">
+                    <form id="editarEpica">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>
+                                Como usuario
+                                <i class="fas fa-question-circle" title="Escriba el tipo de usuario"
+                                    style="cursor:pointer"></i>
+                            </label>
+                            <input class="form-control" type="text" id="como_usuario" placeholder="Rol solicitante"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Quiero
+                                <i class="fas fa-question-circle" title="Funcionalidad que solicita el usuario"
+                                    style="cursor:pointer"></i>
+                            </label>
+                            <input class="form-control" type="text" id="edit_quiero" placeholder="Definición del requisito"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Para
+                                <i class="fas fa-question-circle" title="Propósito del requisito"
+                                    style="cursor:pointer"></i>
+                            </label>
+                            <textarea class="form-control" id="edit_para" rows="3" placeholder="Objetivo del requisito"
+                                required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="hidden" name="id_pbacklog" id="id_epica">
+                        </div>
+
+                        <div class="row">
+                            <div class="col" align="center">
+                                <button type="submit" style="width:80%;" class="btn btn-primary">Guardar</button>
+                            </div>
+                            <div class="col" align="center">
+                                <button type="button" style="width:80%;" class="btn btn-danger"
+                                    data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-      </div>
-    </div> 
-  </div>
+    </div>
+</div>
+<!-- end modal -->
 
-  <!-- The Modal Ayuda  Epicas -->
-  <div class="modal fade" id="ModalAyudaEpica">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
+<!-- The Modal Ayuda scrum -->
+<div class="modal fade" id="ModalAyuda">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-        <!-- Modal Header -->
-        <div class="modal-header">
-            <h4 class="modal-title">¿Que es una Épica?</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">¿Que es Scrum?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
 
-        <!-- Modal body -->
-        <div class="modal-body align-center">
-            <div class="row">
-                <div class="col">
-                    <div class="alert alert-info" role="info">
-                        <p>
-                          Una épica es una historia de usuario sin refinar, 
-                          es decir, es un requisito muy grande que se puede desglosar
-                          en historias de usuario más pequeñas
-                        </p>
-                    </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="alert alert-info" role="info">
+                    <font>
+                        Scrum es una metodología ágil
+                        muy utilizada en el desarrollo de software,
+                        la cual es un conjunto de buenas prácticas para
+                        trabajar colaborativamente, en equipo,
+                        y obtener el mejor resultado posible de un proyecto
+                    </font>
                 </div>
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
-                            <p style="justify-content: safe;">
-                                <strong>Ejemplo</strong>
-                                <br>
-                                La Universidad Cesmag, quiere un aplicativo móvil para que los estudiantes, 
-                                directivos y visitantes puedan visualizar un mapa de la misma, detallando aulas,
-                                oficinas, laboratorios y auditorios. A continuación se define una épica con sus
-                                respectivas historias de usuarios. 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal Ayuda  Epicas -->
+<div class="modal fade" id="ModalAyudaEpica">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">¿Que es una Épica?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body align-center">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-info" role="info">
+                            <p>
+                                Una épica es una historia de usuario sin refinar,
+                                es decir, es un requisito muy grande que se puede desglosar
+                                en historias de usuario más pequeñas
                             </p>
                         </div>
-                    </div>                    
-                </div>
-            </div>
-            <br>
-            <div class="card" style="padding: 10px;">
-                <div>
-                    <div class="card">
-                        <table class="table table-sm center" >
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>EP. #1</th>    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Descripción</strong></td>
-                                    <td>
-                                        <div class="container">                                        
-                                            <div class="row"><strong>Como:</strong> Usuario</div>
-                                            <div class="row"><strong>Quiero:</strong> Encontrar un aula, oficina o auditorio</div>
-                                            <div class="row"><strong>Para:</strong> Conocer la ubicación del lugar</div>                                        
-                                        </div>                                       
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <p style="justify-content: safe;">
+                                    <strong>Ejemplo</strong>
+                                    <br>
+                                    La Universidad Cesmag, quiere un aplicativo móvil para que los estudiantes,
+                                    directivos y visitantes puedan visualizar un mapa de la misma, detallando aulas,
+                                    oficinas, laboratorios y auditorios. A continuación se define una épica con sus
+                                    respectivas historias de usuarios.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br>
-                <div class="row"> 
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card" >
-                            <table class="table table-sm center" >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Historia #1</th>    
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Descripción</strong></td>
-                                        <td>         
-                                            <div class="container">                                  
-                                                <div class="row"><strong>Como:</strong>Usuario</div>
-                                                <div class="row"><strong>Quiero:</strong> Encontrar un aula de clases mediante mi teléfono</div>
-                                                <div class="row"><strong>Para:</strong> Conocer la ubicación del aula</div>   
-                                            </div>                                                                               
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card" style="padding: 10px;">
+                    <div>
                         <div class="card">
-                            <table class="table table-sm center" >
+                            <table class="table table-sm center">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Historia #2</th>    
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Descripción</strong></td>
-                                        <td>  
-                                            <div class="container">                                         
-                                            <div class="row"><strong>Como:</strong> Usuario</div>
-                                            <div class="row"><strong>Quiero:</strong> Encontrar una oficina mediante mi teléfono</div>
-                                            <div class="row"><strong>Para:</strong> Conocer la ubicación de la oficna</div>                                                                                  
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>   
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card" >
-                            <table class="table table-sm center" >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Historia #3</th>    
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Descripción</strong></td>
-                                        <td>        
-                                            <div class="container">                                   
-                                                <div class="row"><strong>Como:</strong> Usuario</div>
-                                                <div class="row"><strong>Quiero:</strong> Encontrar un auditorio mediante mi teléfono</div>
-                                                <div class="row"><strong>Para:</strong> Conocer la ubicación del auditorio</div>                                                                                  
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>  
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card" >
-                            <table class="table table-sm center" >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Historia #4</th>    
+                                        <th>EP. #1</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td><strong>Descripción</strong></td>
                                         <td>
-                                            <div class="container">                                      
-                                                <div class="row"><strong>Como:</strong>Usuario</div>
-                                                <div class="row"><strong>Quiero:</strong> Visualizar fácilmente el mapa de guía</div>
-                                                <div class="row"><strong>Para:</strong> Encontrar los lugares de manera fácil </div>                                                                                  
+                                            <div class="container">
+                                                <div class="row"><strong>Como:</strong> Usuario</div>
+                                                <div class="row"><strong>Quiero:</strong> Encontrar un aula, oficina o
+                                                    auditorio</div>
+                                                <div class="row"><strong>Para:</strong> Conocer la ubicación del lugar
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div> 
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card">
-                            <table class="table table-sm center" >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Historia #5</th>    
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Descripción</strong></td>
-                                        <td>    
-                                            <div class="container">                                       
-                                                <div class="row"><strong>Como:</strong> Usuario</div>
-                                                <div class="row"><strong>Quiero:</strong> Encontrar la señalización de forma fácil</div>
-                                                <div class="row"><strong>Para:</strong> Lograr visualizar el mapa</div> 
-                                            </div>                                                                                 
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong>Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar un aula de
+                                                        clases mediante mi teléfono</div>
+                                                    <div class="row"><strong>Para:</strong> Conocer la ubicación del
+                                                        aula</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>  
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card">
-                            <table class="table table-sm center" >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Historia #6</th>    
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Descripción</strong></td>
-                                        <td> 
-                                            <div class="container">
-                                                <div class="row"><strong>Como:</strong> Usuario</div>
-                                                <div class="row"><strong>Quiero:</strong> Realizar una búsqueda de un lugar especifico</div>
-                                                <div class="row"><strong>Para:</strong> Facilitar la localización</div> 
-                                            </div>                                
-                                                                                                                             
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong> Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar una oficina
+                                                        mediante mi teléfono</div>
+                                                    <div class="row"><strong>Para:</strong> Conocer la ubicación de la
+                                                        oficna</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>                   
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #3</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong> Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar un auditorio
+                                                        mediante mi teléfono</div>
+                                                    <div class="row"><strong>Para:</strong> Conocer la ubicación del
+                                                        auditorio</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #4</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong>Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Visualizar fácilmente el
+                                                        mapa de guía</div>
+                                                    <div class="row"><strong>Para:</strong> Encontrar los lugares de
+                                                        manera fácil </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #5</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong> Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar la señalización
+                                                        de forma fácil</div>
+                                                    <div class="row"><strong>Para:</strong> Lograr visualizar el mapa
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #6</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong> Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Realizar una búsqueda de
+                                                        un lugar especifico</div>
+                                                    <div class="row"><strong>Para:</strong> Facilitar la localización
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>         
-        </div>
-      </div>
-    </div> 
-  </div>
-
-  <!-- The Modal Ayuda Historias de usuario -->
-  <div class="modal fade" id="ModalAyudaHistoria">
-    <div class="modal-dialog">
-      <div class="modal-content">
-
-        <!-- Modal Header -->
-        <div class="modal-header">
-            <h4 class="modal-title">¿Que son las Historias de Usuario?</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-
-        <!-- Modal body -->
-        <div class="modal-body">
-            <div class="alert alert-info" role="info">
-              <font>
-                Una historia de usuario es la descripción 
-                de una funcionalidad que se debe incorporar
-                a un sistema de software y cuya implementación
-                aporta valor al cliente
-              </font>
             </div>
         </div>
-      </div>
-    </div> 
-  </div>
+    </div>
+</div>
+
+<!-- The Modal Ayuda Historias de usuario -->
+<div class="modal fade" id="ModalAyudaHistoria">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">¿Que son las Historias de Usuario?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body align-center">
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-info" role="info">
+                            <p>
+                                Una historia de usuario es la descripción
+                                de una funcionalidad que se debe incorporar
+                                a un sistema de software y cuya implementación
+                                aporta valor al cliente
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <p style="justify-content: safe;">
+                                    <strong>Ejemplo</strong>
+                                    <br>
+                                    La Universidad Cesmag, quiere un aplicativo móvil para que los estudiantes,
+                                    directivos y visitantes puedan visualizar un mapa de la misma, detallando aulas,
+                                    oficinas, laboratorios y auditorios. A continuación se definen algunas historias
+                                    de usuarios basadas en el texto.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="card" style="padding: 10px;">
+
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong>Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar un aula de
+                                                        clases mediante mi teléfono</div>
+                                                    <div class="row"><strong>Para:</strong> Conocer la ubicación del
+                                                        aula</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong> Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar una oficina
+                                                        mediante mi teléfono</div>
+                                                    <div class="row"><strong>Para:</strong> Conocer la ubicación de la
+                                                        oficna</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #3</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong> Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Encontrar un auditorio
+                                                        mediante mi teléfono</div>
+                                                    <div class="row"><strong>Para:</strong> Conocer la ubicación del
+                                                        auditorio</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card">
+                                <table class="table table-sm center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Historia #4</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Descripción</strong></td>
+                                            <td>
+                                                <div class="container">
+                                                    <div class="row"><strong>Como:</strong>Usuario</div>
+                                                    <div class="row"><strong>Quiero:</strong> Visualizar fácilmente el
+                                                        mapa de guía</div>
+                                                    <div class="row"><strong>Para:</strong> Encontrar los lugares de
+                                                        manera fácil </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Modal confirmar eliminar epica -->
@@ -536,33 +711,33 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><strong>Eliminar Épica</strong></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" id="close_epica_delete" class="close" data-dismiss="modal">&times;</button>
             </div>
-            
+
             <div class="modal-body">
-                <div class="card" >
-                    <table class="table table-sm center" >
+                <div class="card">
+                    <table class="table table-sm center">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Épica</th>    
+                                <th>Épica</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td style="width: 30%;"><strong>Descripción</strong></td>
-                                <td>         
-                                    <div class="container">                                  
+                                <td>
+                                    <div class="container">
                                         <div class="row"><strong>Como: </strong>
                                             <span id="e_nombre"></span>
                                         </div>
-                                        <div class="row"><strong>Quiero: </strong> 
+                                        <div class="row"><strong>Quiero: </strong>
                                             <span id="e_quiero"></span>
                                         </div>
                                         <div class="row"><strong>Para: </strong>
                                             <span id="e_para"></span>
-                                        </div>   
-                                    </div>                                                                               
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -573,13 +748,13 @@
                     Si elimina esta Épica, tenga en cuenta que
                     se eliminaran las historias de usuarios que hacen parte de ella.
                 </p>
-                
-               
+
+
             </div>
             <form id="eliminar_epica">
                 {% csrf_token %}
                 <input type="hidden" id="id_pbacklog_edit">
-           
+
                 <div class="modal-footer">
                     <div class="container" align="center" id="confirmar">
                         <button style="width: 60%;" class="btn btn-danger">Eliminar</button>
@@ -590,85 +765,160 @@
     </div>
 </div>
 <!-- end modal delete history -->
-  <script>
-      
-      $(document).on('click','#editar_epica',function(e){
-        var nombre = $(this).parents("tr").find("td")[0].innerText;
-        var quiero = $(this).parents("tr").find("td")[1].innerText;
-        var para = $(this).parents("tr").find("td")[2].innerText;
+<script>
+    var nombre = "";
+    var quiero = "";
+    var para = "";
 
-        var id_epicass = $(this).attr('epica');
-        document.getElementById('id_epica').value = id_epicass;
-
-        console.log(id_epicass);
-        document.getElementById('como_usuario').value = nombre;
-        document.getElementById('quiero').value = quiero;
-        document.getElementById('para').value = para;            
-      });
-
-      $(document).on('submit','#editarEpica',function(e){
+    $(document).on('submit','#form_epica', function(e){
         e.preventDefault();
-        var nombre = $(this).find('#como_usuario').val();
-        var quiero = $(this).find('#quiero').val();
-        var para = $(this).find('#para').val();
+        nombre = $(this).find('#nombre').val();
+        quiero = $(this).find('#quiero').val();
+        para = $(this).find('#para').val();
+        var id_scrum = $(this).find('#id_scrum').val();
+        var estado = $(this).find('#estado').val();
+        var confirmar = $(this).find('#confirmar').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/scrum/pbacklog_crear",
+            context: document.body,
+            dataType: 'json',
+            data: {
+                'nombre': nombre,
+                'quiero': quiero,
+                'para': para,
+                'id_scrum': id_scrum,
+                'estado': estado,
+                'confirmar': confirmar,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (data) {
+                $('#tabla_epica').html(data['datos']);
+            }
+        });
+
+        $('#nombre').val("");
+        $('#quiero').val("");
+        $('#para').val("");
+    });
+
+    $(document).on('click', '#editar_epica', function (e) {
+        nombre = $(this).parents("tr").find("td")[0].innerText;
+        quiero = $(this).parents("tr").find("td")[1].innerText;
+        para = $(this).parents("tr").find("td")[2].innerText;
+        var id_epicass = $(this).attr('epica');
+        
+        
+        document.getElementById('id_epica').value = id_epicass;
+        document.getElementById('como_usuario').value = nombre;
+        document.getElementById('edit_quiero').value = quiero;
+        document.getElementById('edit_para').value = para;
+    });
+
+    $(document).on('submit', '#editarEpica', function (e) {
+        e.preventDefault();
+        nombre = $(this).find('#como_usuario').val();
+        quiero = $(this).find('#edit_quiero').val();
+        para = $(this).find('#edit_para').val();
         var idp = document.getElementById('id_epica').value;
-     
+        var scrum = document.getElementById('scrum').value;
+        
         $.ajax({
             type: "POST",
             url: "/scrum/update_epica",
             context: document.body,
             dataType: 'json',
-            data:{
-                'nombre':nombre,
+            data: {
+                'nombre': nombre,
                 'quiero': quiero,
-                'para':para,
-                'id_pbacklog':idp,
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function(data){
-                      window.location.reload();
-                    }
+                'para': para,
+                'id_pbacklog': idp,
+                'scrum':scrum,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (data) {
+                $('#close_edit_epica').click();
+                $('#tabla_epica').html(data['datos']);
+            }
         });
-      });
+    });
 
-      // Eliminar una epica 
-      $(document).on('click','#e_eliminar',function(e){
+    // Eliminar una epica 
+    $(document).on('click', '#e_eliminar', function (e) {
         var e_nombre = $(this).parents("tr").find("td")[0].innerText;
         var e_quiero = $(this).parents("tr").find("td")[1].innerText;
         var e_para = $(this).parents("tr").find("td")[2].innerText;
         var id_ep = $(this).attr('d_epi');
 
-        console.log('id de la epica '+ id_ep);
-        console.log(e_nombre);
-        console.log(e_quiero);
-        console.log(e_para);
         document.getElementById('e_nombre').innerText = e_nombre;
         document.getElementById('e_quiero').innerText = e_quiero;
-        document.getElementById('e_para').innerText = e_para;  
-        document.getElementById('id_pbacklog_edit').value = id_ep;          
-      });
+        document.getElementById('e_para').innerText = e_para;
+        document.getElementById('id_pbacklog_edit').value = id_ep;
+    });
 
 
-      $(document).on('submit','#eliminar_epica', function(e){
-          e.preventDefault();
-          var id = $(this).find('#id_pbacklog_edit').val();
-          console.log('iedeee '+ id);
+    $(document).on('submit', '#eliminar_epica', function (e) {
+        e.preventDefault();
+        var id = $(this).find('#id_pbacklog_edit').val();
+        var scrum = document.getElementById('scrum').value;
+
+
         $.ajax({
             type: "POST",
-                url: "/scrum/delete_epica",
-                context: document.body,
-                dataType: 'json',
-                data:{
-                    'id':id,
-                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-                        },
-                        success: function(data){
-                            window.location.reload();
-                        }
+            url: "/scrum/delete_epica",
+            context: document.body,
+            dataType: 'json',
+            data: {
+                'id': id,
+                'scrum':scrum,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (data) {
+                $('#close_epica_delete').click();
+                $('#tabla_epica').html(data['datos']);               
+            }
         });
-      });
+    });
 
 
-  </script>
+    //Guardar historias de usuarios 
+
+    $(document).on('submit','#form_historia',function(e){
+        e.preventDefault();
+        var h_nombre = $(this).find('#h_como_usuario').val();
+        var h_quiero = $(this).find('#h_quiero').val();
+        var h_para = $(this).find('#h_para').val();
+        var idp = $(this).find('#h_id_pbacklog').val();
+        var estado = $(this).find('#h_estado').val();
+        var confirmar = $(this).find('#h_confirmar').val();
+        var scrum = $('#scrum').val();
+    
+        $.ajax({
+            type: "POST",
+            url: "/scrum/historia_crear",
+            context: document.body,
+            dataType: 'json',
+            data: {
+                'como_usuario':h_nombre,
+                'quiero': h_quiero,
+                'para': h_para,
+                'id_pbacklog': idp,
+                'estado': estado,
+                'confirmar': confirmar,
+                'scrum': scrum,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(data){
+                $('#close_historia').click();
+                $('#tabla_epica').html(data['datos']);
+            }
+        }); 
+        $('#h_como_usuario').val("");
+        $('#h_quiero').val("");
+        $('#h_para').val("");
+    });
+   
+</script>
 
 {% endblock %}

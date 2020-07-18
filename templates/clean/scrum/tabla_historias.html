@@ -1,0 +1,77 @@
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <strong class="card-title">Listado de usuarios y tareas</strong>
+            </div>
+            <div class="col" align="right">
+                <a class="btn btn-outline-primary" title="Lisato de requisitos"
+                    href="{% url 'scrum:pbacklog_crear' %}">Volver</a>
+
+                <a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#ListTareas">Ver
+                    Tareas</a>
+                {% if tareas %}
+                <a class="btn btn-success" title="Página de inicio"
+                    href="{% url 'proyecto:index' id_proyecto.id %}" id_pro = '{{id_proyecto.id}}' id="finalizar">Finalizar</a>
+                    
+                {% endif %}
+                <input type="hidden" id="id_pro" value="{{id_proyecto.id}}">
+            </div>
+        </div>
+    </div>
+    <div class="table-stats order-table ov-h">
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    <td><strong>Como usuario</strong></td>
+                    <td><strong>Quiero</strong></td>
+                    <td><strong>Para</strong></td>
+                    <td><strong>Tareas</strong></td>
+                    <td><strong>Opciones</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% if historia %}
+
+                {% for h in historia %}
+                <tr>
+                    <td>{{ h.como_usuario }}</td>
+                    <td>{{ h.quiero }}</td>
+                    <td>{{ h.para }}</td>
+                    <td>{{ h.tarea }}</td>
+                    <td>
+                        <button class="btn btn-primary" title="Ingrese las tareas" data-toggle="modal"
+                            data-target="#myModal" onclick="seleccionar('{{h.id}}', '{{h.quiero}}')">
+                            Tarea
+                        </button>
+                        <button class="btn btn-success" id="editar_historia" title="Editar" data-toggle="modal"
+                            data-target="#EditarHistoria" historia="{{h.id}}">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square"
+                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                <path fill-rule="evenodd"
+                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                            </svg>
+                        </button>
+
+                        <button class="btn btn-danger" title="Eliminar" data-toggle="modal" id="e_eliminar"
+                            historia="{{h.id}}" data-target="#DeleteHistoria" d_his = "{{h.id}}">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash"
+                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path fill-rule="evenodd"
+                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <h1>No hay registros de Historias de Usuarios</h1>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

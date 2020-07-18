@@ -37,7 +37,7 @@ def historia_list(request):
     historia = HistoriaUsuario.objects.filter(id_pbacklog__id_scrum=scrum).annotate(
         tarea = Count('sbacklog__id')
     ).order_by('id')
-    tareas = Sbacklog.objects.values('nombre','id_historia__quiero','n_horas').filter(id_historia__id_pbacklog__id_scrum=scrum)
+    tareas = Sbacklog.objects.values('id','nombre','id_historia__quiero','n_horas').filter(id_historia__id_pbacklog__id_scrum=scrum)
     contexto = {
         'historia':historia,
         'tareas':tareas,
@@ -80,10 +80,15 @@ def pbacklog_crear(request):
 
     if request.method == 'POST':
         form = PbacklogForm(data=request.POST)
-        print(form)
+        #print(form)
         if form.is_valid():
             form.save()
-            return redirect('scrum:pbacklog_crear')
+            print('paso')
+            datos = {'datos': render_to_string('clean/scrum/table_epicas.html', {'pbacklog': backlog, 'scrum': scrum})}
+            #return redirect('scrum:pbacklog_crear')
+            return JsonResponse(datos)
+        else:
+            print('no se guardo')
     else:
         form = PbacklogForm
 
@@ -92,11 +97,18 @@ def pbacklog_crear(request):
 
 @login_required
 def historia_crear(request):
+    scrum = request.POST['scrum']
+    backlog = Pbacklog.objects.filter(id_scrum=scrum).annotate(
+        hu=Count('historiausuario__id')
+    ).order_by('id')
+
     if request.method == 'POST':
         form = HistoriaUsuarioForm(data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('scrum:pbacklog_crear')
+            #return redirect('scrum:pbacklog_crear')
+            datos = {'datos': render_to_string('clean/scrum/table_epicas.html', {'pbacklog': backlog, 'scrum': scrum})}
+            return JsonResponse(datos)
     else:
         form = HistoriaUsuarioForm
     #return render(request, 'scrum/pbacklog_crear.html', {'formHistoria': form})
@@ -109,10 +121,30 @@ def sbacklog_crear(request):
         form = SbacklogForm(data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('scrum:historia_list')
-    #return render(request, 'scrum/sbacklog_crear.html',{'formTareas':form})
-    return historia_list(request)
-    # Create your views here.
+
+    id_pro = request.POST['id_pro']
+    scrum = request.session['scrum']
+
+    historia = HistoriaUsuario.objects.filter(id_pbacklog__id_scrum=scrum).annotate(
+                tarea=Count('sbacklog__id')
+            ).order_by('id')
+
+    tareas = Sbacklog.objects.values('id','nombre', 'id_historia__quiero', 'n_horas').filter(
+                id_historia__id_pbacklog__id_scrum=scrum)
+
+    id_proyecto = Proyecto.objects.get(id=id_pro)
+
+    contexto = {
+                'historia': historia,
+                'tareas': tareas,
+                'id_proyecto': id_proyecto
+            }
+
+    datos = {'tabla_historias': render_to_string('clean/scrum/tabla_historias.html', contexto),
+             'tabla_tareas': render_to_string('clean/scrum/tabla_tareas.html',
+                                              {'tareas': tareas})
+             }
+    return JsonResponse(datos)
 
 
 @login_required
@@ -286,7 +318,42 @@ def update_pbacklog(request):
     return JsonResponse(datos)
 
 
+@login_required
+def update_historia(request):
+    if request.method == 'POST':
+        id = request.POST['idh']
+        nombre = request.POST['nombre']
+        quiero = request.POST['quiero']
+        para = request.POST['para']
+        id_pro = request.POST['id_pro']
+
+        HistoriaUsuario.objects.filter(id=id).update(como_usuario=nombre, quiero=quiero, para=para)
+        scrum = request.session['scrum']
+
+        historia = HistoriaUsuario.objects.filter(id_pbacklog__id_scrum=scrum).annotate(
+            tarea=Count('sbacklog__id')
+        ).order_by('id')
+
+        tareas = Sbacklog.objects.values('id','nombre', 'id_historia__quiero', 'n_horas').filter(
+            id_historia__id_pbacklog__id_scrum=scrum)
+
+        id_proyecto = Proyecto.objects.get(id=id_pro)
+
+        contexto = {
+            'historia': historia,
+            'tareas': tareas,
+            'id_proyecto': id_proyecto
+        }
+
+        datos = {'tabla_historias': render_to_string('clean/scrum/tabla_historias.html',contexto),
+                 'tabla_tareas': render_to_string('clean/scrum/tabla_tareas.html',
+                                                  {'tareas': tareas})
+                 }
+
+    return JsonResponse(datos)
+
 def update_epica(request):
+    scrum = request.POST['scrum']
     if request.method == 'POST':
         id_pbacklog = request.POST['id_pbacklog']
         como_usuario = request.POST['nombre']
@@ -295,16 +362,57 @@ def update_epica(request):
 
         Pbacklog.objects.filter(id=id_pbacklog).update(nombre=como_usuario, quiero=quiero, para=para)
 
-    return JsonResponse({'datos':'datos'})
+    backlog = Pbacklog.objects.filter(id_scrum=scrum).annotate(
+            hu=Count('historiausuario__id')
+        ).order_by('id')
+
+    datos = {'datos': render_to_string('clean/scrum/table_epicas.html', {'pbacklog': backlog, 'scrum':scrum})}
+    return JsonResponse(datos)
 
 
 def delete_epica(request):
+    scrum = request.POST['scrum']
     if request.method == "POST":
         id = request.POST['id']
         Pbacklog.objects.filter(id=id).delete()
-        print(request.POST)
 
-    return JsonResponse({'datos':'datos'})
+    backlog = Pbacklog.objects.filter(id_scrum=scrum).annotate(
+        hu=Count('historiausuario__id')
+    ).order_by('id')
+
+    datos = {'datos': render_to_string('clean/scrum/table_epicas.html', {'pbacklog': backlog, 'scrum': scrum})}
+    return JsonResponse(datos)
+
+
+def delete_historia(request):
+    id_pro = request.POST['id_pro']
+    if request.method == "POST":
+        id = request.POST['id']
+        HistoriaUsuario.objects.filter(id=id).delete()
+
+    scrum = request.session['scrum']
+
+    historia = HistoriaUsuario.objects.filter(id_pbacklog__id_scrum=scrum).annotate(
+        tarea=Count('sbacklog__id')
+    ).order_by('id')
+
+    tareas = Sbacklog.objects.values('id','nombre', 'id_historia__quiero', 'n_horas').filter(
+        id_historia__id_pbacklog__id_scrum=scrum)
+
+    id_proyecto = Proyecto.objects.get(id=id_pro)
+
+    contexto = {
+        'historia': historia,
+        'tareas': tareas,
+        'id_proyecto': id_proyecto
+    }
+
+    datos = {
+        'tabla_historias': render_to_string('clean/scrum/tabla_historias.html', contexto),
+        'tabla_tareas': render_to_string('clean/scrum/tabla_tareas.html',
+                                              {'tareas': tareas})
+    }
+    return JsonResponse(datos)
 
 @login_required
 def eliminarPbacklog(request, id):
@@ -314,3 +422,33 @@ def eliminarPbacklog(request, id):
     return sprint(request,request.session['proyecto'])
 
 
+def delete_tarea(request):
+    id_pro = request.GET['id_pro']
+    if request.method == "GET":
+        id = request.GET["id"]
+        Sbacklog.objects.filter(id=id).delete()
+
+    scrum = request.session['scrum']
+
+    historia = HistoriaUsuario.objects.filter(id_pbacklog__id_scrum=scrum).annotate(
+        tarea=Count('sbacklog__id')
+    ).order_by('id')
+
+    tareas = Sbacklog.objects.values('id', 'nombre', 'id_historia__quiero', 'n_horas').filter(
+        id_historia__id_pbacklog__id_scrum=scrum)
+
+    id_proyecto = Proyecto.objects.get(id=id_pro)
+
+    contexto = {
+        'historia': historia,
+        'tareas': tareas,
+        'id_proyecto': id_proyecto
+    }
+
+    datos = {
+        'tabla_historias': render_to_string('clean/scrum/tabla_historias.html',
+        contexto),
+        'tabla_tareas': render_to_string('clean/scrum/tabla_tareas.html',
+                                         {'tareas':tareas})
+    }
+    return JsonResponse(datos)
