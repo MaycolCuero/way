@@ -144,7 +144,7 @@
                                             name="id_pbacklog" value={{a.id}} class="primary">
                                         <span class="slider round"></span>
                                     </label>
-                                                                  
+
                                 </td>
                             </tr>
                             {% endfor %}
@@ -217,7 +217,6 @@
 
                 <!-- Modal body -->
                 <div class="modal-body" style="overflow-y: auto;">
-
                     <div class="col">
                         <div class="row">
                             <div class="col" id="tabla_editar_epicas">
@@ -246,7 +245,7 @@
 
                                                     <td>
                                                         <a href="#" data-toggle="tooltip"
-                                                            title="Ver Historias de Usuarios" id="ver_historias">
+                                                            title="Ver Historias de Usuarios" id="ver_historias" valor="{{a.id}}">
                                                             <svg width="1em" height="1em" viewBox="0 0 16 16"
                                                                 class="bi bi-card-list" fill="currentColor"
                                                                 xmlns="http://www.w3.org/2000/svg">
@@ -260,7 +259,8 @@
                                                             </svg>
                                                         </a>
 
-                                                        <a href="#" data-toggle="tooltip" title="Editar" id="editar" valor="{{a.id}}">
+                                                        <a href="#" data-toggle="tooltip" title="Editar" id="editar"
+                                                            valor="{{a.id}}">
                                                             <svg width="1em" height="1em" viewBox="0 0 16 16"
                                                                 class="bi bi-pencil-square" fill="currentColor"
                                                                 xmlns="http://www.w3.org/2000/svg">
@@ -298,7 +298,7 @@
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label>Rol</label>
-                                            <input class="form-control" id="rol_edit" required >
+                                            <input class="form-control" id="rol_edit" required>
 
                                             <label>Quiero</label>
                                             <input class="form-control" id="quiero_edit" required>
@@ -309,18 +309,18 @@
                                             <input type="hidden" id="id_historia">
                                         </div>
                                         <center>
-                                            <button id="guardar_edit" class="btn btn-primary" style="width: 60%; align-self:start;" >Guardar</button>
-                                        </center>                                       
-                                    </form> 
+                                            <button id="guardar_edit" class="btn btn-primary"
+                                                style="width: 60%; align-self:start;">Guardar</button>
+                                        </center>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-
+                        <div id="edicion_general_historias">
+                           
+                        </div>
                     </div>
-
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -330,7 +330,7 @@
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            $('#guardar_edit').prop('disabled',true);
+            $('#guardar_edit').prop('disabled', true);
         });
 
         $(document).on('input', '#f_inicio', function (e) {
@@ -467,65 +467,67 @@
 
         });
 
-    
+
     </script>
 
-<!-- Scripts para la edicion general -->
+    <!-- Scripts para la edicion general -->
 
-    
+
     <script>
-       
-        $(document).on('click','#editar',function(e){
+        // Edicion de epicas
+        $(document).on('click', '#editar', function (e) {
             var id = $(this).attr('valor');
             var rol = $(this).parents("tr").find("td")[0].innerText;
             var quiero = $(this).parents("tr").find("td")[1].innerText;
             var para = $(this).parents("tr").find("td")[2].innerText;
-          
+
             $('#id_historia').val(id);
             $('#rol_edit').val(rol);
             $('#quiero_edit').val(quiero);
             $('#para_edit').val(para);
-            $('#guardar_edit').prop('disabled',false);
+            $('#guardar_edit').prop('disabled', false);
         });
 
-        $(document).on('submit','#form_editar',function(e){
+        $(document).on('submit', '#form_editar', function (e) {
             e.preventDefault();
             var id = $('#id_historia').val();
             var rol = $('#rol_edit').val();
             var quiero = $('#quiero_edit').val();
             var para = $('#para_edit').val();
-          
+
             $.ajax({
                 type: 'POST',
                 url: '/scrum/edit_epicas_sprint',
                 context: document.body,
                 dataType: 'json',
-                data:{
-                    'id':id,
+                data: {
+                    'id': id,
                     'rol': rol,
                     'quiero': quiero,
                     'para': para,
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                 },
-                success:function(data){
-                   $('#tabla_sprint').html(data['tabla_general']);
-                   $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
-                   $('#rol_edit').val("");
-                   $('#quiero_edit').val("");
-                   $('#para_edit').val("");
-                   $('#id_historia').val("");
-                   $('#guardar_edit').prop('disabled',true);
+                success: function (data) {
+                    $('#tabla_sprint').html(data['tabla_general']);
+                    $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                    $('#rol_edit').val("");
+                    $('#quiero_edit').val("");
+                    $('#para_edit').val("");
+                    $('#id_historia').val("");
+                    $('#guardar_edit').prop('disabled', true);
                 }
             });
         });
-        
-        $(document).on('click','#eliminar', function(e){
+        // fin de edicion de epicas
+
+        // Eliminacion de epicas 
+        $(document).on('click', '#eliminar', function (e) {
             var id = $(this).attr('valor');
             var quiero = $(this).parents("tr").find("td")[1].innerText;
             var conf = confirm('¿Desea eliminar "' + quiero + '"?');
-           
-            
-            if(conf == true){
+
+
+            if (conf == true) {
                 console.log(id);
                 $.ajax({
                     type: 'GET',
@@ -533,15 +535,35 @@
                     url: '/scrum/eliminarPbacklog',
                     dataType: 'json',
                     data: {
-                        'id':id
+                        'id': id
                     },
-                    success: function(data){
+                    success: function (data) {
                         $('#tabla_sprint').html(data['tabla_general']);
-                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);   
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
                     }
                 });
             }
         });
+        // fin de eliminacion de epicas
+
+        // Edicion de historias de usuario
+        $(document).on('click','#ver_historias', function(e){
+            var id = $(this).attr('valor');
+            console.log(id);
+            $.ajax({
+                    type: 'GET',
+                    context: document.body,
+                    url: '/scrum/listado_historias_sprint',
+                    dataType: 'json',
+                    data: {
+                        'id': id
+                    },
+                    success: function (data) {
+                       $('#edicion_general_historias').html(data['modulo_historia']);
+                }
+            });
+        });
+
     </script>
 
 

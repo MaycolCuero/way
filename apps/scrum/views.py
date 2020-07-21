@@ -506,3 +506,13 @@ def edit_epica_sprint(request):
     }
 
     return JsonResponse(datos)
+
+def listado_historias_sprint(request):
+    id = request.GET['id']
+    historias = HistoriaUsuario.objects.filter(id_pbacklog=id).annotate(
+        tareas=Count('sbacklog__id')
+    )
+    datos = {
+        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias': historias})
+    }
+    return JsonResponse(datos)
