@@ -838,8 +838,9 @@
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function (data) {
+                window.location.reload();/*
                 $('#close_edit_epica').click();
-                $('#tabla_epica').html(data['datos']);
+                $('#tabla_epica').html(data['datos']);*/
             }
         });
     });

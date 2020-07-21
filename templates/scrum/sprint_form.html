@@ -2,6 +2,7 @@
 {% extends 'base/base.html'%}
 {% block content %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
@@ -12,57 +13,61 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-			
-			function editar(id, pbacklog){
-			    console.log(id);
-			    console.log(pbacklog);
-			    document.getElementById('nombre').value = pbacklog;
-			    document.getElementById('id_pbacklog').value = id;
-			}
+
+        function editar(id, pbacklog) {
+            console.log(id);
+            console.log(pbacklog);
+            document.getElementById('nombre').value = pbacklog;
+            document.getElementById('id_pbacklog').value = id;
+        }
     </script>
     {% block title %}
-        <title>Definir Sprint</title>
+    <title>Definir Sprint</title>
     {% endblock %}
 
     {% block extra_links %}
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <!--
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        -->
     {% endblock %}
 
 </head>
-<body>
-<div id="alerta"></div>
-<div class="form-group">
-    <div align="center">
-        <h2><strong>Información del proyecto</strong></h2>
-    </div>
-    <div class="row">
-        <div class="col">
-            <ul>
-                <font size="3"><strong> Integrantes</strong></font>
-                <li>Cantidad: {{numero_integrantes}}</li>
-                <li>Total horas por semana: <span id="horas_integrantes">{{numero_horas}}</span></li>
-                <li>Total horas en el Sprin: <span id="horas_integrantes_sprint"></span></li>
-            </ul>
-        </div>
-        <div class="col">
-            <ul>
-                <font size="3"><strong> Sprint</strong></font>
-                <li>Horas del Sprint: <span id="horas_sprint"></span></li>
-                <li>Semanas: <span id="numero_semanas"></span></li>
-            </ul>  
-        </div>  
-    </div>
-    <div align="center">
-        <span style="color:red; text-align:center" id="notificacion"></span>
-    </div>
 
-</div>
-<h2><strong>Creación del Sprint</strong></h2>
-     <hr class="sidebar-divider">
+<body>
+    <div id="alerta"></div>
+    <div class="form-group">
+        <div align="center">
+            <h2><strong>Información del proyecto</strong></h2>
+        </div>
+        <div class="row">
+            <div class="col">
+                <ul>
+                    <font size="3"><strong> Integrantes</strong></font>
+                    <li>Cantidad: {{numero_integrantes}}</li>
+                    <li>Total horas por semana: <span id="horas_integrantes">{{numero_horas}}</span></li>
+                    <li>Total horas en el Sprin: <span id="horas_integrantes_sprint"></span></li>
+                </ul>
+            </div>
+            <div class="col">
+                <ul>
+                    <font size="3"><strong> Sprint</strong></font>
+                    <li>Horas del Sprint: <span id="horas_sprint"></span></li>
+                    <li>Semanas: <span id="numero_semanas"></span></li>
+                </ul>
+            </div>
+        </div>
+        <div align="center">
+            <span style="color:red; text-align:center" id="notificacion"></span>
+        </div>
+
+    </div>
+    <h2><strong>Creación del Sprint</strong></h2>
+    <hr class="sidebar-divider">
     <div class="continer">
         <form method="post" action="{% url 'scrum:sprint' index %}">
             {% csrf_token %}
@@ -70,14 +75,16 @@
                 <div class="col">
                     <div class="form-group">
                         {{ form.f_inicio.label }}:
-                        <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{fecha_inicio}}" max="{{fecha_fin}}" style="width:40%;" required>
+                        <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{fecha_inicio}}"
+                            max="{{fecha_fin}}" style="width:40%;" required>
                         {{ form.f_inicio.errors }}
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
                         {{ form.f_fin.label }}:
-                        <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{fecha_fin}}" style="width:40%;" required>
+                        <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{fecha_fin}}"
+                            style="width:40%;" required>
                         {{ form.f_fin.errors}}
                     </div>
                 </div>
@@ -90,18 +97,6 @@
                 <input type="hidden" name="idIndex" value={{index}}>
             </div>
 
-            <!--
-                <div class="form-group">
-                    {{ form.id_pbacklog.label }}:
-                    <br>
-                    <select class="js-example-basic-multiple" name="id_pbacklog" multiple="multiple" style="width:40%;" required>
-                        {% for r in requisitos %}
-                        <option value={{r.id}}>{{r.nombre}}</option>
-                        {% endfor%}
-                    </select>
-                    {{ form.id_pbacklog.errors }}
-                </div>
-            -->
             <div class="card">
                 <div class="card-header">
                     <div class="row">
@@ -109,53 +104,55 @@
                             <strong class="card-title">Listado de épicas</strong>
                         </div>
                         <div class="col" align="right">
-                            <button href="" type="submit" class="btn btn-outline-primary" >Guardar</button>
-                            <a class="btn btn-outline-success" title="Página de inicio" href="{% url 'proyecto:index' index %}">Volver</a>
-                            <a href="" class="btn btn-success" data-toggle="modal" data-target="#MyEdicion" >Mas detalles</a>
+                            <button href="" type="submit" class="btn btn-outline-primary">Guardar</button>
+                            <a class="btn btn-outline-success" title="Página de inicio"
+                                href="{% url 'proyecto:index' index %}">Volver</a>
+                            <a href="" class="btn btn-success" data-toggle="modal" data-target="#MyEdicion">Mas
+                                detalles</a>
                         </div>
                     </div>
                 </div>
 
                 <div id="tabla_sprint">
-                                {% if requisitos %}                    
-                                    <table class="table table-sm table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Requisito</th>
-                                                <th title="Historias de usuarios">Historias Usuarios</th>
-                                                <th >HU Realizadas</th>
-                                                <th >Tareas</th>
-                                                <th >T Realizadas</th>
-                                                <th >Duración</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for a in requisitos %}
-                                                <tr>
-                                                    <td> {{a.nombre}} </td>
-                                                    <td>{{  a.historias }}</td>
-                                                    <td>{{  a.historias_r }}</td>
-                                                    <td>{{  a.tareas }}</td>
-                                                    <td>{{  a.tareas_r }}</td>
-                                                    <td id="n_duracion">
-                                                        {{  a.duracion }}
-                                                    </td>
-                                                    <td style="width:auto; text-align: right">
-                                                        <label class="switch ">
-                                                            <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog" name="id_pbacklog" value={{a.id}} class="primary" >
-                                                            <span class="slider round"></span>
-                                                        </label>
-                                                        <a href="" class="btn btn-success" onclick="editar({{a.id}},'{{a.nombre}}')" data-toggle="modal" data-target="#MyEdicion" >Editar</a>
-                                                        <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog" onclick="eliminarPbacklog({{a.id}},'{{a.nombre}}')" >Eliminar</a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>                    
-                                {% endif %}
+                    {% if requisitos %}
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Requisito</th>
+                                <th title="Historias de usuarios">Historias Usuarios</th>
+                                <th>HU Realizadas</th>
+                                <th>Tareas</th>
+                                <th>T Realizadas</th>
+                                <th>Duración</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in requisitos %}
+                            <tr>
+                                <td> {{a.nombre}} </td>
+                                <td>{{  a.historias }}</td>
+                                <td>{{  a.historias_r }}</td>
+                                <td>{{  a.tareas }}</td>
+                                <td>{{  a.tareas_r }}</td>
+                                <td id="n_duracion">
+                                    {{  a.duracion }}
+                                </td>
+                                <td style="width:auto; text-align: right">
+                                    <label class="switch ">
+                                        <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog"
+                                            name="id_pbacklog" value={{a.id}} class="primary">
+                                        <span class="slider round"></span>
+                                    </label>
+                                                                  
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
                 </div>
-                       
+
             </div>
             <br>
         </form>
@@ -163,307 +160,393 @@
 
 
     <!-- The Modal Editar requisitos -->
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Editar épica</h4>
-            <button type="button" id="btnClose" class="close" data-dismiss="modal">&times;</button>
-            </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar épica</h4>
+                    <button type="button" id="btnClose" class="close" data-dismiss="modal">&times;</button>
+                </div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-                <div class="container">
-                <!-- <form method="POST" id="Editar_requisito_sprint" action="/scrum/update_pbacklog"> -->
-                    <!--  {% csrf_token %} -->
-                    <form id="Editar_requisito_sprint">
-                       {% csrf_token %}
-                        <div class="form-group">
-                            <label>
-                                Descripción de la tarea
-                            </label>
-                            <input type="text" class="form-control" id="nombre" name="nombre">
-                        </div>
-
-                        <div>
-                            <input type="hidden" name="id_pbacklog" id="id_pbacklog">
-                            <input type="hidden" id="id_proyecto" value={{idScrum}}>
-                        </div>
-
-                        <center>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <!-- <form method="POST" id="Editar_requisito_sprint" action="/scrum/update_pbacklog"> -->
+                        <!--  {% csrf_token %} -->
+                        <form id="Editar_requisito_sprint">
+                            {% csrf_token %}
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary" value="SUBMIT">Guardar</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                <label>
+                                    Descripción de la tarea
+                                </label>
+                                <input type="text" class="form-control" id="nombre" name="nombre">
                             </div>
-                        </center>
-                    </form>
+
+                            <div>
+                                <input type="hidden" name="id_pbacklog" id="id_pbacklog">
+                                <input type="hidden" id="id_proyecto" value={{idScrum}}>
+                            </div>
+
+                            <center>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary" value="SUBMIT">Guardar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            </center>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
 
 
-<!-- Edicion general -->
+    <!-- Edicion general -->
 
-  <!-- The Modal -->
-  <div class="modal fade" id="MyEdicion">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-      
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Listado de Épicas</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        
-        <!-- Modal body -->
-        <div class="modal-body" style="overflow-y: auto;">
-          
-            <div class="col">
-                <div class="row">
+    <div class="modal fade" id="MyEdicion">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Listado de Épicas</h4>
+                    <button type="button" class="close" id="cerrar_edicion" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" style="overflow-y: auto;">
+
                     <div class="col">
-                        <div class="card">
-                            <div id="tabla_sprint">
-                                {% if requisitos %}                    
-                                    <table class="table table-sm table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Rol</th>
-                                                <th >Quiero</th>
-                                                <th >Para</th>
-                                                <th >Tareas</th>
-                                                
-                                                <th >Duración</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for a in requisitos %}
+                        <div class="row">
+                            <div class="col" id="tabla_editar_epicas">
+                                <div class="card">
+                                    <div id="tabla_sprint">
+                                        {% if requisitos %}
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rol</th>
+                                                    <th>Quiero</th>
+                                                    <th>Para</th>
+                                                    <th>Duración</th>
+                                                    <th>Opciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for a in requisitos %}
                                                 <tr>
                                                     <td> {{a.nombre}} </td>
                                                     <td>{{  a.quiero }}</td>
                                                     <td>{{  a.para }}</td>
-                                                    <td>{{  a.tareas }}</td>
                                                     <td id="n_duracion">
                                                         {{  a.duracion }}
                                                     </td>
-                                                    
+
                                                     <td>
-                                                        <!-- Nav Item - User Information -->
-                                                        <li class="nav-item dropdown no-arrow">
-                                                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-                                                                aria-haspopup="true" aria-expanded="false">
-                                                                opcion
-                                                               
-                                                            </a>
-                                                            <!-- Dropdown - User Information -->
-                                                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                                                <a class="dropdown-item" href="/usuarios/perfil">
-                                                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                                    Perfil
-                                                                </a>
-                                                    
-                                                                <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" href="/usuarios/logout" data-toggle="modal" data-target="#logoutModal">
-                                                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                                    Cerrar Sesión
-                                                                </a>
-                                                            </div>
-                                                        </li>
+                                                        <a href="#" data-toggle="tooltip"
+                                                            title="Ver Historias de Usuarios" id="ver_historias">
+                                                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                                class="bi bi-card-list" fill="currentColor"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z" />
+                                                                <circle cx="3.5" cy="5.5" r=".5" />
+                                                                <circle cx="3.5" cy="8" r=".5" />
+                                                                <circle cx="3.5" cy="10.5" r=".5" />
+                                                            </svg>
+                                                        </a>
+
+                                                        <a href="#" data-toggle="tooltip" title="Editar" id="editar" valor="{{a.id}}">
+                                                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                                class="bi bi-pencil-square" fill="currentColor"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path
+                                                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                            </svg>
+                                                        </a>
+                                                        <a href="#" data-toggle="tooltip" style="color: red;"
+                                                            title="Eliminar Epica" id="eliminar" valor="{{a.id}}">
+                                                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                                class="bi bi-x-square" fill="currentColor"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z" />
+                                                            </svg>
+                                                        </a>
                                                     </td>
                                                 </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>                    
-                                {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card" id="editar_form" style="padding:10px;">
+                                    <form id="form_editar">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label>Rol</label>
+                                            <input class="form-control" id="rol_edit" required >
+
+                                            <label>Quiero</label>
+                                            <input class="form-control" id="quiero_edit" required>
+
+                                            <label>Para</label>
+                                            <input class="form-control" id="para_edit" required>
+
+                                            <input type="hidden" id="id_historia">
+                                        </div>
+                                        <center>
+                                            <button id="guardar_edit" class="btn btn-primary" style="width: 60%; align-self:start;" >Guardar</button>
+                                        </center>                                       
+                                    </form> 
+                                </div>
                             </div>
                         </div>
+
                     </div>
-                    <div class="col">
-                        
-                    </div>
+
                 </div>
-                
-            </div> 
-           
-        </div>
-        
-      
-      </div>
-    </div>
-  </div>
-<!-- end edicion general -->
 
 
-
-<!-- Modal confirmar eliminar pbacklog -->
-    <div class="modal fade" id="confirmDeletePbacklog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><strong>Eliminar requisito</strong></h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p id="texto">
-                        Si, elimina este requisito, tenga en cuenta que
-                        se eliminaran las historias de usuarios y tareas
-                        que hacen parte de el.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <div class="container" align="center" id="confirmar"></div>
-                </div>
             </div>
         </div>
     </div>
-<!-- end modal delete pbacklog -->
+    <!-- end edicion general -->
 
-<script>
-   
-    $(document).on('input','#f_inicio', function(e){
-        var f_inicio = $(this).val();
-        document.getElementById('f_fin').min = f_inicio;
-    });
 
-    $(document).on('input','#f_fin', function(e){
-        var f_fin = $(this).val();
-        var f_inicio = document.getElementById('f_inicio').value;
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('#guardar_edit').prop('disabled',true);
+        });
 
-        alerta1 = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
-                        'Primero Ingrese la fecha de inicio'+
-                    '</div>'
+        $(document).on('input', '#f_inicio', function (e) {
+            var f_inicio = $(this).val();
+            document.getElementById('f_fin').min = f_inicio;
+        });
 
-        if(f_inicio == ""){
-            document.getElementById('alerta').innerHTML=alerta1;
-            document.getElementById('f_fin').value = "dd/mm/aaaa";
-            setTimeout(function() { // funcion de Jquery
+        $(document).on('input', '#f_fin', function (e) {
+            var f_fin = $(this).val();
+            var f_inicio = document.getElementById('f_inicio').value;
+
+            alerta1 = '<div class="alert alert-danger alert-dismissible fade show">' +
+                '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                'Primero Ingrese la fecha de inicio' +
+                '</div>'
+
+            if (f_inicio == "") {
+                document.getElementById('alerta').innerHTML = alerta1;
+                document.getElementById('f_fin').value = "dd/mm/aaaa";
+                setTimeout(function () { // funcion de Jquery
                     $('#alerta').fadeOut(1500);
-            },3000);
+                }, 3000);
 
-        }else{
-            
-            alerta = ' <div class="alert alert-danger alert-dismissible fade show">'+
-                        '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
-                        'El Sprint no debe durar mas de 4 semanas'+
+            } else {
+
+                alerta = ' <div class="alert alert-danger alert-dismissible fade show">' +
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                    'El Sprint no debe durar mas de 4 semanas' +
                     '</div>'
-            dias = NumeroDias();
-            if(dias > 28){   
-                //alert('El Sprint no debe durar mas de 4 semanas');
-                document.getElementById('f_fin').value = "";
-                document.getElementById('alerta').innerHTML=alerta;
+                dias = NumeroDias();
+                if (dias > 28) {
+                    //alert('El Sprint no debe durar mas de 4 semanas');
+                    document.getElementById('f_fin').value = "";
+                    document.getElementById('alerta').innerHTML = alerta;
 
-                setTimeout(function() { // funcion de Jquery
-                    $('#alerta').fadeOut(1500);
-                },3000);
+                    setTimeout(function () { // funcion de Jquery
+                        $('#alerta').fadeOut(1500);
+                    }, 3000);
+                }
+            }
+
+        });
+
+        function NumeroDias() {
+            let fecha1 = new Date(document.getElementById('f_inicio').value);
+            let fecha2 = new Date(document.getElementById('f_fin').value);
+
+            let mls = 24 * 60 * 60 * 1000;
+            let mlst = Math.abs(fecha1.getTime() - fecha2.getTime());
+            let dias = Math.round(mlst / mls);
+            return dias;
+        }
+
+        function SprintIntegrantes() {
+            var horas_sprint = parseInt(document.getElementById('horas_sprint').innerText, 10);
+            var horas_integrantes = parseInt(document.getElementById('horas_integrantes').innerText, 10)
+            var dias = NumeroDias();
+            var semanas = Math.round(dias / 7)
+            if (semanas < 7) {
+                semanas = 1;
+            }
+            console.log('horas semanas: ' + semanas);
+            var horas_integrantes_sprint = semanas * horas_integrantes;
+            document.getElementById('horas_integrantes_sprint').innerText = horas_integrantes_sprint;
+            document.getElementById('numero_semanas').innerText = semanas;
+
+            if (horas_sprint > horas_integrantes_sprint) {
+                document.getElementById('notificacion').innerHTML = 'El número de horas del sprint supera al número de horas dispuesto por los integrantes,' +
+                    ' el Sprint igual se guardará';
+            } else {
+                document.getElementById('notificacion').innerText = "";
             }
         }
-            
-    });
+        var count = 0;
+        var cantidad = 0;
 
-    function NumeroDias(){
-        let fecha1 = new Date(document.getElementById('f_inicio').value);
-        let fecha2 = new Date(document.getElementById('f_fin').value);
+        $("table tbody tr").click(function () {
+            var total = $(this).find("td:eq(5)").text()
+            cantidad = parseInt(total, 10);
+        });
 
-        let mls = 24 * 60 * 60 * 1000;
-        let mlst = Math.abs(fecha1.getTime() - fecha2.getTime());
-        let dias = Math.round(mlst/mls);
-        return dias;
-    }
+        //obtener los datos de una tabla
+        $(document).on('click', '#id_pbacklog', function (e) {
+            var duracion = $(this).val();
+            var f_inicio = document.getElementById('f_inicio').value;
+            var f_fin = document.getElementById('f_fin').value;
+            if ($(this).is(':checked')) {
+                if (f_inicio == "" || f_fin == "") {
+                    document.getElementById('alerta').innerHTML = ' <div class="alert alert-danger alert-dismissible fade show">' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                        'Primero defina la duracino del Sprint' +
+                        '</div>';
+                    $(this).prop("checked", false);
+                } else {
+                    count += cantidad;
+                    document.getElementById('horas_sprint').innerText = count;
+                    SprintIntegrantes();
+                }
 
-    function SprintIntegrantes(){
-        var horas_sprint = parseInt(document.getElementById('horas_sprint').innerText,10);
-        var horas_integrantes = parseInt(document.getElementById('horas_integrantes').innerText,10)
-        var dias = NumeroDias();
-        var semanas = Math.round(dias/7)
-        if(semanas < 7){
-            semanas = 1;
-        }
-        console.log('horas semanas: '+semanas);
-        var horas_integrantes_sprint = semanas * horas_integrantes ;
-        document.getElementById('horas_integrantes_sprint').innerText = horas_integrantes_sprint;
-        document.getElementById('numero_semanas').innerText = semanas;
 
-        if(horas_sprint > horas_integrantes_sprint){
-            document.getElementById('notificacion').innerHTML = 'El número de horas del sprint supera al número de horas dispuesto por los integrantes,'+
-            ' el Sprint igual se guardará';
-        }else{
-            document.getElementById('notificacion').innerText="";
-        }
-    }
-    var count = 0;
-    var cantidad = 0;
-    
-    $("table tbody tr").click(function() {
-        var total = $(this).find("td:eq(5)").text()
-        cantidad = parseInt(total,10);
-    });
-
-    //obtener los datos de una tabla
-    $(document).on('click','#id_pbacklog', function(e){
-        var duracion = $(this).val();
-        var f_inicio = document.getElementById('f_inicio').value;
-        var f_fin = document.getElementById('f_fin').value;
-        if($(this).is(':checked')){
-            if(f_inicio == "" || f_fin == ""){
-                document.getElementById('alerta').innerHTML=' <div class="alert alert-danger alert-dismissible fade show">'+
-                        '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
-                        'Primero defina la duracino del Sprint'+
-                    '</div>';
-                $(this).prop("checked", false);  
-            }else{
-                count += cantidad;
-                document.getElementById('horas_sprint').innerText=count;
+            } else {
+                count -= cantidad;
+                document.getElementById('horas_sprint').innerText = count;
                 SprintIntegrantes();
             }
 
-            
-        }else{
-            count -= cantidad;
-            document.getElementById('horas_sprint').innerText=count;
-            SprintIntegrantes();
-        }
-        
-    });
-</script>
+        });
+    </script>
 
-<script type="text/javascript">
-        $(document).on('submit','#Editar_requisito_sprint',function(e){
+    <script type="text/javascript">
+        $(document).on('submit', '#Editar_requisito_sprint', function (e) {
             e.preventDefault();
-            var  nom = $(this).find('#nombre').val();
+            var nom = $(this).find('#nombre').val();
             var idpb = $(this).find('#id_pbacklog').val();
             var idp = $(this).find('#id_proyecto').val();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/scrum/update_pbacklog",
+                context: document.body,
+                dataType: 'json',
+                data: {
+                    'nombre': nom,
+                    'id_pbacklog': idpb,
+                    'sprint': idp,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data) {
+                    $('#btnClose').click();
+                    $('#tabla_sprint').html(data['tabla_sprint']);
+                }
+            });
+
+        });
+
+    
+    </script>
+
+<!-- Scripts para la edicion general -->
+
+    
+    <script>
+       
+        $(document).on('click','#editar',function(e){
+            var id = $(this).attr('valor');
+            var rol = $(this).parents("tr").find("td")[0].innerText;
+            var quiero = $(this).parents("tr").find("td")[1].innerText;
+            var para = $(this).parents("tr").find("td")[2].innerText;
+          
+            $('#id_historia').val(id);
+            $('#rol_edit').val(rol);
+            $('#quiero_edit').val(quiero);
+            $('#para_edit').val(para);
+            $('#guardar_edit').prop('disabled',false);
+        });
+
+        $(document).on('submit','#form_editar',function(e){
+            e.preventDefault();
+            var id = $('#id_historia').val();
+            var rol = $('#rol_edit').val();
+            var quiero = $('#quiero_edit').val();
+            var para = $('#para_edit').val();
+          
+            $.ajax({
+                type: 'POST',
+                url: '/scrum/edit_epicas_sprint',
+                context: document.body,
+                dataType: 'json',
+                data:{
+                    'id':id,
+                    'rol': rol,
+                    'quiero': quiero,
+                    'para': para,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success:function(data){
+                   $('#tabla_sprint').html(data['tabla_general']);
+                   $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                   $('#rol_edit').val("");
+                   $('#quiero_edit').val("");
+                   $('#para_edit').val("");
+                   $('#id_historia').val("");
+                   $('#guardar_edit').prop('disabled',true);
+                }
+            });
+        });
+        
+        $(document).on('click','#eliminar', function(e){
+            var id = $(this).attr('valor');
+            var quiero = $(this).parents("tr").find("td")[1].innerText;
+            var conf = confirm('¿Desea eliminar "' + quiero + '"?');
+           
             
-               
+            if(conf == true){
+                console.log(id);
                 $.ajax({
-                    type: "POST",
-                    url: "/scrum/update_pbacklog",
+                    type: 'GET',
                     context: document.body,
+                    url: '/scrum/eliminarPbacklog',
                     dataType: 'json',
-                    data:{
-                        'nombre':nom,
-                        'id_pbacklog': idpb,
-                        'sprint':idp,
-                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                    data: {
+                        'id':id
                     },
                     success: function(data){
-                        $('#btnClose').click();
-                        $('#tabla_sprint').html(data['tabla_sprint']);
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);   
                     }
-               });
-            
+                });
+            }
         });
-    
-    function eliminarPbacklog(id, pbacklog){
-        document.getElementById('confirmar').innerHTML = '<a href="/scrum/eliminarPbacklog/'+ id +'"  title="Eliminar requisito" style="width:50%" class="btn btn-danger" data-target="modal" data-target="#confirmDeleteHistory"> Eliminar </a>';
-        document.getElementById('texto').innerHTML = "Seguro que desea eliminar el requisito <strong>"+ pbacklog +"</strong>, todas las hisotias de usuarios y tareas perteneciente a él se eliminarán "
-    }
-</script>
+    </script>
 
-{% endblock %}
+
+
+    {% endblock %}
 </body>
+
 </html>

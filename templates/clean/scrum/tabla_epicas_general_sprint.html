@@ -1,0 +1,41 @@
+
+    {% if requisitos %}
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr>
+                <th>Requisito</th>
+                <th title="Historias de usuarios">Historias Usuarios</th>
+                <th>HU Realizadas</th>
+                <th>Tareas</th>
+                <th>T Realizadas</th>
+                <th>Duración</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in requisitos %}
+            <tr>
+                <td> {{a.nombre}} </td>
+                <td>{{  a.historias }}</td>
+                <td>{{  a.historias_r }}</td>
+                <td>{{  a.tareas }}</td>
+                <td>{{  a.tareas_r }}</td>
+                <td id="n_duracion">
+                    {{  a.duracion }}
+                </td>
+                <td style="width:auto; text-align: right">
+                    <label class="switch ">
+                        <input type="checkbox" title="Seleccionar requisito" id="id_pbacklog" name="id_pbacklog"
+                            value={{a.id}} class="primary">
+                        <span class="slider round"></span>
+                    </label>
+                    <a href="" class="btn btn-success" onclick="editar('{{a.id}}','{{a.nombre}}')" data-toggle="modal"
+                        data-target="#MyEdicion">Editar</a>
+                    <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeletePbacklog"
+                        onclick="eliminarPbacklog('{{a.id}}','{{a.nombre}}')">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
