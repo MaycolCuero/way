@@ -211,13 +211,17 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Listado de Épicas</h4>
+                    <h4 class="modal-title">Edición general</h4>
                     <button type="button" class="close" id="cerrar_edicion" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Modal body -->
                 <div class="modal-body" style="overflow-y: auto;">
                     <div class="col">
+                        <center>
+                            <h3 class="modal-title">Listado de Épicas</h3>
+                        </center>
+
                         <div class="row">
                             <div class="col" id="tabla_editar_epicas">
                                 <div class="card">
@@ -229,7 +233,7 @@
                                                     <th>Rol</th>
                                                     <th>Quiero</th>
                                                     <th>Para</th>
-                                                    <th>Duración</th>
+                                                    <th>Historias U</th>
                                                     <th>Opciones</th>
                                                 </tr>
                                             </thead>
@@ -239,13 +243,14 @@
                                                     <td> {{a.nombre}} </td>
                                                     <td>{{  a.quiero }}</td>
                                                     <td>{{  a.para }}</td>
-                                                    <td id="n_duracion">
-                                                        {{  a.duracion }}
+                                                    <td>
+                                                        {{  a.historias }}
                                                     </td>
 
                                                     <td>
                                                         <a href="#" data-toggle="tooltip"
-                                                            title="Ver Historias de Usuarios" id="ver_historias" valor="{{a.id}}">
+                                                            title="Ver Historias de Usuarios" id="ver_historias"
+                                                            valor="{{a.id}}">
                                                             <svg width="1em" height="1em" viewBox="0 0 16 16"
                                                                 class="bi bi-card-list" fill="currentColor"
                                                                 xmlns="http://www.w3.org/2000/svg">
@@ -317,7 +322,7 @@
                             </div>
                         </div>
                         <div id="edicion_general_historias">
-                           
+
                         </div>
                     </div>
                 </div>
@@ -546,23 +551,123 @@
         });
         // fin de eliminacion de epicas
 
-        // Edicion de historias de usuario
-        $(document).on('click','#ver_historias', function(e){
+        //  ***** Edicion de historias de usuario ******
+
+        //agregar histoia de usuario
+        $(document).on('click', '#ver_historias', function (e) {
             var id = $(this).attr('valor');
             console.log(id);
             $.ajax({
-                    type: 'GET',
-                    context: document.body,
-                    url: '/scrum/listado_historias_sprint',
-                    dataType: 'json',
-                    data: {
-                        'id': id
-                    },
-                    success: function (data) {
-                       $('#edicion_general_historias').html(data['modulo_historia']);
+                type: 'GET',
+                context: document.body,
+                url: '/scrum/listado_historias_sprint',
+                dataType: 'json',
+                data: {
+                    'id': id
+                },
+                success: function (data) {
+                    $('#edicion_general_historias').html(data['modulo_historia']);
+                    form_hist(true);
                 }
             });
+
         });
+
+        $(document).on('click', '#addhu', function (e) {
+            var id_historia = $(this).attr('valor');
+
+            $('#titulo_historia_form').text('Agregar historia');
+            $('#guardar_historia').text('Agregar');
+            form_hist(false);
+
+        });
+
+        $(document).on('submit', '#form_editar_historia', function (e) {
+            e.preventDefault();
+            var btn = $(this).find('#guardar_historia').text();
+            if (btn == "Agregar") {
+                var id = $('#id_pbacklog_h').val();
+                var rol = $('#rol_edit_historia').val();
+                var quiero = $('#quiero_edit_historia').val();
+                var para = $('#para_edit_historia').val();
+                console.log(' datos para agregar historias de usuario');
+                console.log(id);
+                console.log(rol);
+                console.log(quiero);
+                console.log(para);
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/scrum/historia_crear',
+                    context: document.body,
+                    dataType: 'json',
+                    data: {
+                        'id_pbacklog': id,
+                        'como_usuario': rol,
+                        'quiero': quiero,
+                        'para': para,
+                        'estado': false,
+                        'sprint': 'sprint',
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                        $('#edicion_general_historias').html(data['modulo_historia']);
+                        $('#rol_edit_historia').val("");
+                        $('#quiero_edit_historia').val("");
+                        $('#para_edit_historia').val("");
+                        form_hist(true);
+                    }
+                });
+            }
+            console.log(btn);
+        });
+        // fin de agregar historia de usuario
+
+
+        // Editar historias de usuaios
+        $(document).on('click', '#editar_historia', function (e) {
+
+            var id = $(this).attr('valor');
+            var rol = $(this).parents("tr").find("td")[0].innerText;
+            var quiero = $(this).parents("tr").find("td")[1].innerText;
+            var para = $(this).parents("tr").find("td")[2].innerText;
+
+            $('#id_historia_h').val(id);
+            $('#rol_edit_historia').val(rol);
+            $('#quiero_edit_historia').val(quiero);
+            $('#para_edit_historia').val(para);
+            $('#guardar_edit_historia').prop('disabled', false);
+
+            $('#titulo_historia_form').text('Editar historia');
+            $('#guardar_historia').text('Editar');
+            form_hist(false);
+        });
+
+        $(document).on('click', '#form_editar_historia', function (e) {
+            e.preventDefault();
+            var idh = $('#id_historia_h').val();
+            var idp = $('#id_pbacklog_h').val();
+            var rol = $('#rol_edit_historia').val();
+            var quiero = $('#quiero_edit_historia').val();
+            var para = $('#para_edit_historia').val();
+            console.log(' datos para agregar historias de usuario');
+            console.log(idh);
+            console.log(idp);
+
+            console.log(rol);
+            console.log(quiero);
+            console.log(para);
+            return;
+        });
+        function form_hist(valor) {
+            $('#rol_edit_historia').prop('disabled', valor);
+            $('#quiero_edit_historia').prop('disabled', valor);
+            $('#para_edit_historia').prop('disabled', valor);
+            $('#guardar_historia').prop('disabled', valor);
+        }
 
     </script>
 

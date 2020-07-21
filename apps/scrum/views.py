@@ -97,17 +97,40 @@ def pbacklog_crear(request):
 
 @login_required
 def historia_crear(request):
-    scrum = request.POST['scrum']
-    backlog = Pbacklog.objects.filter(id_scrum=scrum).annotate(
-        hu=Count('historiausuario__id')
-    ).order_by('id')
+    try:
+        scrum = request.POST['scrum']
+    except:
+        scrum = ""
+
+    if scrum:
+        backlog = Pbacklog.objects.filter(id_scrum=scrum).annotate(
+            hu=Count('historiausuario__id')
+        ).order_by('id')
+    try:
+        sprint = request.POST['sprint']
+    except:
+        sprint = ""
 
     if request.method == 'POST':
         form = HistoriaUsuarioForm(data=request.POST)
         if form.is_valid():
             form.save()
-            #return redirect('scrum:pbacklog_crear')
-            datos = {'datos': render_to_string('clean/scrum/table_epicas.html', {'pbacklog': backlog, 'scrum': scrum})}
+            if sprint:
+                id_pbacklog = request.POST['id_pbacklog']
+                data = datos_sprint(id_pbacklog)
+
+                datos = {
+                    'tabla_general': render_to_string('clean/scrum/tabla_epicas_general_sprint.html',
+                                                      {'requisitos': data['requisitos']}),
+                    'tabla_editar_epica': render_to_string('clean/scrum/tabla_editar_epicas_sprint.html',
+                                                           {'requisitos': data['requisitos']}),
+                    'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias': data['historias'],
+                        'id_pbacklog': id_pbacklog}
+                        )
+                    }
+                #datos = {'datos':'recibidos'}
+            else:
+                datos = {'datos': render_to_string('clean/scrum/table_epicas.html', {'pbacklog': backlog, 'scrum': scrum})}
             return JsonResponse(datos)
     else:
         form = HistoriaUsuarioForm
@@ -352,6 +375,7 @@ def update_historia(request):
 
     return JsonResponse(datos)
 
+
 def update_epica(request):
     scrum = request.POST['scrum']
     if request.method == 'POST':
@@ -507,12 +531,39 @@ def edit_epica_sprint(request):
 
     return JsonResponse(datos)
 
+
 def listado_historias_sprint(request):
     id = request.GET['id']
+    historias = datos_sprint(id)
+
+    contexto =  {
+        'historias': historias['historias'],
+        'id_pbacklog': id
+    }
+    datos = {
+        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html',contexto)
+    }
+    return JsonResponse(datos)
+
+
+def datos_sprint(id):
+    idscrum = Scrum.objects.get(pbacklog__id=id)
+    requisitos = Pbacklog.objects.filter(id_scrum=idscrum.id, confirmar=False).annotate(
+        historias=Count('historiausuario__id'),
+        historias_r=Count('historiausuario__id', filter=Q(historiausuario__estado=True)),
+        tareas=Count('historiausuario__sbacklog__id'),
+        tareas_r=Count('historiausuario__sbacklog__id', filter=Q(historiausuario__sbacklog__estado=True)),
+        duracion=Sum('historiausuario__sbacklog__n_horas')
+    ).order_by('id')
+
     historias = HistoriaUsuario.objects.filter(id_pbacklog=id).annotate(
         tareas=Count('sbacklog__id')
     )
-    datos = {
-        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias': historias})
+
+
+    contexto = {
+        'requisitos': requisitos,
+        'historias': historias
     }
-    return JsonResponse(datos)
+
+    return contexto
