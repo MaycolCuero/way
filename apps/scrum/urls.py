@@ -27,5 +27,6 @@ urlpatterns = [
     path('delete_historia', views.delete_historia, name='delete_historia'),
     path('delete_tarea', views.delete_tarea, name='delete_tarea'),
     path('edit_epicas_sprint', views.edit_epica_sprint, name="edit_epicas_sprint"),
-    path('listado_historias_sprint', views.listado_historias_sprint, name="listado_historias_sprint")
+    path('listado_historias_sprint', views.listado_historias_sprint, name="listado_historias_sprint"),
+    path('editar_historias_sprint', views.editar_historia_sprint, name="editar_historias_sprint")
 ]

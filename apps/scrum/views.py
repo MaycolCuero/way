@@ -560,10 +560,37 @@ def datos_sprint(id):
         tareas=Count('sbacklog__id')
     )
 
-
     contexto = {
         'requisitos': requisitos,
-        'historias': historias
+        'historias': historias,
+        'tabla_general': render_to_string('clean/scrum/tabla_epicas_general_sprint.html', {'requisitos': requisitos}),
+        'tabla_editar_epica': render_to_string('clean/scrum/tabla_editar_epicas_sprint.html', {'requisitos': requisitos}),
+        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias':historias})
     }
 
     return contexto
+
+
+def editar_historia_sprint(request):
+
+    if request.method == 'POST':
+
+        id = request.POST['id']
+        rol = request.POST['rol']
+        quiero = request.POST['quiero']
+        para = request.POST['para']
+        
+        HistoriaUsuario.objects.filter(id=id).update(como_usuario=rol,quiero=quiero,para=para)
+
+        data = datos_sprint(request.POST['id_pbacklog'])
+        mo_historia = data['modulo_historia']
+        t_general = data['tabla_general']
+        edit_epica = data['tabla_editar_epica']
+
+        contexto = {
+
+            'modulo_historia': mo_historia,
+            'tabla_general': t_general,
+            'tabla_editar_epica': edit_epica
+        }
+    return JsonResponse(contexto)

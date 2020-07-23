@@ -585,11 +585,13 @@
         $(document).on('submit', '#form_editar_historia', function (e) {
             e.preventDefault();
             var btn = $(this).find('#guardar_historia').text();
+            var id = $('#id_pbacklog_h').val();
+            var rol = $('#rol_edit_historia').val();
+            var quiero = $('#quiero_edit_historia').val();
+            var para = $('#para_edit_historia').val();
+
             if (btn == "Agregar") {
-                var id = $('#id_pbacklog_h').val();
-                var rol = $('#rol_edit_historia').val();
-                var quiero = $('#quiero_edit_historia').val();
-                var para = $('#para_edit_historia').val();
+               
                 console.log(' datos para agregar historias de usuario');
                 console.log(id);
                 console.log(rol);
@@ -621,6 +623,36 @@
                         form_hist(true);
                     }
                 });
+            }else{
+                var idh = $('#id_historia_h').val();
+                var idp = $('#id_pbacklog_h').val(); 
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '/scrum/editar_historias_sprint',
+                    context: document.body,
+                    dataType: 'json',
+                    data: {
+                        'id': idh,
+                        'id_pbacklog': idp,
+                        'rol': rol,
+                        'quiero': quiero,
+                        'para': para,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) { 
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                        $('#edicion_general_historias').html(data['modulo_historia']);
+                        $('#rol_edit_historia').val("");
+                        $('#quiero_edit_historia').val("");
+                        $('#para_edit_historia').val("");
+                        form_hist(true);                       
+                    }
+                });
+                return;
+
+
             }
             console.log(btn);
         });
@@ -646,22 +678,11 @@
             form_hist(false);
         });
 
+        /*
         $(document).on('click', '#form_editar_historia', function (e) {
             e.preventDefault();
-            var idh = $('#id_historia_h').val();
-            var idp = $('#id_pbacklog_h').val();
-            var rol = $('#rol_edit_historia').val();
-            var quiero = $('#quiero_edit_historia').val();
-            var para = $('#para_edit_historia').val();
-            console.log(' datos para agregar historias de usuario');
-            console.log(idh);
-            console.log(idp);
-
-            console.log(rol);
-            console.log(quiero);
-            console.log(para);
-            return;
-        });
+           
+        }); */
         function form_hist(valor) {
             $('#rol_edit_historia').prop('disabled', valor);
             $('#quiero_edit_historia').prop('disabled', valor);
