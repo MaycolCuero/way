@@ -111,6 +111,7 @@ def historia_crear(request):
     except:
         sprint = ""
 
+    print('datos enviados para crear historias', request.POST)
     if request.method == 'POST':
         form = HistoriaUsuarioForm(data=request.POST)
         if form.is_valid():
@@ -565,7 +566,7 @@ def datos_sprint(id):
         'historias': historias,
         'tabla_general': render_to_string('clean/scrum/tabla_epicas_general_sprint.html', {'requisitos': requisitos}),
         'tabla_editar_epica': render_to_string('clean/scrum/tabla_editar_epicas_sprint.html', {'requisitos': requisitos}),
-        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias':historias})
+        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias':historias, 'id_pbacklog': id})
     }
 
     return contexto
@@ -588,7 +589,27 @@ def editar_historia_sprint(request):
         edit_epica = data['tabla_editar_epica']
 
         contexto = {
+            'modulo_historia': mo_historia,
+            'tabla_general': t_general,
+            'tabla_editar_epica': edit_epica
+        }
+    return JsonResponse(contexto)
 
+
+def eliminar_historia(request):
+
+    if request.method == "GET":
+
+        id = request.GET['id']
+        idp = request.GET['idp']
+        HistoriaUsuario.objects.filter(id=id).delete()
+
+        data = datos_sprint(idp)
+        mo_historia = data['modulo_historia']
+        t_general = data['tabla_general']
+        edit_epica = data['tabla_editar_epica']
+
+        contexto = {
             'modulo_historia': mo_historia,
             'tabla_general': t_general,
             'tabla_editar_epica': edit_epica

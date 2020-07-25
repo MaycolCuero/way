@@ -578,8 +578,8 @@
 
             $('#titulo_historia_form').text('Agregar historia');
             $('#guardar_historia').text('Agregar');
+            clean_form_historia();
             form_hist(false);
-
         });
 
         $(document).on('submit', '#form_editar_historia', function (e) {
@@ -592,13 +592,6 @@
 
             if (btn == "Agregar") {
                
-                console.log(' datos para agregar historias de usuario');
-                console.log(id);
-                console.log(rol);
-                console.log(quiero);
-                console.log(para);
-
-
                 $.ajax({
                     type: 'POST',
                     url: '/scrum/historia_crear',
@@ -617,9 +610,7 @@
                         $('#tabla_sprint').html(data['tabla_general']);
                         $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
                         $('#edicion_general_historias').html(data['modulo_historia']);
-                        $('#rol_edit_historia').val("");
-                        $('#quiero_edit_historia').val("");
-                        $('#para_edit_historia').val("");
+                        clean_form_historia();
                         form_hist(true);
                     }
                 });
@@ -644,24 +635,18 @@
                         $('#tabla_sprint').html(data['tabla_general']);
                         $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
                         $('#edicion_general_historias').html(data['modulo_historia']);
-                        $('#rol_edit_historia').val("");
-                        $('#quiero_edit_historia').val("");
-                        $('#para_edit_historia').val("");
-                        form_hist(true);                       
+                        clean_form_historia();
+                        form_hist(true);                      
                     }
-                });
-                return;
-
-
+                });   
             }
-            console.log(btn);
         });
         // fin de agregar historia de usuario
 
 
         // Editar historias de usuaios
         $(document).on('click', '#editar_historia', function (e) {
-
+            clean_form_historia();
             var id = $(this).attr('valor');
             var rol = $(this).parents("tr").find("td")[0].innerText;
             var quiero = $(this).parents("tr").find("td")[1].innerText;
@@ -678,16 +663,47 @@
             form_hist(false);
         });
 
-        /*
-        $(document).on('click', '#form_editar_historia', function (e) {
-            e.preventDefault();
+        // Eliminacion de historias 
+        $(document).on('click', '#eliminar_historia', function (e) {
+            var id = $(this).attr('valor');
+            var quiero = $(this).parents("tr").find("td")[1].innerText;
+            var conf = confirm('¿Desea eliminar "' + quiero + '"?');
+            console.log('id de la historia'+ id);
            
-        }); */
+            var idp = $(this).attr('pbacklog');
+            console.log('id pbacklog '+ idp);
+            
+            if (conf == true) {
+                console.log(id);
+                $.ajax({
+                    type: 'GET',
+                    context: document.body,
+                    url: '/scrum/eliminar_historia',
+                    dataType: 'json',
+                    data: {
+                        'id': id,
+                        'idp':idp
+                    },
+                    success: function (data) {
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                        $('#edicion_general_historias').html(data['modulo_historia']);
+                    }
+                });
+            }
+        });
+       
         function form_hist(valor) {
             $('#rol_edit_historia').prop('disabled', valor);
             $('#quiero_edit_historia').prop('disabled', valor);
             $('#para_edit_historia').prop('disabled', valor);
             $('#guardar_historia').prop('disabled', valor);
+        }
+
+        function clean_form_historia(){
+            $('#rol_edit_historia').val("");
+            $('#quiero_edit_historia').val("");
+            $('#para_edit_historia').val("");            
         }
 
     </script>
