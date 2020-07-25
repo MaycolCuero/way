@@ -547,31 +547,6 @@ def listado_historias_sprint(request):
     return JsonResponse(datos)
 
 
-def datos_sprint(id):
-    idscrum = Scrum.objects.get(pbacklog__id=id)
-    requisitos = Pbacklog.objects.filter(id_scrum=idscrum.id, confirmar=False).annotate(
-        historias=Count('historiausuario__id'),
-        historias_r=Count('historiausuario__id', filter=Q(historiausuario__estado=True)),
-        tareas=Count('historiausuario__sbacklog__id'),
-        tareas_r=Count('historiausuario__sbacklog__id', filter=Q(historiausuario__sbacklog__estado=True)),
-        duracion=Sum('historiausuario__sbacklog__n_horas')
-    ).order_by('id')
-
-    historias = HistoriaUsuario.objects.filter(id_pbacklog=id).annotate(
-        tareas=Count('sbacklog__id')
-    )
-
-    contexto = {
-        'requisitos': requisitos,
-        'historias': historias,
-        'tabla_general': render_to_string('clean/scrum/tabla_epicas_general_sprint.html', {'requisitos': requisitos}),
-        'tabla_editar_epica': render_to_string('clean/scrum/tabla_editar_epicas_sprint.html', {'requisitos': requisitos}),
-        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias':historias, 'id_pbacklog': id})
-    }
-
-    return contexto
-
-
 def editar_historia_sprint(request):
 
     if request.method == 'POST':
@@ -615,3 +590,42 @@ def eliminar_historia(request):
             'tabla_editar_epica': edit_epica
         }
     return JsonResponse(contexto)
+
+
+def tabla_tareas_sprint(request):
+    idh = request.GET['idh']
+    idp = request.GET['idp']
+    tareas = Sbacklog.objects.filter(id_historia=idh)
+
+    data = datos_sprint(idp)
+
+    contexto = {
+        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',{'tareas':tareas})
+    }
+
+    return JsonResponse(contexto)
+
+
+def datos_sprint(id):
+    idscrum = Scrum.objects.get(pbacklog__id=id)
+    requisitos = Pbacklog.objects.filter(id_scrum=idscrum.id, confirmar=False).annotate(
+        historias=Count('historiausuario__id'),
+        historias_r=Count('historiausuario__id', filter=Q(historiausuario__estado=True)),
+        tareas=Count('historiausuario__sbacklog__id'),
+        tareas_r=Count('historiausuario__sbacklog__id', filter=Q(historiausuario__sbacklog__estado=True)),
+        duracion=Sum('historiausuario__sbacklog__n_horas')
+    ).order_by('id')
+
+    historias = HistoriaUsuario.objects.filter(id_pbacklog=id).annotate(
+        tareas=Count('sbacklog__id')
+    )
+
+    contexto = {
+        'requisitos': requisitos,
+        'historias': historias,
+        'tabla_general': render_to_string('clean/scrum/tabla_epicas_general_sprint.html', {'requisitos': requisitos}),
+        'tabla_editar_epica': render_to_string('clean/scrum/tabla_editar_epicas_sprint.html', {'requisitos': requisitos}),
+        'modulo_historia': render_to_string('clean/scrum/edicion_historias.html', {'historias':historias, 'id_pbacklog': id})
+    }
+
+    return contexto

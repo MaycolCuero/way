@@ -324,6 +324,9 @@
                         <div id="edicion_general_historias">
 
                         </div>
+                        <div id="edicion_general_tareas">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -533,7 +536,6 @@
 
 
             if (conf == true) {
-                console.log(id);
                 $.ajax({
                     type: 'GET',
                     context: document.body,
@@ -556,7 +558,6 @@
         //agregar histoia de usuario
         $(document).on('click', '#ver_historias', function (e) {
             var id = $(this).attr('valor');
-            console.log(id);
             $.ajax({
                 type: 'GET',
                 context: document.body,
@@ -591,7 +592,7 @@
             var para = $('#para_edit_historia').val();
 
             if (btn == "Agregar") {
-               
+
                 $.ajax({
                     type: 'POST',
                     url: '/scrum/historia_crear',
@@ -614,10 +615,10 @@
                         form_hist(true);
                     }
                 });
-            }else{
+            } else {
                 var idh = $('#id_historia_h').val();
-                var idp = $('#id_pbacklog_h').val(); 
-                
+                var idp = $('#id_pbacklog_h').val();
+
                 $.ajax({
                     type: 'POST',
                     url: '/scrum/editar_historias_sprint',
@@ -631,14 +632,14 @@
                         'para': para,
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success: function (data) { 
+                    success: function (data) {
                         $('#tabla_sprint').html(data['tabla_general']);
                         $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
                         $('#edicion_general_historias').html(data['modulo_historia']);
                         clean_form_historia();
-                        form_hist(true);                      
+                        form_hist(true);
                     }
-                });   
+                });
             }
         });
         // fin de agregar historia de usuario
@@ -668,11 +669,11 @@
             var id = $(this).attr('valor');
             var quiero = $(this).parents("tr").find("td")[1].innerText;
             var conf = confirm('¿Desea eliminar "' + quiero + '"?');
-            console.log('id de la historia'+ id);
-           
+            console.log('id de la historia' + id);
+
             var idp = $(this).attr('pbacklog');
-            console.log('id pbacklog '+ idp);
-            
+            console.log('id pbacklog ' + idp);
+
             if (conf == true) {
                 console.log(id);
                 $.ajax({
@@ -682,7 +683,7 @@
                     dataType: 'json',
                     data: {
                         'id': id,
-                        'idp':idp
+                        'idp': idp
                     },
                     success: function (data) {
                         $('#tabla_sprint').html(data['tabla_general']);
@@ -692,7 +693,34 @@
                 });
             }
         });
-       
+
+        // ***** Fin mudolo historia *****
+
+
+        // **** Inicio modulo tareas ***** 
+
+        $(document).on('click','#ver_tareas', function(e){
+            var idh = $(this).attr('valor');
+            var idp = $(this).attr('idp');
+
+            $.ajax({
+                type: "GET",
+                url: "/scrum/tabla_tareas_sprint",
+                context: document.body,
+                dataType: 'json',
+                data: {
+                    'idh':idh,
+                    'idp': idp
+                },
+                success: function(data){
+                   $('#edicion_general_tareas').html(data['tareas_sprint']);
+                   disable_tareas(true);
+                }
+            });
+            
+        });
+
+
         function form_hist(valor) {
             $('#rol_edit_historia').prop('disabled', valor);
             $('#quiero_edit_historia').prop('disabled', valor);
@@ -700,10 +728,21 @@
             $('#guardar_historia').prop('disabled', valor);
         }
 
-        function clean_form_historia(){
+        function clean_form_historia() {
             $('#rol_edit_historia').val("");
             $('#quiero_edit_historia').val("");
-            $('#para_edit_historia').val("");            
+            $('#para_edit_historia').val("");
+        }
+
+        function clear_tareas(){
+            $('#nombre_tarea').val("");
+            $('#duracion').val("");
+        }
+
+        function disable_tareas(valor){
+            $('#nombre_tarea').prop('disabled', valor);
+            $('#duracion').prop('disabled', valor); 
+            $('#guardar_tarea').prop('disabled', valor);
         }
 
     </script>
