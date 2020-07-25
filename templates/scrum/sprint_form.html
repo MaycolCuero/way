@@ -702,7 +702,7 @@
         $(document).on('click','#ver_tareas', function(e){
             var idh = $(this).attr('valor');
             var idp = $(this).attr('idp');
-
+            clear_tareas();
             $.ajax({
                 type: "GET",
                 url: "/scrum/tabla_tareas_sprint",
@@ -719,6 +719,54 @@
             });
             
         });
+
+
+        $(document).on('click','#agregar_tareas', function(e){
+            var idh = $(this).attr('idh');
+            $('#id_historia_t').val(idh);
+            $('#titulo_tarea').text('Agregar tarea');
+            $('#guardar_tarea').text('Agregar');
+            disable_tareas(false);
+        });
+
+        $(document).on('submit','#form_tareas',function(e){
+            e.preventDefault();
+            var nombre = $(this).find('#nombre_tarea').val();
+            var duracion = $(this).find('#duracion').val();
+            var idh = $(this).find('#id_historia_t').val();
+            console.log('informacion de las tareas');
+            console.log(nombre);
+            console.log(duracion);
+            console.log(idh);
+
+            var btn = $(this).find('#guardar_tarea').text();
+
+            console.log(btn);
+
+            if(btn == "Agregar"){
+
+                $.ajax({
+                type: 'POST',
+                url: '/scrum/add_tarea_sprint',
+                context: document.body,
+                dataType: 'json',
+                data: {
+                    'nombre': nombre,
+                    'n_horas': duracion,
+                    'idh': idh,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(data){
+                    alert('regerso de datos');
+                }
+            });
+            }else{
+
+            }
+
+            
+        });
+
 
 
         function form_hist(valor) {

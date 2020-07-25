@@ -7,7 +7,7 @@
     <div class="col">
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-success">Agregar Tarea</button>
+                <button class="btn btn-success" id="agregar_tareas" idh = " {{ id_historia }} ">Agregar Tarea</button>
             </div>
             <div class="card">
                 <table class="table table-sm table-hover">
@@ -61,7 +61,7 @@
                 <h5 id="titulo_tarea"></h5>
             </center>
             
-            <form id="form_editar_historia">
+            <form id="form_tareas">
                 {% csrf_token %}
                 <div class="form-group">
                     <label>Como usuario</label>
@@ -71,7 +71,7 @@
                     <input class="form-control" type="number" id="duracion" required>
 
                     <label>Para</label>
-                    <input class="form-control" type="hidden" id="id_historia">
+                    <input class="form-control" type="hidden" id="id_historia_t" value="{{id_historia}}">
                 
                 </div>
                 <center>

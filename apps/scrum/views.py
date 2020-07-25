@@ -439,6 +439,7 @@ def delete_historia(request):
     }
     return JsonResponse(datos)
 
+
 @login_required
 def eliminarPbacklog(request):
 
@@ -600,7 +601,7 @@ def tabla_tareas_sprint(request):
     data = datos_sprint(idp)
 
     contexto = {
-        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',{'tareas':tareas})
+        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',{'tareas':tareas, 'id_historia':idh})
     }
 
     return JsonResponse(contexto)
@@ -629,3 +630,8 @@ def datos_sprint(id):
     }
 
     return contexto
+
+def add_tarea_sprint(request):
+    if request.method == "POST":
+        pass
+        #Sbacklog.objects.create(nom)
