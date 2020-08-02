@@ -689,6 +689,8 @@
                         $('#tabla_sprint').html(data['tabla_general']);
                         $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
                         $('#edicion_general_historias').html(data['modulo_historia']);
+                        clean_form_historia();
+                        form_hist(true);
                     }
                 });
             }
@@ -734,7 +736,9 @@
             var nombre = $(this).find('#nombre_tarea').val();
             var duracion = $(this).find('#duracion').val();
             var idh = $(this).find('#id_historia_t').val();
+            var idp = $(this).find('#id_pbacklog_t').val();
             console.log('informacion de las tareas');
+            console.log('id del pbacklog' + idp);
             console.log(nombre);
             console.log(duracion);
             console.log(idh);
@@ -742,7 +746,6 @@
             var btn = $(this).find('#guardar_tarea').text();
 
             console.log(btn);
-
             if(btn == "Agregar"){
 
                 $.ajax({
@@ -753,11 +756,21 @@
                 data: {
                     'nombre': nombre,
                     'n_horas': duracion,
-                    'idh': idh,
+                    'id_historia': idh,
+                    'id_pbacklog': idp,
+                    'estado': false,
+                    'get': false,
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                 },
                 success: function(data){
-                    alert('regerso de datos');
+                    $('#tabla_sprint').html(data['tabla_general']);
+                    $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                    $('#edicion_general_historias').html(data['modulo_historia']);
+                    $('#edicion_general_tareas').html(data['tareas_sprint']);
+                    clean_form_historia();
+                    clear_tareas();
+                    disable_tareas(true);
+                    form_hist(true);
                 }
             });
             }else{

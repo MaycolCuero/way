@@ -4,7 +4,6 @@
     </center>
 <div class="row">    
     <div class="col">
-        {% if historias %}
         <div class="card">
             <div class="card-header card-header-sm">
                 <button class="btn btn-success"id="addhu" valor = "{{ id_historia }}">Agregar HU </button>
@@ -70,13 +69,6 @@
             </div>
            
         </div>
-        {% else %}
-        <p>No hay historias de usuarios</p>
-        <button class="btn btn-success">
-            Agregar historias?
-        </button>
-        {% endif %}
-
     </div>
     <div class="col">
         <div class="card" id="editar_form" style="padding:10px;">

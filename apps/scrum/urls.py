@@ -31,4 +31,5 @@ urlpatterns = [
     path('editar_historias_sprint', views.editar_historia_sprint, name="editar_historias_sprint"),
     path('eliminar_historia', views.eliminar_historia, name="eliminar_historia"),
     path('tabla_tareas_sprint', views.tabla_tareas_sprint, name="tabla_tareas_sprint"),
+    path('add_tarea_sprint', views.add_tarea_sprint, name="add_tarea_sprint"),
 ]

@@ -601,7 +601,7 @@ def tabla_tareas_sprint(request):
     data = datos_sprint(idp)
 
     contexto = {
-        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',{'tareas':tareas, 'id_historia':idh})
+        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',{'tareas':tareas, 'id_historia':idh, 'id_pbacklog':idp})
     }
 
     return JsonResponse(contexto)
@@ -631,7 +631,29 @@ def datos_sprint(id):
 
     return contexto
 
+
 def add_tarea_sprint(request):
     if request.method == "POST":
-        pass
-        #Sbacklog.objects.create(nom)
+        sback = SbacklogForm(data=request.POST)
+        if sback.is_valid():
+            sback.save()
+
+    idp = request.POST['id_pbacklog']
+    data = datos_sprint(idp)
+    mo_historia = data['modulo_historia']
+    t_general = data['tabla_general']
+    edit_epica = data['tabla_editar_epica']
+
+    idh = request.POST['id_historia']
+
+    tareas = Sbacklog.objects.filter(id_historia=idh)
+
+    contexto = {
+        'modulo_historia': mo_historia,
+        'tabla_general': t_general,
+        'tabla_editar_epica': edit_epica,
+        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',
+                                          {'tareas': tareas, 'id_historia': idh, 'id_pbacklog': idp})
+    }
+
+    return JsonResponse(contexto)
