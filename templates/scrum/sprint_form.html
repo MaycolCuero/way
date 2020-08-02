@@ -724,10 +724,26 @@
 
 
         $(document).on('click','#agregar_tareas', function(e){
+            clear_tareas();
             var idh = $(this).attr('idh');
             $('#id_historia_t').val(idh);
             $('#titulo_tarea').text('Agregar tarea');
             $('#guardar_tarea').text('Agregar');
+            disable_tareas(false);
+        });
+
+        $(document).on('click', '#editar_tarea', function (e) {
+            clear_tareas();
+            var idt = $(this).attr('valor');
+            var descripcion = $(this).parents("tr").find("td")[0].innerText;
+            var duracion = $(this).parents("tr").find("td")[1].innerText;
+
+            $('#id_tarea').val(idt);
+            $('#nombre_tarea').val(descripcion);
+            $('#duracion').val(duracion);
+
+            $('#titulo_tarea').text('Editar Tarea');
+            $('#guardar_tarea').text('Editar');
             disable_tareas(false);
         });
 
@@ -737,44 +753,63 @@
             var duracion = $(this).find('#duracion').val();
             var idh = $(this).find('#id_historia_t').val();
             var idp = $(this).find('#id_pbacklog_t').val();
-            console.log('informacion de las tareas');
-            console.log('id del pbacklog' + idp);
-            console.log(nombre);
-            console.log(duracion);
-            console.log(idh);
-
             var btn = $(this).find('#guardar_tarea').text();
-
-            console.log(btn);
+            
             if(btn == "Agregar"){
 
                 $.ajax({
-                type: 'POST',
-                url: '/scrum/add_tarea_sprint',
-                context: document.body,
-                dataType: 'json',
-                data: {
-                    'nombre': nombre,
-                    'n_horas': duracion,
-                    'id_historia': idh,
-                    'id_pbacklog': idp,
-                    'estado': false,
-                    'get': false,
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-                },
-                success: function(data){
-                    $('#tabla_sprint').html(data['tabla_general']);
-                    $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
-                    $('#edicion_general_historias').html(data['modulo_historia']);
-                    $('#edicion_general_tareas').html(data['tareas_sprint']);
-                    clean_form_historia();
-                    clear_tareas();
-                    disable_tareas(true);
-                    form_hist(true);
-                }
-            });
+                    type: 'POST',
+                    url: '/scrum/add_tarea_sprint',
+                    context: document.body,
+                    dataType: 'json',
+                    data: {
+                        'nombre': nombre,
+                        'n_horas': duracion,
+                        'id_historia': idh,
+                        'id_pbacklog': idp,
+                        'estado': false,
+                        'get': false,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                        $('#edicion_general_historias').html(data['modulo_historia']);
+                        $('#edicion_general_tareas').html(data['tareas_sprint']);
+                        clean_form_historia();
+                        clear_tareas();
+                        disable_tareas(true);
+                        form_hist(true);
+                    }
+                });
             }else{
-
+                var idt = $('#id_tarea').val();
+                var idp = $('#id_pbacklog').val();
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '/scrum/update_tarea_sprint',
+                    context: document.body,
+                    dataType: 'json',
+                    data: {
+                        'nombre': nombre,
+                        'n_horas': duracion,
+                        'id': idt,
+                        'idp': idp,
+                        'idh':idh,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                        $('#edicion_general_historias').html(data['modulo_historia']);
+                        $('#edicion_general_tareas').html(data['tareas_sprint']);
+                        clean_form_historia();
+                        clear_tareas();
+                        disable_tareas(true);
+                        form_hist(true);
+                    }
+                });
             }
 
             

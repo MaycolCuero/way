@@ -24,8 +24,8 @@
                             <td> {{ a.nombre }} </td>
                             <td> {{ a.n_horas }} </td>
                             <td>
-                                <a href="#" data-toggle="tooltip" title="Editar Hsitoria" id="editar_historia"
-                                    valor="{{a.id}}">
+                                <a href="#" data-toggle="tooltip" title="Editar tarea" id="editar_tarea"
+                                    valor="{{a.id}}" pbacklog=" {{id_pbacklog}} ">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square"
                                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -34,8 +34,8 @@
                                             d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                     </svg>
                                 </a>
-                                <a href="#" data-toggle="tooltip" style="color: red;" title="Eliminar Historia"
-                                    id="eliminar_historia" pbacklog=" {{id_pbacklog}} " valor="{{a.id}}">
+                                <a href="#" data-toggle="tooltip" style="color: red;" title="Eliminar tarea"
+                                    id="eliminar_tarea" pbacklog=" {{id_pbacklog}} " valor="{{a.id}}">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square"
                                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -64,15 +64,21 @@
             <form id="form_tareas">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label>Como usuario</label>
+                    <label>Descripción</label>
                     <input class="form-control" id="nombre_tarea" required>
 
-                    <label>Quiero</label>
-                    <input class="form-control" type="number" id="duracion" required>
+                    <label>Duración</label>
+                    <select class="form-control" id="duracion" required>
+                        <option value="2" >2</option>
+                        <option value="4" >4</option>
+                        <option value="6" >6</option>
+                        <option value="8" >8</option>
+                    </select>
 
-                    <label>Para</label>
-                    <input class="form-control" type="hidden" id="id_historia_t" value="{{id_historia}}">
+                    <input class="form-control" type="hidden" id="id_tarea">
                     <input type="hidden" id="id_pbacklog_t" value=" {{ id_pbacklog }} ">
+                    <input type="hidden" id="id_historia_t" value=" {{ id_historia}} ">
+                   
                 </div>
                 <center>
                     <button id="guardar_tarea" class="btn btn-primary"
