@@ -644,6 +644,7 @@ $(document).on('submit','#agregarIntegrante',function(e){
                 $('#mostrar_integrantes').html(data['datos_integrantes']);
                 $('#email').text('');
                 $('#rol').selected;
+                window.location.reload();
             }
         }
     });
