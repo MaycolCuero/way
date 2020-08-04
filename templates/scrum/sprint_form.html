@@ -815,7 +815,42 @@
             
         });
 
+          // Eliminacion de tareas 
+          $(document).on('click', '#eliminar_tarea', function (e) {
+           
+            var id = $(this).attr('valor');
+            var tarea = $(this).parents("tr").find("td")[0].innerText;
+            var conf = confirm('¿Desea eliminar "' + tarea + '"?');
+            var idp = $(this).attr('pbacklog');
+            var idh = $(this).attr('historia');
+            console.log(id);
+            console.log(idh);
+            console.log(idp);
 
+            if (conf == true) {
+                $.ajax({
+                    type: 'GET',
+                    context: document.body,
+                    url: '/scrum/delete_tarea_sprint',
+                    dataType: 'json',
+                    data: {
+                        'id': id,
+                        'idh':idh,
+                        'idp': idp
+                    },
+                    success: function (data) {
+                        $('#tabla_sprint').html(data['tabla_general']);
+                        $('#tabla_editar_epicas').html(data['tabla_editar_epica']);
+                        $('#edicion_general_historias').html(data['modulo_historia']);
+                        $('#edicion_general_tareas').html(data['tareas_sprint']);
+                        clean_form_historia();
+                        clear_tareas();
+                        disable_tareas(true);
+                        form_hist(true);
+                    }
+                });
+            }
+        });
 
         function form_hist(valor) {
             $('#rol_edit_historia').prop('disabled', valor);
@@ -832,7 +867,7 @@
 
         function clear_tareas(){
             $('#nombre_tarea').val("");
-            $('#duracion').val("");
+            $('#duracion').val("2");
         }
 
         function disable_tareas(valor){
