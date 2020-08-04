@@ -668,12 +668,37 @@ def update_tarea_sprint(request):
         duracion = request.POST['n_horas']
         Sbacklog.objects.filter(id=id).update(nombre = descripcion, n_horas=duracion)
 
+    idh = request.POST['idh']
     idp = request.POST['idp']
     data = datos_sprint(idp)
     mo_historia = data['modulo_historia']
     t_general = data['tabla_general']
     edit_epica = data['tabla_editar_epica']
-    idh = request.POST['idh']
+    
+    tareas = Sbacklog.objects.filter(id_historia=idh)
+
+    contexto = {
+        'modulo_historia': mo_historia,
+        'tabla_general': t_general,
+        'tabla_editar_epica': edit_epica,
+        'tareas_sprint': render_to_string('clean/scrum/tabla_tareas_sprint.html',
+                                          {'tareas': tareas, 'id_historia': idh, 'id_pbacklog': idp})
+    }
+
+    return JsonResponse(contexto)
+
+def delete_tarea_sprint(request):
+    if request.method == "GET":
+        id = request.GET['id']
+        Sbacklog.objects.filter(id=id).delete()
+    
+    idh = request.GET['idh']    
+    idp = request.GET['idp']
+    
+    data = datos_sprint(idp)
+    mo_historia = data['modulo_historia']
+    t_general = data['tabla_general']
+    edit_epica = data['tabla_editar_epica']
     tareas = Sbacklog.objects.filter(id_historia=idh)
 
     contexto = {
