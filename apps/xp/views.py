@@ -365,12 +365,12 @@ def update_history(request):
 def show_crear_ciclo(request):
     if request.method == 'GET':
         id_pro = request.GET['id_pro']
-        historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id_pro).annotate(
+        historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id_pro, get=False).annotate(
             dias=Sum('sbacklog__n_horas'),
             tareas=Count('sbacklog__id')
         )
 
-        xp = XP.objects.values('id','proyecto__id','proyecto__nombre','proyecto__f_inicio','proyecto__f_fin').get(proyecto=id)
+        xp = XP.objects.values('id','proyecto__id','proyecto__nombre','proyecto__f_inicio','proyecto__f_fin').get(proyecto=id_pro)
         xp_f_inicio = datetime.strftime(xp['proyecto__f_inicio'], '%Y-%m-%d')
         xp_f_fin =  datetime.strftime( xp['proyecto__f_fin'], '%Y-%m-%d')
 
@@ -381,6 +381,6 @@ def show_crear_ciclo(request):
             'xp_f_inicio': xp_f_inicio,
             'xp_f_fin': xp_f_fin
         }
-        datos = {'update_history':render_to_string('clean/xp/update_history.html',contexto)}
+        datos = {'show_crear_ciclo':render_to_string('clean/xp/show_crear_ciclo.html',contexto)}
 
     return JsonResponse(datos)

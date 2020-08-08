@@ -229,7 +229,7 @@
             <nav class="navbar navbar-expand-sm bg-light">
                 <ul class="navbar-nav">
                     <li class="navbar-item">
-                        <button id_pro = " {{id_pro}} " id="crear_ciclo" class="btn">
+                        <button id="crear_ciclo" class="btn">
                             <strong>Crear Ciclo {{id_pro}}</strong>  
                         </button>
                     </li>
@@ -705,6 +705,7 @@ $(document).ready(function(e){
 
 $(document).on('click','#crear_ciclo', ()=>{
    const idpro = document.getElementById('id_pro');
+   console.log('dipor', idpro.value);
    $.ajax({
         type: 'GET',
         url: '/xp/show_crear_ciclo',
@@ -714,14 +715,15 @@ $(document).on('click','#crear_ciclo', ()=>{
             'id_pro': idpro.value
         },
         success: (data)=>{
-        alert('crear ciclo');
-          //  document.getElementById('body_ciclo').innerHTML = data['update_history'];
+            console.log(data['show_crear_ciclo']);
+            document.getElementById('body_ciclo').innerHTML = data['show_crear_ciclo'];
         }
     });
 });
 
 $(document).on('click','#editar_requisitos', ()=>{
-   const idpro = document.getElementById('id_pro');
+    const idpro = document.getElementById('id_pro');
+  
     $.ajax({
         type: 'GET',
         url: '/xp/update_history',
@@ -732,9 +734,46 @@ $(document).on('click','#editar_requisitos', ()=>{
         },
         success: (data)=>{
             document.getElementById('body_ciclo').innerHTML = data['update_history'];
+            disable_historias(true);
+            clear_historia();
         }
     });
 });
+
+
+// agregar historias
+$(document).on('click','#agregar_historias', ()=>{
+    let titulo_historia = document.getElementById('titulo_historia');
+    let btn = document.getElementById('guardar_historia');
+    btn.innerText = "Agregar";
+    titulo_historia.innerText = "Agregar";
+    disable_historias(false);
+});
+
+function clear_historia(){
+    let como_usuario = document.getElementById('como_usuario');
+    let quiero = document.getElementById('quiero');
+    let para = document.getElementById('para');
+    let btn = document.getElementById('guardar_historia');   
+
+    como_usuario.innerText = "";
+    quiero.disainnerText = "";
+    para.innerText = "";
+    btn.innerText = "Guardar"; 
+}
+
+function disable_historias(valor){
+    let como_usuario = document.getElementById('como_usuario');
+    let quiero = document.getElementById('quiero');
+    let para = document.getElementById('para');
+    let btn = document.getElementById('guardar_historia');
+    valor == null ? false : valor;
+
+    como_usuario.disabled = valor;
+    quiero.disabled = valor;
+    para.disabled = valor;
+    btn.disabled = valor;   
+}
 
 </script>
 
