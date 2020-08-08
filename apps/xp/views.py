@@ -11,6 +11,7 @@ from apps.scrum.models import HistoriaUsuario, Sbacklog
 from apps.scrum.forms import SbacklogForm
 from apps.proyecto.models import ProUser, Proyecto, Rol
 from apps.usuarios.models import User
+from datetime import datetime
 # Create your views here.
 
 
@@ -102,8 +103,11 @@ def index(request, id):
     except:
         ciclo = ""
 
+    xp_f_inicio = datetime.strftime(xp['proyecto__f_inicio'], '%Y-%m-%d')
+    xp_f_fin =  datetime.strftime( xp['proyecto__f_fin'], '%Y-%m-%d')
 
-    print('informacion del ciclo',ciclo)
+    print('inicio: ',xp_f_inicio, ' fin :',xp_f_fin)
+
 
     contexto = {
         'requisitos':requisitos,
@@ -119,7 +123,10 @@ def index(request, id):
         'resumen_tareas':resumen_tareas,
         'resumen_integrantes':resumen_integrantes,
         'resumen_ciclo':resumen_ciclo,
-        'resumen_ciclo_historias':resumen_ciclo_historias
+        'resumen_ciclo_historias':resumen_ciclo_historias,
+        'id_pro':id,
+        'xp_f_inicio': xp_f_inicio,
+        'xp_f_fin': xp_f_fin
     }
 
     return render(request, 'xp/index-xp.html', contexto)
@@ -298,6 +305,7 @@ def confirmar(request):
 
 
 def resumen(id_proyecto):
+
     xp = XP.objects.values('id', 'proyecto__id', 'proyecto__nombre', 'proyecto__f_inicio', 'proyecto__f_fin').get(
         proyecto=id_proyecto)
 
@@ -337,3 +345,42 @@ def resumen(id_proyecto):
     }
 
     return contexto
+
+def update_history(request):
+    if request.method == 'GET':
+        id_pro = request.GET['id_pro']
+        historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id_pro).annotate(
+            dias=Sum('sbacklog__n_horas'),
+            tareas=Count('sbacklog__id')
+        )
+        contexto = {
+            'id_pro':id_pro,
+            'historias':historias
+        }
+        datos = {'update_history':render_to_string('clean/xp/update_history.html',contexto)}
+
+    return JsonResponse(datos)
+
+
+def show_crear_ciclo(request):
+    if request.method == 'GET':
+        id_pro = request.GET['id_pro']
+        historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id_pro).annotate(
+            dias=Sum('sbacklog__n_horas'),
+            tareas=Count('sbacklog__id')
+        )
+
+        xp = XP.objects.values('id','proyecto__id','proyecto__nombre','proyecto__f_inicio','proyecto__f_fin').get(proyecto=id)
+        xp_f_inicio = datetime.strftime(xp['proyecto__f_inicio'], '%Y-%m-%d')
+        xp_f_fin =  datetime.strftime( xp['proyecto__f_fin'], '%Y-%m-%d')
+
+        contexto = {
+            'id_pro':id_pro,
+            'historias':historias,
+            'xp':xp,
+            'xp_f_inicio': xp_f_inicio,
+            'xp_f_fin': xp_f_fin
+        }
+        datos = {'update_history':render_to_string('clean/xp/update_history.html',contexto)}
+
+    return JsonResponse(datos)

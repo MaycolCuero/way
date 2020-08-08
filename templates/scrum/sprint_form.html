@@ -400,7 +400,6 @@
             if (semanas < 7) {
                 semanas = 1;
             }
-            console.log('horas semanas: ' + semanas);
             var horas_integrantes_sprint = semanas * horas_integrantes;
             document.getElementById('horas_integrantes_sprint').innerText = horas_integrantes_sprint;
             document.getElementById('numero_semanas').innerText = semanas;
@@ -823,9 +822,6 @@
             var conf = confirm('¿Desea eliminar "' + tarea + '"?');
             var idp = $(this).attr('pbacklog');
             var idh = $(this).attr('historia');
-            console.log(id);
-            console.log(idh);
-            console.log(idp);
 
             if (conf == true) {
                 $.ajax({

@@ -14,4 +14,6 @@ urlpatterns = [
     path('agregar_integrantes', agregar_integrantes, name="agregar_integrantes"),
     path('obtener', obtener, name='obtener'),
     path('confirmar', views.confirmar, name='confirmar'),
+    path('update_history', views.update_history, name='update_history'),
+
 ]

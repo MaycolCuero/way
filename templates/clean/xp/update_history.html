@@ -1,0 +1,78 @@
+<br>
+    <center>
+        <h3>Tareas</h3>
+    </center>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <button class="btn btn-success" id="agregar_tareas" idh = "">Agregar Tarea</button>
+            </div>
+            <div class="card">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Como</th>
+                            <th>Quiero</th>
+                            <th>Para</th>
+                            <th>Seleccionar</th>
+                            <th>Tareas</th>
+                            <th>Días</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if historias %}
+                            {% for h in historias %}
+                                <tr>
+                                    <td>{{ h.como_usuario }}</td>
+                                    <td>{{ h.quiero}}</td>
+                                    <td>{{ h.para}}</td>
+                                    <td>
+                                        <input type="checkbox" id="id_historia" value={{h.id}}>
+                                    </td>
+                                    <td>{{h.tareas}}</td>                                            
+                                    <td>
+                                        {{h.dias}}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="col">
+        <div class="card" id="editar_form" style="padding:10px;">
+            <center>
+                <h5 id="titulo_tarea"></h5>
+            </center>
+            
+            <form id="form_tareas">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input class="form-control" id="nombre_tarea" required>
+
+                    <label>Duración</label>
+                    <select class="form-control" id="duracion" required>
+                        <option value="2" selected >2</option>
+                        <option value="4" >4</option>
+                        <option value="6" >6</option>
+                        <option value="8" >8</option>
+                    </select>
+
+                    <input class="form-control" type="hidden" id="id_tarea">
+                   
+                </div>
+                <center>
+                    <button id="guardar_tarea" class="btn btn-primary"
+                        style="width: 60%; align-self:start;">Guardar</button>
+                </center>
+            </form>
+        </div>
+    </div>
+</div>

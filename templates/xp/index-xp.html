@@ -7,6 +7,9 @@
     {% block title %}
         <title>Proyecto XP</title>
     {% endblock %}
+
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
     {% block extra_links%}
         <link href="{% static 'estilos/xp/index-xp.css' %}" rel="stylesheet">
        <!-- <script src="{% static 'scripts-consultas/xp/index-xp.js' %}"></script> -->
@@ -219,14 +222,29 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
       
+        <!-- Id del proyecto para ser utilizado  -->
+        <input id="id_pro" type="hidden" value="{{id_pro}}">
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Planificación</h4>
+            <nav class="navbar navbar-expand-sm bg-light">
+                <ul class="navbar-nav">
+                    <li class="navbar-item">
+                        <button id_pro = " {{id_pro}} " id="crear_ciclo" class="btn">
+                            <strong>Crear Ciclo {{id_pro}}</strong>  
+                        </button>
+                    </li>
+                    <li class="navbar-item">
+                        <button id="editar_requisitos" class="btn">
+                            <strong>Editar requisitos</strong>    
+                        </button>
+                    </li>
+                </ul>
+            </nav>
           <button type="button" class="close" id="btn_close" data-dismiss="modal">&times;</button>
         </div>
         
         <!-- Modal body -->
-        <div class="modal-body">
+        <div class="modal-body" id="body_ciclo">
             <div id="alerta"></div>
 
             <!-- Formulario -->
@@ -236,12 +254,12 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col">
-                            <label>Fecha de inicio</label>
-                            <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{fecha_inicio}}" max="{{fecha_fin}}" style="width:40%;" required>
+                            <label>Fecha de inicio  </label>
+                            <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{xp_f_inicio}}" max="{{xp_f_fin}}" style="width:40%;" required>
                         </div>
                         <div class="col">
                             <label>Fecha de fin</label>
-                            <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{fecha_fin}}" style="width:40%;" required>        
+                            <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{xp_f_fin}}" style="width:40%;" required>        
                         </div>
                     </div>
                 </div>
@@ -487,9 +505,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-
-                                    <br>
-                                   
+                                    <br>                                   
                                 {% endfor %}
                             </ol>
                         </div>
@@ -507,7 +523,6 @@
 $(document).on('submit','#obtener_tarea', function(e){
     e.preventDefault();
     var id_tarea = $(this).find('#obtener').val();
-    console.log('id de la tarea ' + id_tarea);
     $.ajax({
         type:"GET",
         url: "/xp/obtener",
@@ -552,13 +567,6 @@ $(document).on('submit', '#form_ciclo', function (e) {
         }
     });     
     idh = selected;
-
-    console.log('Informacion de form');
-    console.log(inicio);
-    console.log(fin);
-    console.log(idh);
-    console.log(id_xp);
-    console.log('se detuvo el envio de datos');
 
     $.ajax({
         type: "POST",
@@ -622,10 +630,6 @@ $(document).on('submit','#agregarIntegrante',function(e){
     var rol = $(this).find('#rol').val();
     var idpro = $(this).find('#idpro').val();
 
-    console.log(`email: ${email}`);
-    console.log('rol: '+rol);
-    console.log('PROYECTO: '+idpro);
-
     $.ajax({
         type:"POST",
         url:"/xp/agregar_integrantes",
@@ -657,8 +661,7 @@ $(document).on('submit','#agregarIntegrante',function(e){
 $(document).on('submit','#confirmar_tarea',function(e){
     e.preventDefault();
     var id_tarea = $(this).find('#confirmar').val();
-    console.log('id de la tarea '+id_tarea);
-    
+
     $.ajax({
         type:"GET",
         url:"/xp/confirmar",
@@ -677,22 +680,17 @@ $(document).on('submit','#confirmar_tarea',function(e){
 function recarcar(){
     var r1 = document.getElementById('no_requisitos');
     var r2 = r1.getAttribute('valor');
-    console.log('valor del requisito ' + r2);
 
     var p1 = document.getElementById('no_pendientes');
     var p2 = p1.getAttribute('valor');
-    console.log('valor de las tareas pendientes ' + p2 );
 
     var pr1 = document.getElementById('no_proceso');
     var pr2 = pr1.getAttribute('valor');
-    console.log('valor de las tareas en proceso' + pr2);
 
     var cc1 = document.getElementById('crear_ciclo');
     var cc2 = cc1.getAttribute('valor');
-    console.log('datos de crear ciclo ' + cc2);
 
     if(p2 == 1 && r2 == 1 && pr2 == 1 && cc2 == 0){
-        console.log('listo para actualizarse');
         document.location.reload();
     }else{
         console.log('no se puede actualizar');
@@ -702,6 +700,42 @@ function recarcar(){
 $(document).ready(function(e){
     recarcar();
 });
+
+/// manejo de creacion de ciclo y dicion de requisitos
+
+$(document).on('click','#crear_ciclo', ()=>{
+   const idpro = document.getElementById('id_pro');
+   $.ajax({
+        type: 'GET',
+        url: '/xp/show_crear_ciclo',
+        context: document.body,
+        dataType: 'json',
+        data: {
+            'id_pro': idpro.value
+        },
+        success: (data)=>{
+        alert('crear ciclo');
+          //  document.getElementById('body_ciclo').innerHTML = data['update_history'];
+        }
+    });
+});
+
+$(document).on('click','#editar_requisitos', ()=>{
+   const idpro = document.getElementById('id_pro');
+    $.ajax({
+        type: 'GET',
+        url: '/xp/update_history',
+        context: document.body,
+        dataType: 'json',
+        data: {
+            'id_pro': idpro.value
+        },
+        success: (data)=>{
+            document.getElementById('body_ciclo').innerHTML = data['update_history'];
+        }
+    });
+});
+
 </script>
 
  <!-- Script para converitr archivos en pdf -->

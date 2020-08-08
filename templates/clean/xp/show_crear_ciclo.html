@@ -1,0 +1,68 @@
+<div id="alerta"></div>
+
+<!-- Formulario -->
+<form id="form_ciclo">
+
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="row">
+            <div class="col">
+                <label>Fecha de inicio</label>
+                <input class="form-control" type="date" name="f_inicio" id="f_inicio" min="{{{{xp.proyecto__f_inicio}}}}" max="{{fecha_fin}}" style="width:40%;" required>
+            </div>
+            <div class="col">
+                <label>Fecha de fin</label>
+                <input class="form-control" type="date" name="f_fin" id="f_fin" max="{{fecha_fin}}" style="width:40%;" required>        
+            </div>
+        </div>
+    </div>
+    {% for x in xp %}
+        <input type="hidden" id="id_xp" value={{xp.id}}>
+    {% endfor %}
+
+    <div class="form-group">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col" id="col1">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+
+                </div>
+                    
+            </div>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Como</th>
+                        <th>Quiero</th>
+                        <th>Para</th>
+                        <th>Seleccionar</th>
+                        <th>Tareas</th>
+                        <th>Días</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if historias %}
+                        {% for h in historias %}
+                            <tr>
+                                <td>{{ h.como_usuario }}</td>
+                                <td>{{ h.quiero}}</td>
+                                <td>{{ h.para}}</td>
+                                <td>
+                                    <input type="checkbox" id="id_historia" value={{h.id}}>
+                                </td>
+                                <td>{{h.tareas}}</td>                                            
+                                <td>
+                                    {{h.dias}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div> 
+    
+</form>
