@@ -407,11 +407,30 @@ def add_history_ciclo(request):
 
     contexto = {
         'update_history':historia
-    }
-       
+    }   
        
     return JsonResponse(contexto)
 
+
+def update_history_ciclo(request):
+    idpro = request.POST['id_pro']
+    if request.method == "POST":
+        print(request.POST)
+        id_his = request.POST['id_his']
+        usuario = request.POST['como_usuario']
+        quiero = request.POST['quiero']
+        para = request.POST['para']
+
+        HistoriaUsuario.objects.filter(id=id_his).update(como_usuario=usuario, quiero=quiero, para=para)
+
+    data = datos_ciclo(idpro)
+    historia = data['update_history']
+
+    contexto = {
+        'update_history':historia
+    }   
+       
+    return JsonResponse(contexto)
 
 def datos_ciclo(id):
     task = Sbacklog.objects.filter(

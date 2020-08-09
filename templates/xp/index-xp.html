@@ -787,6 +787,7 @@ $(document).on('submit','#form_historia', (e)=>{
                 'como_usuario': como_usuario.value,
                 'quiero': quiero.value,
                 'para': para.value,
+               
                 'estado': false,
                 'get': false,
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
@@ -803,8 +804,53 @@ $(document).on('submit','#form_historia', (e)=>{
         });
     }else{
         console.log("entro a editar");
+        let id_his = $('#id_historia').val();
+        console.log('id de la historia: ', id_his);
 
+        $.ajax({
+            type: 'POST',
+            url: '/xp/update_history_ciclo',
+            context: document.body,
+            dataType: 'json',
+            data: {
+                'id_pro': idpro.value,
+                'como_usuario': como_usuario.value,
+                'quiero': quiero.value,
+                'para': para.value,
+                'id_his': id_his,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: (data)=>{
+               if(data['datos'] == "datos"){
+                   window.location.reload();
+                }else{
+                    document.getElementById('body_ciclo').innerHTML = data['update_history'];
+                    disable_historias(true);
+                    clear_historia();
+                }
+            }
+        });
     }
+
+   
+});
+
+$(document).on('click','#editar_historia',function(){
+    let id_his = $(this).attr('data-valor');
+    let usuario = $(this).parents("tr").find("td")[0].innerText;
+    let quiero = $(this).parents("tr").find("td")[1].innerText;
+    let para = $(this).parents("tr").find("td")[2].innerText;
+
+    clear_historia();
+    $('#como_usuario').val(usuario);
+    $('#quiero').val(quiero);
+    $('#para').val(para);
+    $('#id_historia').val(id_his);
+    let titulo_historia = document.getElementById('titulo_historia');
+    let btn = document.getElementById('guardar_historia');
+    btn.innerText = "Editar";
+    titulo_historia.innerText = "Editar";
+    disable_historias(false);
 });
 
 function disable_historias(valor){
