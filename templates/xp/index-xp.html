@@ -762,6 +762,51 @@ function clear_historia(){
     btn.innerText = "Guardar"; 
 }
 
+$(document).on('submit','#form_historia', (e)=>{
+    e.preventDefault();
+    const idpro = document.getElementById('id_pro');
+    let como_usuario = document.getElementById('como_usuario');
+    let quiero = document.getElementById('quiero');
+    let para = document.getElementById('para');
+    let btn = document.getElementById('guardar_historia');
+    console.log('usuario ', como_usuario.value);
+    console.log('requisito', quiero.value);
+    console.log('para', para.value);
+    console.log('boton', btn.innerText);
+
+   
+    if(btn.innerText == "Agregar"){
+        console.log("entro a agregar");
+        $.ajax({
+            type: 'POST',
+            url: '/xp/add_history_ciclo',
+            context: document.body,
+            dataType: 'json',
+            data: {
+                'id_pro': idpro.value,
+                'como_usuario': como_usuario.value,
+                'quiero': quiero.value,
+                'para': para.value,
+                'estado': false,
+                'get': false,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: (data)=>{
+               if(data['datos'] == "datos"){
+                   window.location.reload();
+                }else{
+                    document.getElementById('body_ciclo').innerHTML = data['update_history'];
+                    disable_historias(true);
+                    clear_historia();
+                }
+            }
+        });
+    }else{
+        console.log("entro a editar");
+
+    }
+});
+
 function disable_historias(valor){
     let como_usuario = document.getElementById('como_usuario');
     let quiero = document.getElementById('quiero');

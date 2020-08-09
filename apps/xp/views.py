@@ -384,3 +384,87 @@ def show_crear_ciclo(request):
         datos = {'show_crear_ciclo':render_to_string('clean/xp/show_crear_ciclo.html',contexto)}
 
     return JsonResponse(datos)
+
+def add_history_ciclo(request):
+    idpro = request.POST['id_pro']
+    if request.method == "POST":
+        
+        xp = XP.objects.get(proyecto__id=idpro)
+        usuario = request.POST['como_usuario']
+        quiero = request.POST['quiero']
+        para = request.POST['para']
+        history = HistoriaUsuario.objects.create(como_usuario=usuario,
+            quiero=quiero,
+            para= para,
+            estado = False,
+            get = False,
+            id_xp = xp
+        )
+
+    
+    data = datos_ciclo(idpro)
+    historia = data['update_history']
+
+    contexto = {
+        'update_history':historia
+    }
+       
+       
+    return JsonResponse(contexto)
+
+
+def datos_ciclo(id):
+    task = Sbacklog.objects.filter(
+        id_historia__get = True,
+        id_historia__id_ciclo__id_xp__proyecto=id,
+        estado=False,
+        get=False
+    )
+
+    requisitos = HistoriaUsuario.objects.filter(
+        id_xp__proyecto__id=id,
+        get=True,
+        id_ciclo__estado=True,
+        id_ciclo__id_xp__proyecto=id,
+        estado=False
+    )
+
+    proceso = Sbacklog.objects.filter(
+        id_historia__get = True,
+        id_historia__id_ciclo__id_xp__proyecto=id,
+        estado=False,
+        get=True
+    )
+
+
+    historias = HistoriaUsuario.objects.filter(id_xp__proyecto__id=id, get=False).annotate(
+        dias=Sum('sbacklog__n_horas'),
+        tareas=Count('sbacklog__id')
+    )
+
+    terminadas = Sbacklog.objects.filter(
+        estado=True,
+        id_historia__id_ciclo__id_xp__proyecto=id,
+        id_historia__id_ciclo__estado=True
+    )
+
+    integrantes = User.objects.values('id','first_name','last_name').filter(prouser__proyecto=id)
+
+
+    xp = XP.objects.values('id','proyecto__id','proyecto__nombre','proyecto__f_inicio','proyecto__f_fin').get(proyecto=id)
+    xp_f_inicio = datetime.strftime(xp['proyecto__f_inicio'], '%Y-%m-%d')
+    xp_f_fin =  datetime.strftime( xp['proyecto__f_fin'], '%Y-%m-%d')
+
+    datos = {
+        'update_history':render_to_string('clean/xp/update_history.html',{'id_pro':id,
+            'historias':historias}),
+        'show_crear_ciclo':render_to_string('clean/xp/show_crear_ciclo.html',{
+            'id_pro':id,
+            'historias':historias,
+            'xp':xp,
+            'xp_f_inicio': xp_f_inicio,
+            'xp_f_fin': xp_f_fin
+        })
+    }
+
+    return datos

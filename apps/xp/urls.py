@@ -16,4 +16,6 @@ urlpatterns = [
     path('confirmar', views.confirmar, name='confirmar'),
     path('update_history', views.update_history, name='update_history'),
     path('show_crear_ciclo', views.show_crear_ciclo, name='show_crear_ciclo'),
+    path('add_history_ciclo', views.add_history_ciclo, name='add_history_ciclo'),
+
 ]
