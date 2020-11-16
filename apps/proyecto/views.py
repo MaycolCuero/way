@@ -10,12 +10,15 @@ from datetime import date
 
 from django.template.loader import render_to_string
 
-from apps.proyecto.models import Proyecto, Rol, ProUser
+from apps.proyecto.models import Proyecto, Rol, ProUser, Tipo_metodologia
 from apps.proyecto.forms import ProyectoForm
 from apps.scrum.models import Scrum, Pbacklog, HistoriaUsuario, Sbacklog, Sprint, DailyMeeting
 
 from apps.usuarios.models import User, Usuario
 from apps.xp.models import XP
+
+#Herramientas 
+from herramientas.funciones import verificar_roles
 
 import json
 
@@ -145,35 +148,51 @@ def index2(request):
 def proyecto_crear(request):
     usuario = request.user.pk
     if request.method == 'POST':
-        form = ProyectoForm(request.POST)
-        # form.fields['usuario'] = request.session['id_user']#porque no da.
-        if form.is_valid():
-            # guardo el proyecto
-            m = form.save()
-            # get id user from POST method
-            u = User.objects.get(id=usuario)
-            midle = ProUser(usuario=u, proyecto=m, horas=40)
-            midle.save()
-            # realizo una consulta para saber la metodologia elegida
-            print(form)
-            if request.POST["id_metodologia"] == "1":  # pregunta si la metodologia es scrum
-                b = Scrum.objects.create(proyecto=m)  # crear el registro en scrum con el id del proyecto.
-                rol = Rol.objects.get(nombre="Product Owner")
-                ProUser.objects.filter(id=midle.id).update(rol=rol.id)
-                request.session['scrum'] = b.id
-                return redirect('scrum:pbacklog_crear')
-            elif request.POST['id_metodologia'] == '2':
-                x = XP.objects.create(proyecto=m)
-                rol = Rol.objects.get(nombre='Manager')
-                ProUser.objects.filter(id=midle.id).update(rol=rol.id)
-                request.session['xp']=x.id
-                return redirect('xp:CrearHistorias')
-            else:
-                return redirect('usuarios:index')
+        metodologia = verificar_metodologia(request.POST["id_metodologia"])
+        nombre = request.POST["nombre"]
+        f_inicio = request.POST["f_inicio"]
+        f_fin = request.POST["f_fin"]
+        # form = ProyectoForm(request.POST)        
+  
+        proyecto = Proyecto.objects.create(nombre=nombre, f_inicio=f_inicio, f_fin=f_fin, id_metodologia = metodologia)
+
+        # guardo el proyecto
+        proyecto.save()
+        
+        # get id user from POST method
+        u = User.objects.get(id=usuario)
+        midle = ProUser(usuario=u, proyecto=proyecto, horas=40)
+        midle.save()
+        # realizo una consulta para saber la metodologia elegida
+      
+        if metodologia.nombre == "SCRUM":  # pregunta si la metodologia es scrum
+            b = Scrum.objects.create(proyecto=proyecto)  # crear el registro en scrum con el id del proyecto.
+            # rol = Rol.objects.get(nombre="Product Owner")
+            rol = verificar_roles("Product Owner", metodologia)
+            ProUser.objects.filter(id=midle.id).update(rol=rol.id)
+            request.session['scrum'] = b.id
+            return redirect('scrum:pbacklog_crear')
+        elif metodologia.nombre == 'XP':
+            x = XP.objects.create(proyecto=proyecto)
+            # rol = Rol.objects.get(nombre='Manager')
+            rol = verificar_roles('Manager', metodologia)
+            ProUser.objects.filter(id=midle.id).update(rol=rol.id)
+            request.session['xp']=x.id
+            return redirect('xp:CrearHistorias')
+        else:
+            return redirect('usuarios:index')
     else:
         form = ProyectoForm()
     return render(request, 'proyecto/proyecto_form.html', {'form': form, 'usuario': usuario})
 
+def verificar_metodologia(metodologia):
+    try:
+        valor = Tipo_metodologia.objects.get(nombre=metodologia)
+        return valor
+    except:
+        valor = Tipo_metodologia.objects.create(nombre=metodologia)
+        return valor
+    
 
 @login_required
 def proyecto_list(request):

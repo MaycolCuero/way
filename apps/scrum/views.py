@@ -32,6 +32,7 @@ def pbacklog_list(request):
 @login_required
 def historia_list(request):
     scrum = request.session['scrum']
+    print("id de la metodologia scrum: ", scrum)
     id_proyecto = Proyecto.objects.get(scrum__id=scrum)
 
     historia = HistoriaUsuario.objects.filter(id_pbacklog__id_scrum=scrum).annotate(
