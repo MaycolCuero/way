@@ -130,11 +130,11 @@
                                                 {% for day in meetingsday %}
                                                             <div class="card card-header" daily>
                                                                 <font size="2">
-                                                                    <strong>Usuaro:</strong>{{ day.usuario__first_name}} {{day.usuario__last_name}}
+                                                                    <strong>Usuaro: </strong>{{ day.usuario__first_name}} {{day.usuario__last_name}}
                                                                     <br>
-                                                                    <strong>Ayer:</strong>{{ day.ayer }}
+                                                                    <strong>Ayer: </strong>{{ day.ayer }}
                                                                     <br>
-                                                                    <strong>Hoy:</strong>{{ day.hoy }}
+                                                                    <strong>Hoy: </strong>{{ day.hoy }}
                                                                     <br>
                                                                     <strong>Prolemas: </strong>{{ day.problemas }}
                                                                 </font>
@@ -633,7 +633,7 @@
                                         <tbody>
                                             {% for requisitos in resumen_requisitos %}
                                                 <tr>
-                                                    <td>{{requisitos.id_pbacklog__nombre}}</td>
+                                                    <td>{{requisitos.id_pbacklog__quiero}}</td>
                                                     <td>{{requisitos.como_usuario}}</td>
                                                     <td>{{requisitos.quiero}}</td>
                                                     <td>{{requisitos.para}}</td>
@@ -760,7 +760,6 @@
                 var url = "{% url 'proyecto:actualizarHistorias' %}";
                  $.get(url, dato, function(json){
                     if(json != ""){
-                         console.log(json)
                           var html = "", html2 = ""
                             for(var i = 0; i < json.length; i++){
                               //  html += '<ul><li>' + json[i].fields.quiero + '</li></ul>'
@@ -791,7 +790,6 @@
                 var url = "{% url 'proyecto:getTareas' %}";
                 $.get(url, dato, function(json){
                     if(json != ""){
-                         console.log(json)
                           var html = "", html2 = ""
                             for(var i = 0; i < json.length; i++){
 
@@ -842,11 +840,9 @@
 
         <script>
             function editarTarea(id){
-                console.log(id);
                 var dato = {'id':id};
                 var url = "{% url 'proyecto:getTareasDetalle' %}";
                 $.get(url, dato, function(json){
-                    console.log(json);
                     for(var i=0; i<json.length; i++){
                         document.getElementById('nombreTarea').value = json[i].fields.nombre;
                         document.getElementById('n_horas').value = json[i].fields.n_horas;
@@ -870,13 +866,12 @@
                     dataType: 'json',
                     data:{
                         'ayer':ayer,
-                        'hoy':ayer,
+                        'hoy':hoy,
                         'problemas':problemas,
                         'sprint':id_sprint,
                         csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function(data){
-                        console.log('datos enviados');
                         $('#closeDaily').click();
                         window.location.reload();
                         /*
@@ -914,7 +909,6 @@
                         csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
                     },
                     success: function(data){
-                        console.log('datos enviados');
                         $('#closeIntegrantes').click();
                         window.location.reload();
                     }
@@ -960,7 +954,6 @@
                         },
                         success: function(data){
                             $('#btnClose').click();
-                           console.log(data);
                            window.location.reload();
                         }
                 }); 
@@ -994,7 +987,6 @@
             $(document).on('submit','#form_confirmar',function(e){
                 e.preventDefault();
                 var tarea = $(this).find('#id_tarea').val();
-                console.log('id de la tarea'+tarea);
                 $.ajax({
                     type:"POST",
                     url:"/usuarios/confirmar",

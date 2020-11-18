@@ -167,14 +167,12 @@ def proyecto_crear(request):
       
         if metodologia.nombre == "SCRUM":  # pregunta si la metodologia es scrum
             b = Scrum.objects.create(proyecto=proyecto)  # crear el registro en scrum con el id del proyecto.
-            # rol = Rol.objects.get(nombre="Product Owner")
             rol = verificar_roles("Product Owner", metodologia)
             ProUser.objects.filter(id=midle.id).update(rol=rol.id)
             request.session['scrum'] = b.id
             return redirect('scrum:pbacklog_crear')
         elif metodologia.nombre == 'XP':
             x = XP.objects.create(proyecto=proyecto)
-            # rol = Rol.objects.get(nombre='Manager')
             rol = verificar_roles('Manager', metodologia)
             ProUser.objects.filter(id=midle.id).update(rol=rol.id)
             request.session['xp']=x.id
@@ -325,7 +323,7 @@ def actualizarTarea(request):
 def resumenScrum(id_proyecto):
     p = Proyecto.objects.values('nombre','f_inicio','f_fin').filter(id=id_proyecto)
     requisitos = HistoriaUsuario.objects.values(
-        'id_pbacklog__nombre','como_usuario','quiero','para'
+        'id_pbacklog__nombre','id_pbacklog__quiero','como_usuario','quiero','para'
     ).filter(id_pbacklog__id_scrum__proyecto=id_proyecto)
 
     integrantes = ProUser.objects.values(
